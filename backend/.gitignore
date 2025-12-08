@@ -1,0 +1,80 @@
+#<<<<<<< HEAD
+#HELP.md
+#.gradle
+#build/
+#!gradle/wrapper/gradle-wrapper.jar
+#!**/src/main/**/build/
+#!**/src/test/**/build/
+#!**/src/main/resources/application.yml
+#!**/src/main/resources/**
+#.DS_Store
+#
+#
+#### STS ###
+#.apt_generated
+#.classpath
+#.factorypath
+#.project
+#.settings
+#.springBeans
+#.sts4-cache
+#bin/
+#!**/src/main/**/bin/
+#!**/src/test/**/bin/
+#
+#### IntelliJ IDEA ###
+#.idea
+#*.iws
+#*.iml
+#*.ipr
+#out/
+#!**/src/main/**/out/
+#!**/src/test/**/out/
+#
+#### NetBeans ###
+#/nbproject/private/
+#/nbbuild/
+#/dist/
+#/nbdist/
+#/.nb-gradle/
+#
+#### VS Code ###
+#.vscode/
+#=======
+#
+## Backend
+#/backend/build/
+#/backend/.gradle/
+#/backend/out/
+#/backend/.idea/
+#/backend/*.iml
+#
+## Frontend
+#/frontend/node_modules/
+#/frontend/build/
+#/frontend/.env
+#
+## 공통
+#*.log
+#.DS_Store
+#
+#>>>>>>> root-origin/main
+# OS
+.DS_Store
+
+# IDE
+.idea/
+*.iml
+out/
+
+# Gradle
+.gradle/
+build/
+
+# Logs
+*.log
+
+# Secrets
+application.yml
+application-datasource.yml
+.env
