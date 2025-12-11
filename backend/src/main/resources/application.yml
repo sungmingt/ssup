@@ -1,6 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+    import:
+      - ssup-security/application.yml
+      - ssup-security/application-datasource.yml.yml.yml.yml
+      - ssup-security/application-cloud.yml
+
+---
 
 spring:
   config:
-    import: application-datasource.yml
-server:
-  port: ${PORT:8080}
+    activate:
+      on-profile: prod
+    import:
+      - ssup-security/application.yml
+      - ssup-security/application-datasource.yml.yml.yml.yml
+      - ssup-security/application-cloud.yml
