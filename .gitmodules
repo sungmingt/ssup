@@ -1,0 +1,4 @@
+[submodule "backend/src/main/resources/ssup-security"]
+	path = backend/src/main/resources/ssup-security
+	url = https://github.com/sungmingt/ssup-security
+	branch = main

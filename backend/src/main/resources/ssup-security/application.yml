@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: ssup
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  task:
+    scheduling:
+      time-zone: Asia/Seoul
+#cors:
+  #allowed-origins: "https://mo-gether.site,mo-gether.site,http://mo-gether-front.s3-website.ap-northeast-2.amazonaws.com,https://dfrv032cq0wgz.cloudfront.net"
+#front:
+  #origin: https://mo-gether.site
+  #config:
+    #import: optional:classpath:/application-auth.yml
