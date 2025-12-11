@@ -1,0 +1,6 @@
+
+spring:
+  config:
+    import: application-datasource.yml
+server:
+  port: ${PORT:8080}
