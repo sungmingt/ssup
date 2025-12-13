@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [ "main" ]  # 또는 master
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -19,12 +19,13 @@ jobs:
           distribution: 'temurin'
 
       - name: Build Spring Boot JAR
-	working-directory: ./backend
+        working-directory: backend
         run: |
-	  chmod +x ./gradlew
+          chmod +x ./gradlew
           ./gradlew build
 
       - name: Build Docker image (amd64)
+        working-directory: backend
         run: |
           docker buildx create --use
           docker buildx build --platform linux/amd64 -t ssup-backend:latest --load .
