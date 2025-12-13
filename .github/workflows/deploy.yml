@@ -18,6 +18,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Checkout code (include submodules)
+  	uses: actions/checkout@v3
+  	with:
+    	  submodules: true
+    	  fetch-depth: 0
+
       - name: Build Spring Boot JAR
         working-directory: backend
         run: |
