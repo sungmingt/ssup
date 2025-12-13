@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import Profile from "./components/Profile";
 // import PostCreateForm from "./components/post/PostCreateForm";
 // import Post from "./components/post/Post";
-// import Header from "./components/Header";
+import Header from "./components/Header";
 // import SignUp from "./components/auth/SignUp";
 // import MainPage from "./components/MainPage.jsx";
 import "./App.css";
@@ -16,6 +16,7 @@ function App() {
     <Router>
       <div className="app-wrapper">
         <Header />
+        hi hello
         {/* <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/signup" element={<SignUp />} />
