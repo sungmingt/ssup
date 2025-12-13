@@ -32,6 +32,9 @@ jobs:
 
       - name: Save image to tar
         run: docker save ssup-backend:latest -o backend.tar
+      
+      - name: Fix permissoions
+        run: chmod 644 backend.tar
 
       - name: Copy image to EC2
         uses: appleboy/scp-action@v0.1.7
