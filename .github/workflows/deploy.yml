@@ -39,7 +39,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "backend.tar"
+          source: "./backend.tar"
           target: "/home/ec2-user/"
 
       - name: Deploy on EC2 via SSH
