@@ -58,5 +58,10 @@ jobs:
             docker stop app || true
             docker rm app || true
             docker load -i backend.tar
-            docker run -d --name app -p 8080:8080 ssup-backend:latest
+            docker run -d \
+              --name app \
+              -p 8080:8080 \
+              -e SPRING_PROFILES_ACTIVE=prod \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              ssup-backend:latest
 
