@@ -78,13 +78,21 @@ public class S3ImageStorage implements ImageStorage {
     }
 
     @Override
-    public void delete(String key) {
+    public void deleteByUrl(String url) {
+        String key = extractKeyFromUrl(url);
+
         s3Client.deleteObject(
                 DeleteObjectRequest.builder()
                         .bucket(bucket)
                         .key(key)
                         .build()
         );
+    }
+
+    //=====
+
+    private String extractKeyFromUrl(String url) {
+        return url.replace(baseUrl, "");
     }
 
     private String createKey(ImageType type, MultipartFile file) {

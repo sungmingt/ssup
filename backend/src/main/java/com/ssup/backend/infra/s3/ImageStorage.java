@@ -8,5 +8,5 @@ public interface ImageStorage {
 
     String upload(ImageType type, MultipartFile file);
     List<String> uploadMultiple(ImageType type, List<MultipartFile> file);
-    void delete(String key);
+    void deleteByUrl(String url);
 }

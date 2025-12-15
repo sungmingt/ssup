@@ -12,7 +12,6 @@ public class FakeImageStorage implements ImageStorage {
 
     private String fakeUrl = "https://fake.ssup/image/";
 
-
     @Override
     public String upload(ImageType type, MultipartFile file) {
         return fakeUrl + file.getOriginalFilename();
@@ -26,6 +25,6 @@ public class FakeImageStorage implements ImageStorage {
     }
 
     @Override
-    public void delete(String key) {
+    public void deleteByUrl(String key) {
     }
 }
