@@ -103,6 +103,16 @@ class PostServiceTest {
                 .uploadMultiple(ImageType.POST, addedImages);
     }
 
+    @DisplayName("게시글을 삭제한다 - 성공")
+    @Test
+    void deletePost_success() {
+        //when
+        postService.delete(1L);
+
+        //then
+        verify(postRepository).deleteById(1L);
+    }
+
     //=== init ===
 
     private User getUser() {

@@ -8,6 +8,7 @@ import com.ssup.backend.domain.post.dto.PostResponse;
 import com.ssup.backend.domain.post.dto.PostUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
@@ -18,8 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +36,8 @@ class PostControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    //todo: 인증 구현 후 userId -> AppUser
+
     @Test
     @DisplayName("게시글 상세 조회 api - 성공")
     void findPost_success() throws Exception {
@@ -50,7 +52,7 @@ class PostControllerTest {
                 );
 
         //when & then
-        mockMvc.perform(get("/api/posts/1"))
+        mockMvc.perform(get("/api/posts/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("제목"))
                 .andExpect(jsonPath("$.authorName").value("sam"));
@@ -73,7 +75,7 @@ class PostControllerTest {
                         multipart("/api/posts")
                                 .file(images)
                                 .file(dto)
-                                .param("userId", "1") //todo: to AppUser
+                                .param("userId", "1")
                 )
                 .andExpect(status().isCreated());
     }
@@ -92,16 +94,33 @@ class PostControllerTest {
         MockMultipartFile images = getImagePart();
 
         mockMvc.perform(
-                        multipart("/api/posts/1")
-                                .file(dto)
+                        multipart("/api/posts/{id}", 1)
                                 .file(images)
-                                .param("userId", "1") //todo: to AppUser
+                                .file(dto)
+                                .param("userId", "1")
                                 .with(req -> {
                                     req.setMethod(HttpMethod.PUT.name());
                                     return req;
                                 })
                 )
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 api - 성공")
+    void deletePost_success() throws Exception {
+        //given
+
+        mockMvc.perform(
+                        delete("/api/posts/{id}", 1)
+                                .with(req -> {
+                                    req.setMethod(HttpMethod.DELETE.name());
+                                    return req;
+                                })
+                )
+                .andExpect(status().isNoContent());
+
+        BDDMockito.verify(postService).delete(1L);
     }
 
     //=== init ===
