@@ -35,7 +35,7 @@ public class PostService {
     public PostResponse create(Long userId, List<MultipartFile> images, PostCreateRequest request) {
         Post post = request.toEntity();
         List<String> imageUrls = imageStorage.uploadMultiple(ImageType.POST, images);
-        post.setImages(imageUrls);
+        post.addImages(imageUrls);
 
         User user = userService.findUserById(userId);
         post.setAuthor(user);
@@ -48,9 +48,8 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
-        List<String> newImages = imageStorage.updateMultiple(request.getKeepImages(), addedImages);
-
-        post.setImages(newImages);
+        updateImages(addedImages, request.getKeepImageUrls(), post);
+        post.update(request.getTitle(), request.getContent());
 
         return PostResponse.of(post.getAuthor(), post);
     }
@@ -70,5 +69,24 @@ public class PostService {
         return PostResponse.of(author, post);
     }
 
+    //=====
 
+    private void updateImages(List<MultipartFile> addedImages, List<String> keepImageUrls, Post post) {
+        //삭제 대상 이미지 계산
+        List<String> removedImages = post.getImageUrls().stream()
+                .filter(url -> !keepImageUrls.contains(url))
+                .toList();
+
+        //S3에서 삭제
+        removedImages.forEach(imageStorage::deleteByUrl);
+
+        //기존 이미지 교체
+        post.replaceImages(keepImageUrls);
+
+        //새 이미지 업로드 후 추가
+        if (!addedImages.isEmpty()) {
+            List<String> addedImageUrls = imageStorage.uploadMultiple(ImageType.POST, addedImages);
+            post.addImages(addedImageUrls);
+        }
+    }
 }

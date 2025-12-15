@@ -71,7 +71,17 @@ public class Post extends BaseTimeEntity {
         this.viewCount++;
     }
 
-    public void setImages(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public void replaceImages(List<String> keepImageUrls) {
+        this.imageUrls.clear();
+        this.imageUrls.addAll(keepImageUrls);
+    }
+
+    public void addImages(List<String> newImageUrls) {
+        this.imageUrls.addAll(newImageUrls);
     }
 }
