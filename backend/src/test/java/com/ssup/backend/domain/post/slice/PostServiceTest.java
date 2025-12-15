@@ -5,13 +5,11 @@ import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.PostCreateRequest;
 import com.ssup.backend.domain.post.dto.PostResponse;
+import com.ssup.backend.domain.post.dto.PostUpdateRequest;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserService;
-import com.ssup.backend.global.exception.ErrorCode;
-import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
-import com.ssup.backend.infra.s3.S3ImageStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,10 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
@@ -45,7 +40,6 @@ class PostServiceTest {
     private PostService postService;
 
     private final User user = getUser();
-    private final Post post = getPost();
 
     @DisplayName("게시글을 작성한다 - 성공")
     @Test
@@ -78,7 +72,39 @@ class PostServiceTest {
 //        verify(imageStorage).uploadMultiple(eq(ImageType.POST), anyList());
     }
 
-    //--- init ---
+    @DisplayName("게시글을 수정한다 - 성공")
+    @Test
+    void updatePost_success() {
+        Post post = getPost();
+
+        //given
+        given(imageStorage.uploadMultiple(eq(ImageType.POST), anyList()))
+                .willReturn(List.of("url3", "url4"));
+        given(postRepository.findById(1L))
+                .willReturn(Optional.of(post));
+
+        List<MultipartFile> addedImages = getMultipartFiles();
+
+        PostUpdateRequest request = PostUpdateRequest.builder()
+                .title("new title")
+                .content("new content")
+                .keepImageUrls(List.of("url1"))
+                .build();
+
+        //when
+        PostResponse response = postService.update(1L, 1L, addedImages, request);
+
+        //then (기존 url1, url2 에서, url1만 유지 + url3, url4 추가)
+        assertThat(response.getImageUrls()).hasSize(3);
+        assertThat(response.getTitle()).isEqualTo(request.getTitle());
+
+        then(imageStorage)
+                .should(times(1))
+                .uploadMultiple(ImageType.POST, addedImages);
+    }
+
+    //=== init ===
+
     private User getUser() {
         return User.builder()
                 .id(1L)
@@ -93,7 +119,7 @@ class PostServiceTest {
                 .id(1L)
                 .title("안녕하세요 반가워요")
                 .content("하이 한국어 공부하고 있어요~")
-                .imageUrls(List.of("s3.aws.com", "s3.aws.com"))
+                .imageUrls(new ArrayList<>(List.of("url1", "url2")))
                 .author(user)
                 .build();
     }
@@ -107,7 +133,7 @@ class PostServiceTest {
                         "data" .getBytes()
                 ),
                 new MockMultipartFile(
-                        "imag2",
+                        "image2",
                         "test2.png",
                         "image/png",
                         "data" .getBytes()

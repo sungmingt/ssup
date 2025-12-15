@@ -1,8 +1,5 @@
 package com.ssup.backend.domain.post;
 
-import com.ssup.backend.domain.post.Post;
-import com.ssup.backend.domain.post.PostRepository;
-import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.PostResponse;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
@@ -54,7 +51,7 @@ class PostTest {
         );
 
         //when
-        PostResponse response = postService.findPost(post.getId());
+        PostResponse response = postService.find(post.getId());
 
         //then
         Post updatedPost = postRepository.findById(post.getId()).
@@ -68,7 +65,7 @@ class PostTest {
     @Test
     @DisplayName("존재하지 않는 게시글 조회 - 예외")
     void findPost_notFound() {
-        assertThatThrownBy(() -> postService.findPost(999L))
+        assertThatThrownBy(() -> postService.find(999L))
                 .isInstanceOf(SsupException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.POST_NOT_FOUND);
     }
