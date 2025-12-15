@@ -29,8 +29,8 @@ class PostControllerTest {
     @Test
     @DisplayName("게시글 상세 조회 API")
     void findPost() throws Exception {
-        // given
-        given(postService.findPost(1L))
+        //given
+        given(postService.find(1L))
                 .willReturn(
                         PostResponse.builder()
                                 .id(1L)
@@ -39,7 +39,7 @@ class PostControllerTest {
                                 .build()
                 );
 
-        // when & then
+        //when & then
         mockMvc.perform(get("/api/posts/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("제목"))
