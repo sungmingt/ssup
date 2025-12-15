@@ -52,11 +52,13 @@ public class PostService {
         return PostResponse.of(post.getAuthor(), post);
     }
 
+    @Transactional(readOnly = true)
     public List<PostListResponse> findList() {
         List<Post> postList = postRepository.findAll();
         return PostListResponse.of(postList);
     }
 
+    @Transactional(readOnly = true)
     public PostResponse find(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
@@ -64,6 +66,12 @@ public class PostService {
         post.increaseViewCount();
         User author = post.getAuthor();
         return PostResponse.of(author, post);
+    }
+
+    public void delete(Long id) {
+        postRepository.deleteById(id);
+
+        //todo: 연관 comment, heart, images 모두 delete
     }
 
     //=====

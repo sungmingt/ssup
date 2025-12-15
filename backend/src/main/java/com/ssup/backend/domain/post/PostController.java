@@ -22,6 +22,8 @@ public class PostController {
 
     private final PostService postService;
 
+    //todo: AppUser로부터 userId 추출
+
 //    @Operation(summary = "글 목록 조회", description = "전체 글 목록 조회")
 //    @GetMapping
 //    public List<PostListResponse> getPosts() {
@@ -42,7 +44,7 @@ public class PostController {
     public PostResponse createPost(@RequestPart(name = "images", required = false) List<MultipartFile> images,
                                    @RequestPart(name = "dto") @Validated PostCreateRequest request) {
 
-        return postService.create(1L, images, request); //todo: AppUser로부터 userId 추출
+        return postService.create(1L, images, request);
     }
 
     @Operation(summary = "글 수정", description = "작성한 글을 수정")
@@ -56,9 +58,8 @@ public class PostController {
 
     @Operation(summary = "글 삭제", description = "사용자가 작성한 글을 삭제")
     @DeleteMapping("/{id}")
-    public HttpStatus deletePost(@PathVariable("id") Long id) {
-
-
-        return NO_CONTENT;
+    @ResponseStatus(NO_CONTENT)
+    public void deletePost(@PathVariable("id") Long id) {
+        postService.delete(id);
     }
 }
