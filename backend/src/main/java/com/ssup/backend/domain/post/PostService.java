@@ -6,11 +6,9 @@ import com.ssup.backend.domain.post.dto.PostResponse;
 import com.ssup.backend.domain.post.dto.PostUpdateRequest;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserService;
-import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
-import com.ssup.backend.infra.s3.S3ImageStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,7 +51,6 @@ public class PostService {
 
         return PostResponse.of(post.getAuthor(), post);
     }
-
 
     public List<PostListResponse> findList() {
         List<Post> postList = postRepository.findAll();
