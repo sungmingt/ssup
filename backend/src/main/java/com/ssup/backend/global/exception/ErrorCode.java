@@ -20,7 +20,6 @@ public enum ErrorCode {
     //AUTH
     ILLEGAL_REGISTRATION_ID(400, "잘못된 registration id입니다."),
     INVALID_SOCIAL_TYPE(400, "올바르지 않은 소셜 로그인 제공자입니다."),
-    NO_SUCH_ALGORITHM(500, "유효한 암호화 알고리즘이 아닙니다."),
 
     //TOKEN
     ACCESS_TOKEN_EXPIRED(401, "access token 만료, reissue 요청이 필요합니다."),
@@ -38,8 +37,6 @@ public enum ErrorCode {
     //FILE
     IMAGE_NOT_FOUND(404, "이미지가 존재하지 않습니다."),
     FILE_NOT_FOUND(404, "파일이 존재하지 않습니다."),
-    FILE_DELETE_FAILED(404, "파일 삭제에 실패했습니다."),
-    FILE_CANNOT_SAVE(404, "파일을 저장하지 못했습니다."),
 
     //MATCH
     BUNGAE_NOT_FOUND(404, "존재하지 않는 번개입니다."),
@@ -52,8 +49,12 @@ public enum ErrorCode {
     INTEREST_NOT_FOUND(400, "사용할 수 없는 관심사 항목입니다."),
 
     //POST
-    POST_NOT_FOUND(404, "존재하지 않는 게시글입니다.");
+    POST_NOT_FOUND(404, "존재하지 않는 게시글입니다."),
 
+    //GLOBAL
+    INVALID_REQUEST(400, "요청 값이 올바르지 않습니다."),
+    METHOD_NOT_ALLOWED(405, "허용되지 않은 HTTP 메서드입니다."),
+    INTERNAL_SERVER_ERROR(500, "서버 내부 오류입니다.");
 
     @Getter
     private final int status;
