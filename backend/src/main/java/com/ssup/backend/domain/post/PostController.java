@@ -34,14 +34,14 @@ public class PostController {
 
     @Operation(summary = "글 조회", description = "글 상세 정보 조회")
     @GetMapping("/{id}")
-    public PostResponse getPost(@PathVariable("id") Long id) {
+    public PostResponse find(@PathVariable("id") Long id) {
         return postService.find(id);
     }
 
     @Operation(summary = "글 작성", description = "새로운 글 작성")
     @PostMapping
     @ResponseStatus(CREATED)
-    public PostResponse createPost(@RequestPart(name = "images", required = false) List<MultipartFile> images,
+    public PostResponse create(@RequestPart(name = "images", required = false) List<MultipartFile> images,
                                    @RequestPart(name = "dto") @Validated PostCreateRequest request) {
 
         return postService.create(1L, images, request);

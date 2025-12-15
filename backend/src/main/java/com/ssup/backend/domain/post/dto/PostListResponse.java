@@ -2,6 +2,7 @@ package com.ssup.backend.domain.post.dto;
 
 import com.ssup.backend.domain.post.Post;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PostListResponse {
 
     private Long id;
@@ -31,9 +33,9 @@ public class PostListResponse {
 
     private int heartCount;
 
-    private String imageUrl;
+    private long viewCount;
 
-    private int viewCount;
+    private String thumbnailImageUrl;
 
     private LocalDateTime createdAt;
 
@@ -42,13 +44,21 @@ public class PostListResponse {
     public static List<PostListResponse> of(List<Post> postList) {
 
         return postList.stream()
-                .map(post -> new PostListResponse(
-                        post.getId(), post.getUsingLanguage(), post.getLearningLanguage(),
-                        post.getAuthor().getNickname(), post.getAuthor().getImageUrl(),
-                        post.getTitle(), post.getContent(), 0, 0, "null", 0,
-                        post.getCreatedAt(), post.getUpdatedAt()
-                        )
+                .map(post -> PostListResponse.builder()
+                                .id(post.getId())
+                                .authorName(post.getAuthor().getNickname())
+                                .authorImageUrl(post.getAuthor().getImageUrl())
+//                                .usingLanguage(post.getUsingLanguage())
+//                                .learningLanguage(post.getLearningLanguage())
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .viewCount(post.getViewCount())
+//                                .heartCount(post.getHearts.size())
+//                                .commentCount(post.getComments.size())
+                                .createdAt(post.getCreatedAt())
+                                .build()
                 )
                 .toList();
+
     }
 }

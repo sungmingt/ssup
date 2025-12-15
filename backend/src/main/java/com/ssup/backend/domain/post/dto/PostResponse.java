@@ -40,7 +40,7 @@ public class PostResponse {
 
     private int heartCount;
 
-    private int viewCount;
+    private long viewCount;
 
     private LocalDateTime createdAt;
 

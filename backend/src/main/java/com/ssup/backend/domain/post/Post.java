@@ -61,7 +61,7 @@ public class Post extends BaseTimeEntity {
 
     private LocalDateTime updatedAt;
 
-    private int viewCount;
+    private long viewCount;
 
     public void setAuthor(User author) {
         this.author = author;
