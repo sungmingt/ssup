@@ -1,9 +1,8 @@
 package com.ssup.backend.domain.post;
 
-import com.ssup.backend.domain.post.dto.PostCreateRequest;
-import com.ssup.backend.domain.post.dto.PostListResponse;
-import com.ssup.backend.domain.post.dto.PostResponse;
-import com.ssup.backend.domain.post.dto.PostUpdateRequest;
+import com.ssup.backend.domain.post.dto.*;
+import com.ssup.backend.domain.post.sort.PostSliceFetcher;
+import com.ssup.backend.domain.post.sort.PostSortType;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserService;
 import com.ssup.backend.global.exception.SsupException;
@@ -26,6 +25,7 @@ import static com.ssup.backend.global.exception.ErrorCode.*;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostSliceFetcher postSliceFetcher;
     private final UserService userService;
     private final ImageStorage imageStorage;
 
@@ -53,9 +53,12 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListResponse> findList() {
-        List<Post> postList = postRepository.findAll();
-        return PostListResponse.of(postList);
+    public PostSliceResponse findList(PostSortType sort,
+                                      Long cursorKey,
+                                      Long cursorId,
+                                      int size) {
+
+        return postSliceFetcher.fetch(sort, cursorKey, cursorId, size);
     }
 
     @Transactional(readOnly = true)
