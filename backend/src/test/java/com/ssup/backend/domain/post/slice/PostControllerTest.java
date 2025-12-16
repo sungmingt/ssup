@@ -5,7 +5,9 @@ import com.ssup.backend.domain.post.PostController;
 import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.PostCreateRequest;
 import com.ssup.backend.domain.post.dto.PostResponse;
+import com.ssup.backend.domain.post.dto.PostSliceResponse;
 import com.ssup.backend.domain.post.dto.PostUpdateRequest;
+import com.ssup.backend.domain.post.sort.PostSortType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -16,6 +18,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -37,6 +41,46 @@ class PostControllerTest {
     ObjectMapper objectMapper;
 
     //todo: 인증 구현 후 userId -> AppUser
+
+    @DisplayName("최신순 목록 조회 - 성공")
+    @Test
+    void findList_latest_success() throws Exception {
+        //given
+        given(postService.findList(
+                eq(PostSortType.LATEST),
+                isNull(),
+                isNull(),
+                eq(15)
+        )).willReturn(new PostSliceResponse(List.of(), 10L, 3L, false));
+
+        //when, then
+        mockMvc.perform(get("/api/posts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items").isArray())
+                .andExpect(jsonPath("$.hasNext").exists());
+    }
+
+    @DisplayName("조회수순 목록 조회 - 성공")
+    @Test
+    void findList_sortByViews_success() throws Exception {
+        //given
+        given(postService.findList(
+                eq(PostSortType.VIEWS),
+                eq(250L),
+                eq(10L),
+                eq(3)
+        )).willReturn(new PostSliceResponse(List.of(), 10L, 3L, false));
+
+        //when, then
+        mockMvc.perform(
+                        get("/api/posts")
+                                .param("sortType", PostSortType.VIEWS.name())
+                                .param("cursorKey", "250")
+                                .param("cursorValue", "10")
+                                .param("size", "3")
+                )
+                .andExpect(status().isOk());
+    }
 
     @Test
     @DisplayName("게시글 상세 조회 api - 성공")

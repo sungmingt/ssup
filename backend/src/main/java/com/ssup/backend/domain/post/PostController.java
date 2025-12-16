@@ -25,13 +25,13 @@ public class PostController {
     @Operation(summary = "글 목록 조회", description = "전체 글 목록 조회")
     @GetMapping
     public PostSliceResponse findList(
-            @RequestParam(defaultValue = "LATEST") PostSortType sort,
-            @RequestParam(required = false) Long cursorKey,
-            @RequestParam(required = false) Long cursorValue,
-            @RequestParam(defaultValue = "15") int size
+            @RequestParam(name = "sortType", defaultValue = "LATEST") PostSortType sortType,
+            @RequestParam(name = "cursorKey", required = false) Long cursorKey,
+            @RequestParam(name = "cursorId", required = false) Long cursorValue,
+            @RequestParam(name = "size", defaultValue = "15") int size
     ) {
 
-        return postService.findList(sort, cursorKey, cursorValue, size);
+        return postService.findList(sortType, cursorKey, cursorValue, size);
     }
 
     @Operation(summary = "글 조회", description = "글 상세 정보 조회")
