@@ -1,12 +1,10 @@
 package com.ssup.backend.domain.post;
 
-import com.ssup.backend.domain.post.dto.PostCreateRequest;
-import com.ssup.backend.domain.post.dto.PostResponse;
-import com.ssup.backend.domain.post.dto.PostUpdateRequest;
+import com.ssup.backend.domain.post.dto.*;
+import com.ssup.backend.domain.post.sort.PostSortType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,13 +22,17 @@ public class PostController {
 
     //todo: AppUser로부터 userId 추출
 
-//    @Operation(summary = "글 목록 조회", description = "전체 글 목록 조회")
-//    @GetMapping
-//    public List<PostListResponse> getPosts() {
-//
-//        return postService.findList();
-//
-//    }
+    @Operation(summary = "글 목록 조회", description = "전체 글 목록 조회")
+    @GetMapping
+    public PostSliceResponse findList(
+            @RequestParam(defaultValue = "LATEST") PostSortType sort,
+            @RequestParam(required = false) Long cursorKey,
+            @RequestParam(required = false) Long cursorValue,
+            @RequestParam(defaultValue = "15") int size
+    ) {
+
+        return postService.findList(sort, cursorKey, cursorValue, size);
+    }
 
     @Operation(summary = "글 조회", description = "글 상세 정보 조회")
     @GetMapping("/{id}")
