@@ -1,0 +1,67 @@
+package com.ssup.backend.domain.post;
+
+import com.ssup.backend.domain.post.dto.*;
+import com.ssup.backend.domain.post.sort.PostSortType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import static org.springframework.http.HttpStatus.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/posts")
+@Tag(name = "Post", description = "게시글 API")
+public class PostController {
+
+    private final PostService postService;
+
+    //todo: AppUser로부터 userId 추출
+
+    @Operation(summary = "글 목록 조회", description = "전체 글 목록 조회")
+    @GetMapping
+    public PostSliceResponse findList(
+            @RequestParam(name = "sortType", defaultValue = "LATEST") PostSortType sortType,
+            @RequestParam(name = "cursorKey", required = false) Long cursorKey,
+            @RequestParam(name = "cursorId", required = false) Long cursorValue,
+            @RequestParam(name = "size", defaultValue = "15") int size
+    ) {
+
+        return postService.findList(sortType, cursorKey, cursorValue, size);
+    }
+
+    @Operation(summary = "글 조회", description = "글 상세 정보 조회")
+    @GetMapping("/{id}")
+    public PostResponse find(@PathVariable("id") Long id) {
+        return postService.find(id);
+    }
+
+    @Operation(summary = "글 작성", description = "새로운 글 작성")
+    @PostMapping
+    @ResponseStatus(CREATED)
+    public PostResponse create(@RequestPart(name = "images", required = false) List<MultipartFile> images,
+                                   @RequestPart(name = "dto") @Validated PostCreateRequest request) {
+
+        return postService.create(1L, images, request);
+    }
+
+    @Operation(summary = "글 수정", description = "작성한 글을 수정")
+    @PutMapping("/{id}")
+    public PostResponse update(@PathVariable("id") Long id,
+                               @RequestPart(name = "images", required = false) List<MultipartFile> images,
+                               @RequestPart(name = "dto") @Validated PostUpdateRequest request) {
+
+        return postService.update(1L, id, images, request);
+    }
+
+    @Operation(summary = "글 삭제", description = "사용자가 작성한 글을 삭제")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void deletePost(@PathVariable("id") Long id) {
+        postService.delete(id);
+    }
+}
