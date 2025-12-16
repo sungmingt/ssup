@@ -1,6 +1,5 @@
 package com.ssup.backend.domain.user;
 
-import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.global.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -9,8 +8,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-
-import com.ssup.backend.domain.language.UserLanguage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +49,8 @@ public class User extends BaseTimeEntity {
 
     private Integer age;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+//    @Enumerated(EnumType.STRING)
+//    private Gender gender;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "location_id")
