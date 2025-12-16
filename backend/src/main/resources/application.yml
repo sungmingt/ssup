@@ -4,7 +4,7 @@ spring:
       on-profile: local
     import:
       - ssup-security/application.yml
-      - ssup-security/application-datasource.yml.yml.yml.yml
+      - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
 
 ---
@@ -15,5 +15,5 @@ spring:
       on-profile: prod
     import:
       - ssup-security/application.yml
-      - ssup-security/application-datasource.yml.yml.yml.yml
+      - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
