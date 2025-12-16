@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Service
-@Profile("test")
+@Profile({"default", "test"})
 public class FakeImageStorage implements ImageStorage {
 
     private String fakeUrl = "https://fake.ssup/image/";

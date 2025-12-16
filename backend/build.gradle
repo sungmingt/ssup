@@ -38,7 +38,7 @@ dependencies {
 
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation "org.springframework.boot:spring-boot-test-context-bean-override"
+//	testImplementation "org.springframework.boot:spring-boot-test-context-bean-override"
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	//swagger
