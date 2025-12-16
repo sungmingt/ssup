@@ -1,17 +1,9 @@
 package com.ssup.backend.domain.user;
 
-import com.ssup.backend.domain.language.Language;
-import com.ssup.backend.domain.language.LanguageRepository;
-import com.ssup.backend.domain.language.UserLanguage;
-import com.ssup.backend.domain.language.UserLanguageRepository;
-import com.ssup.backend.domain.location.Location;
-import com.ssup.backend.domain.location.LocationRepository;
-import com.ssup.backend.domain.user.dto.SignUpRequest;
-import com.ssup.backend.domain.user.dto.UserLanguageRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
