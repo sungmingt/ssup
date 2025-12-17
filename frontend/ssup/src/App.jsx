@@ -17,6 +17,9 @@ function App() {
       <div className="app-wrapper">
         <Header />
         hi hello
+        <Routes>
+          <Route path="/posts/:id" element={<Post />} />
+        </Routes>
         {/* <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/signup" element={<SignUp />} />
