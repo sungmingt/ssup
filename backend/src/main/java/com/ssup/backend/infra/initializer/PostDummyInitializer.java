@@ -9,6 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 @Component
 @RequiredArgsConstructor
 @Profile("local")
@@ -28,26 +30,23 @@ public class PostDummyInitializer implements CommandLineRunner {
                         .build()
         );
 
-        if (postRepository.count() > 0) return;
+        Random random = new Random();
+        int min = 1;
+        int max = 300;
 
-        postRepository.save(
-                Post.builder()
-                        .author(user)
-                        .title("첫 번째 게시글")
-                        .content("프론트 상세 페이지 테스트용")
-                        .usingLanguage("Japanese")
-                        .learningLanguage("Korean")
-                        .build()
-        );
+        for (int i = 1; i < 31; i++) {
+            int viewCount = random.nextInt(max - min + 1) + min;
 
-        postRepository.save(
-                Post.builder()
-                        .author(user)
-                        .title("두 번째 게시글")
-                        .content("두 번째 글 내용")
-                        .usingLanguage("Korean")
-                        .learningLanguage("English")
-                        .build()
-        );
+            postRepository.save(
+                    Post.builder()
+                            .author(user)
+                            .title(i + "번째 게시글")
+                            .content(i + "번째 프론트 상세 페이지 테스트용")
+                            .usingLanguage("Japanese")
+                            .learningLanguage("Korean")
+                            .viewCount(viewCount)
+                            .build()
+            );
+        }
     }
 }
