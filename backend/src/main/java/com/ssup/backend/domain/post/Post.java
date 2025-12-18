@@ -57,10 +57,6 @@ public class Post extends BaseTimeEntity {
 
     private String learningLanguage;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
     private long viewCount;
 
     public void setAuthor(User author) {
