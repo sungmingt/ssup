@@ -46,6 +46,7 @@ public class PostListResponse {
         return postList.stream()
                 .map(post -> PostListResponse.builder()
                                 .id(post.getId())
+                                .thumbnailImageUrl(post.getImageUrls().isEmpty() ? null : post.getImageUrls().get(0))
                                 .authorName(post.getAuthor().getNickname())
                                 .authorImageUrl(post.getAuthor().getImageUrl())
 //                                .usingLanguage(post.getUsingLanguage())
