@@ -1,14 +1,15 @@
 import { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import LoginForm from "./components/LoginForm";
-// import PostList from "./components/PostList";
+import PostList from "./components/PostList";
 // import Login from "./components/Login";
 // import Profile from "./components/Profile";
 // import PostCreateForm from "./components/post/PostCreateForm";
-// import Post from "./components/post/Post";
+import Post from "./components/post/Post";
 import Header from "./components/Header";
 // import SignUp from "./components/auth/SignUp";
-// import MainPage from "./components/MainPage.jsx";
+import MainPage from "./components/MainPage.jsx";
 import "./App.css";
 
 function App() {
@@ -18,7 +19,9 @@ function App() {
         <Header />
         hi hello
         <Routes>
+          <Route path="/" element={<MainPage />} />
           <Route path="/posts/:id" element={<Post />} />
+          <Route path="/posts" element={<PostList />} />
         </Routes>
         {/* <Routes>
           <Route path="/" element={<MainPage />} />
