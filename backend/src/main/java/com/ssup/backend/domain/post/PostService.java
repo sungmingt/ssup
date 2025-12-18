@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -61,7 +62,6 @@ public class PostService {
         return postSliceFetcher.fetch(sort, cursorKey, cursorId, size);
     }
 
-    @Transactional(readOnly = true)
     public PostResponse find(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
