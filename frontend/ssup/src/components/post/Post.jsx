@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { postApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../../css/Post.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import defaultImage from "./../../assets/ssup_post_default_image.webp";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Post = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const Post = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/posts/${id}`);
+        const res = await postApi.getPost(id);
         setPost(res.data);
       } catch (err) {
         console.error("게시글 상세 조회 실패", err);
@@ -52,9 +53,7 @@ const Post = () => {
     if (!ok) return;
 
     try {
-      await axios.delete(`http://localhost:8080/api/posts/${post.id}`, {
-        withCredentials: true,
-      });
+      await postApi.deletePost(post.id);
 
       alert("게시글이 삭제되었습니다.");
       navigate("/posts");
