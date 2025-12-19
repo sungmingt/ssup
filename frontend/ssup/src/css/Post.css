@@ -1,0 +1,33 @@
+.post-detail-wrapper {
+  max-width: 720px;
+}
+
+.post-main-card {
+  border: 1px solid #eee;
+}
+
+.post-content {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/*
+.post-page-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.post-detail-wrapper {
+  width: 700px; /* 원하는 가로폭 */
+/* max-width: 90%; 화면이 작으면 자동으로 줄어들도록 */
+/* } */
+
+/* .post-main-card {
+  width: 100%;
+}
+
+.title {
+  font-weight: 600;
+} */
