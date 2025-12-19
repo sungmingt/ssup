@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { postApi } from "@/api";
 import LanguageSelector from "./LanguageSelector";
-
-const API_BASE_URL = "http://localhost:8080";
 
 const PostUpdateForm = () => {
   const { id } = useParams();
@@ -19,11 +18,11 @@ const PostUpdateForm = () => {
 
   const [loading, setLoading] = useState(true);
 
-  // 1️⃣ 기존 글 데이터 불러오기
+  //기존 글 데이터 불러오기
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/posts/${id}`);
+        const res = await postApi.getPost(id);
         const post = res.data;
 
         setTitle(post.title ?? ""); //초기 렌더링 시 controlled state로 생성
@@ -57,7 +56,7 @@ const PostUpdateForm = () => {
 
     const formData = new FormData();
 
-    addedImages.forEach((img) => formData.append("addedImages", img));
+    addedImages.forEach((img) => formData.append("images", img));
 
     const dto = {
       title,
@@ -73,7 +72,7 @@ const PostUpdateForm = () => {
     );
 
     try {
-      await axios.put(`http://localhost:8080/api/posts/${id}`, formData);
+      await postApi.updatePost(id, formData);
       alert("게시글이 수정되었습니다.");
       navigate(`/posts/${id}`);
     } catch (e) {

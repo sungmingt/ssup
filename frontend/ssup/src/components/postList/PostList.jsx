@@ -2,7 +2,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import PostCard from "./PostCard.jsx";
 import PostTopBar from "./PostTopBar.jsx";
 import SearchModal from "./SearchModal.jsx";
-import { fetchPosts } from "./PostApi.jsx";
+import { postApi } from "@/api";
+
+// import { fetchPosts } from "./PostApi.jsx";
 
 const PAGE_SIZE = 9;
 
@@ -42,7 +44,7 @@ const PostList = () => {
       setLoading(true);
 
       try {
-        const res = await fetchPosts({
+        const res = await postApi.getPostList({
           sortType,
           cursorKey: isFirst ? null : page.cursorKey,
           cursorId: isFirst ? null : page.cursorId,

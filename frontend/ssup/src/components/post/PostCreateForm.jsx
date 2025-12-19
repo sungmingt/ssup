@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchPosts } from "./../postList/PostApi.jsx";
-import axios from "axios";
+import { postApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LanguageSelector from "./LanguageSelector";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const PostCreateForm = () => {
   const [usingLanguage, setUsingLanguage] = useState("");
@@ -53,13 +55,7 @@ const PostCreateForm = () => {
     );
 
     try {
-      const res = await axios.post(
-        "http://localhost:8080/api/posts",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const res = await postApi.createPost(formData);
 
       alert("글이 작성되었습니다.");
       navigate(`/posts/${res.data.id}`);
