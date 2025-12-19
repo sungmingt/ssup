@@ -12,6 +12,16 @@
   white-space: pre-wrap;
 }
 
+.language-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background-color: #d3f8e2;
+  color: #495057;
+  white-space: nowrap;
+  border: 1px solid #e9ecef;
+}
+
 /*
 .post-page-wrapper {
   display: flex;

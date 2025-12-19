@@ -26,7 +26,7 @@ const PostUpdateForm = () => {
         const res = await axios.get(`${API_BASE_URL}/api/posts/${id}`);
         const post = res.data;
 
-        setTitle(post.title ?? ""); ////////
+        setTitle(post.title ?? ""); //초기 렌더링 시 controlled state로 생성
         setContent(post.content ?? "");
         setUsingLanguage(post.usingLanguage);
         setLearningLanguage(post.learningLanguage);
@@ -89,7 +89,7 @@ const PostUpdateForm = () => {
 
       <form onSubmit={onSubmit}>
         <LanguageSelector
-          label="사용언어"
+          label="사용 언어"
           value={usingLanguage}
           onSelect={setUsingLanguage}
         />

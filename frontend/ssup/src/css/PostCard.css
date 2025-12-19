@@ -44,3 +44,20 @@
   overflow: hidden;
   font-size: 0.9rem;
 }
+
+.language-badge {
+  font-size: 0.83rem;
+  padding: 4px 10px;
+  border-radius: 8px; /* 약간 둥근 사각형 */
+  background-color: #e4f3ea; /* 연한 그레이 */
+  color: #495057;
+  white-space: nowrap;
+  flex-shrink: 0; /* 제목 줄어들어도 유지 */
+  border: 1px solid #7aebad;
+}
+
+/* hover UX (선택) */
+.post-card:hover .language-badge {
+  background-color: #d8eadd; /* 메인 컬러 톤 살짝 */
+  border-color: #b9e3b7a5;
+}

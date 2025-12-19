@@ -81,34 +81,42 @@ const Post = () => {
     <div className="post-page-wrapper py-5">
       <div className="post-detail-wrapper mx-auto">
         {/* 뒤로가기 */}
-        <button
-          className="btn btn-sm btn-outline-secondary mb-4"
-          onClick={() => navigate("/posts")}
-        >
-          ← 목록으로
-        </button>
+        {/* 상단 네비게이션 + 수정/삭제 */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <button
+            className="btn btn-sm btn-outline-secondary"
+            onClick={() => navigate("/posts")}
+          >
+            ← 목록으로
+          </button>
+
+          {isMyPost && (
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-outline-secondary btn-sm"
+                onClick={() => navigate(`/posts/${post.id}/update`)}
+              >
+                수정
+              </button>
+              <button
+                className="btn btn-outline-danger btn-sm"
+                onClick={onDelete}
+              >
+                삭제
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* 메인 카드 */}
         <div className="post-main-card bg-white shadow-sm rounded p-4">
-          {/* 제목 + 수정/삭제 버튼 */}
-          <div className="d-flex justify-content-between align-items-start mb-2">
+          {/* 제목 + 언어 */}
+          <div className="d-flex justify-content-between align-items-start mb-1 gap-2">
             <h3 className="fw-bold mb-0">{post.title}</h3>
 
-            {isMyPost && (
-              <div className="d-flex gap-2">
-                <button
-                  className="btn btn-outline-secondary btn-sm"
-                  onClick={() => navigate(`/posts/${post.id}/update`)}
-                >
-                  수정
-                </button>
-
-                <button
-                  className="btn btn-outline-danger btn-sm"
-                  onClick={onDelete}
-                >
-                  삭제
-                </button>
+            {(post.usingLanguage || post.learningLanguage) && (
+              <div className="language-badge">
+                {post.usingLanguage || "—"} → {post.learningLanguage || "—"}
               </div>
             )}
           </div>
@@ -116,30 +124,21 @@ const Post = () => {
           {/* 작성일 */}
           <div className="text-muted small mb-4">{createdText}</div>
 
-          {/* 작성자 */}
-          <div className="d-flex align-items-center mb-2">
-            <img
-              src={post.authorImageUrl || defaultProfile}
-              alt="author"
-              className="rounded-circle"
-              style={{ width: 44, height: 44, objectFit: "cover" }}
-            />
-            <div className="fw-semibold">{post.authorName}</div>
-          </div>
-
-          {/* 언어 + 친구신청 버튼 */}
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <div className="text-muted small">
-              {post.usingLanguage && post.learningLanguage && (
-                <>
-                  {post.usingLanguage} → {post.learningLanguage}
-                </>
-              )}
+          {/* 작성자 + 친구 신청 */}
+          <div className="d-flex align-items-center mb-4 gap-3">
+            <div className="d-flex align-items-center">
+              <img
+                src={post.authorImageUrl || defaultProfile}
+                alt="author"
+                className="rounded-circle"
+                style={{ width: 44, height: 44, objectFit: "cover" }}
+              />
+              <div className="fw-semibold ms-1">{post.authorName}</div>
             </div>
 
             <button
               className="btn btn-sm"
-              style={{ backgroundColor: "#b9e3b7a5" }}
+              style={{ backgroundColor: "#cff3cda5" }}
               onClick={onMatchRequest}
             >
               친구 신청
