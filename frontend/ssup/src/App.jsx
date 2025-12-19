@@ -18,7 +18,6 @@ function App() {
     <Router>
       <div className="app-wrapper">
         <Header />
-        hi hello
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/posts/:id" element={<Post />} />

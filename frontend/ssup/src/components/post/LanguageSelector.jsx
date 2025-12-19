@@ -1,22 +1,26 @@
-import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-
-const LANGUAGES = [
-  "Korean",
-  "English",
-  "Spanish",
-  "Japanese",
-  "Chinese",
-  "German",
-  "French",
-];
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const LanguageSelector = ({ label, value, onSelect }) => {
   const [showModal, setShowModal] = useState(false);
+  const [languages, setLanguages] = useState([]);
+
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/languages");
+        setLanguages(res.data); // [{ code, name }]
+      } catch (err) {
+        console.error("언어 정보 불러오기 실패", err);
+      }
+    };
+
+    fetchLanguages();
+  }, []);
 
   return (
     <>
-      {/* 언어 선택 버튼 */}
+      {/* 선택 버튼 */}
       <div className="mb-3">
         <label className="form-label fw-bold">{label}</label>
         <button
@@ -32,10 +36,7 @@ const LanguageSelector = ({ label, value, onSelect }) => {
       {showModal && (
         <div
           className="modal fade show"
-          style={{
-            display: "block",
-            background: "rgba(0,0,0,0.45)",
-          }}
+          style={{ display: "block", background: "rgba(0,0,0,0.45)" }}
         >
           <div className="modal-dialog">
             <div className="modal-content p-3">
@@ -44,22 +45,24 @@ const LanguageSelector = ({ label, value, onSelect }) => {
                 <button
                   className="btn-close"
                   onClick={() => setShowModal(false)}
-                ></button>
+                />
               </div>
 
               <div className="modal-body">
-                {LANGUAGES.map((lang) => (
+                {languages.map((lang) => (
                   <button
-                    key={lang}
+                    key={lang.code} // ✅ 안정적인 key
                     className={`btn w-100 mb-2 ${
-                      lang === value ? "btn-primary" : "btn-outline-secondary"
+                      lang.name === value
+                        ? "btn-primary"
+                        : "btn-outline-secondary"
                     }`}
                     onClick={() => {
-                      onSelect(lang);
+                      onSelect(lang.name); // ✅ 문자열만 전달
                       setShowModal(false);
                     }}
                   >
-                    {lang}
+                    {lang.name} {/* ✅ 렌더링 */}
                   </button>
                 ))}
               </div>
