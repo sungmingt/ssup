@@ -48,7 +48,7 @@ public class PostService {
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
         updateImages(addedImages, request.getKeepImageUrls(), post);
-        post.update(request.getTitle(), request.getContent());
+        post.update(request.getTitle(), request.getContent(), request.getUsingLanguage(), request.getLearningLanguage());
 
         return PostResponse.of(post.getAuthor(), post);
     }

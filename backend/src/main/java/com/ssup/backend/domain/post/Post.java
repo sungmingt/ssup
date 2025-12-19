@@ -67,9 +67,11 @@ public class Post extends BaseTimeEntity {
         this.viewCount++;
     }
 
-    public void update(String title, String content) {
+    public void update(String title, String content, String usingLanguage, String learningLanguage) {
         this.title = title;
         this.content = content;
+        this.usingLanguage = usingLanguage;
+        this.learningLanguage = learningLanguage;
     }
 
     public void replaceImages(List<String> keepImageUrls) {

@@ -15,5 +15,7 @@ public class PostUpdateRequest {
 
     private String title;
     private String content;
+    private String usingLanguage;
+    private String learningLanguage;
     private List<String> keepImageUrls; //기존의 이미지 중 유지될 이미지
 }
