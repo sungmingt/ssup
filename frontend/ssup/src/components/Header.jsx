@@ -45,7 +45,7 @@ function Header() {
           >
             <ul className="navbar-nav align-items-center gap-3">
               <li className="nav-item">
-                <Link className="nav-link fw-semibold" to="/community">
+                <Link className="nav-link fw-semibold" to="/posts">
                   커뮤니티
                 </Link>
               </li>

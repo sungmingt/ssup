@@ -21,7 +21,6 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 public class Post extends BaseTimeEntity {
 
     @Id
@@ -57,10 +56,6 @@ public class Post extends BaseTimeEntity {
 
     private String learningLanguage;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
     private long viewCount;
 
     public void setAuthor(User author) {
@@ -72,9 +67,11 @@ public class Post extends BaseTimeEntity {
         this.viewCount++;
     }
 
-    public void update(String title, String content) {
+    public void update(String title, String content, String usingLanguage, String learningLanguage) {
         this.title = title;
         this.content = content;
+        this.usingLanguage = usingLanguage;
+        this.learningLanguage = learningLanguage;
     }
 
     public void replaceImages(List<String> keepImageUrls) {

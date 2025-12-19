@@ -33,6 +33,10 @@ public class S3ImageStorage implements ImageStorage {
 
     @Override
     public String upload(ImageType type, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+
         String key = createKey(type, file);
 
         try {
@@ -54,6 +58,10 @@ public class S3ImageStorage implements ImageStorage {
     @Override
     public List<String> uploadMultiple(ImageType type, List<MultipartFile> files) {
         List<String> urls = new ArrayList<>();
+
+        if (files == null || files.isEmpty()) {
+            return urls;
+        }
 
         for(MultipartFile file : files) {
             String key = createKey(type, file);

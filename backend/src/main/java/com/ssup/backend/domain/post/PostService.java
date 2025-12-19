@@ -48,7 +48,7 @@ public class PostService {
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
         updateImages(addedImages, request.getKeepImageUrls(), post);
-        post.update(request.getTitle(), request.getContent());
+        post.update(request.getTitle(), request.getContent(), request.getUsingLanguage(), request.getLearningLanguage());
 
         return PostResponse.of(post.getAuthor(), post);
     }
@@ -92,7 +92,7 @@ public class PostService {
         post.replaceImages(keepImageUrls);
 
         //새 이미지 업로드 후 추가
-        if (!addedImages.isEmpty()) {
+        if (addedImages != null && !addedImages.isEmpty()) {
             List<String> addedImageUrls = imageStorage.uploadMultiple(ImageType.POST, addedImages);
             post.addImages(addedImageUrls);
         }
