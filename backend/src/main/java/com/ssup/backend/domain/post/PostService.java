@@ -92,7 +92,7 @@ public class PostService {
         post.replaceImages(keepImageUrls);
 
         //새 이미지 업로드 후 추가
-        if (!addedImages.isEmpty()) {
+        if (addedImages != null && !addedImages.isEmpty()) {
             List<String> addedImageUrls = imageStorage.uploadMultiple(ImageType.POST, addedImages);
             post.addImages(addedImageUrls);
         }
