@@ -16,6 +16,7 @@ import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
+@Profile("!test")
 //@Profile("local")
 @Order(2)
 public class PostDummyInitializer implements CommandLineRunner {
