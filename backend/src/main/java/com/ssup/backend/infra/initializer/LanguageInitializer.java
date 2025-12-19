@@ -4,10 +4,12 @@ import com.ssup.backend.domain.language.Language;
 import com.ssup.backend.domain.language.LanguageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Order(1)
 @Component
 @RequiredArgsConstructor
 public class LanguageInitializer implements CommandLineRunner {
