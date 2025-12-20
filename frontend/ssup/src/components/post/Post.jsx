@@ -14,9 +14,12 @@ const Post = () => {
   const navigate = useNavigate();
 
   const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [hearted, setHearted] = useState(false);
+  const [heartCount, setHeartCount] = useState(0);
 
   const isMyPost = true; //TODO: 로그인 유저 id === post.authorId
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -32,6 +35,31 @@ const Post = () => {
 
     fetchPost();
   }, [id]);
+
+  useEffect(() => {
+    if (!post) return;
+
+    setHearted(post.heartedByMe);
+    setHeartCount(post.heartCount);
+  }, [post]);
+
+  const onToggleHeart = async () => {
+    const prevHearted = hearted;
+    const prevCount = heartCount;
+
+    setHearted(!hearted);
+    setHeartCount((c) => (hearted ? c - 1 : c + 1));
+
+    try {
+      const res = await postApi.toggleHeart(post.id);
+      setHearted(res.data.hearted);
+      setHeartCount(res.data.heartCount);
+    } catch {
+      setHearted(prevHearted);
+      setHeartCount(prevCount);
+      alert("좋아요 처리 실패");
+    }
+  };
 
   const onMatchRequest = async () => {
     if (!post) return;
@@ -166,7 +194,9 @@ const Post = () => {
           <div className="d-flex justify-content-between align-items-center mt-4 text-muted small">
             <span>조회 {post.viewCount}</span>
             <div className="d-flex gap-3">
-              <span>❤️ {post.heartCount}</span>
+              <span style={{ cursor: "pointer" }} onClick={onToggleHeart}>
+                {hearted ? "❤️" : "🤍"} {heartCount}
+              </span>
               <span>💬 {post.commentCount}</span>
             </div>
           </div>
@@ -177,158 +207,3 @@ const Post = () => {
 };
 
 export default Post;
-
-// import { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "./../../css/Post.css";
-
-// const API_BASE_URL = "http://localhost:8080";
-
-// const Post = () => {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-
-//   const [post, setPost] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   const defaultImage = "./../../assets/ssup_post_default_image.jpg";
-//   const defaultProfile = "./../../assets/ssup_user_default_image.png";
-
-//   useEffect(() => {
-//     const fetchPost = async () => {
-//       try {
-//         const res = await axios.get(`${API_BASE_URL}/api/posts/${id}`);
-//         setPost(res.data);
-//       } catch (err) {
-//         console.error("상세 조회 실패:", err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchPost();
-//   }, [id]);
-
-//   /** 친구 신청 */
-//   const onMatchRequest = async () => {
-//     if (!post) return;
-
-//     try {
-//       const res = await fetch(`${API_BASE_URL}/api/matchRequest`, {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({
-//           postId: post.id,
-//           targetUserId: post.authorId, // 추후 API에서 내려주도록 확장
-//           requesterId: 1, // 로그인 유저 ID (상태/토큰으로 교체 예정)
-//         }),
-//       });
-
-//       if (!res.ok) throw new Error();
-//       alert("친구 신청을 보냈습니다!");
-//     } catch {
-//       alert("친구 신청 실패!");
-//     }
-//   };
-
-//   if (loading) {
-//     return <p className="text-center mt-5">불러오는 중...</p>;
-//   }
-
-//   if (!post) {
-//     return <p className="text-center mt-5">게시글을 찾을 수 없습니다.</p>;
-//   }
-
-//   const createdAt = new Date(post.createdAt);
-//   const createdText = isNaN(createdAt)
-//     ? "날짜 없음"
-//     : createdAt.toLocaleDateString();
-
-//   return (
-//     <div className="post-page-wrapper py-5">
-//       <div className="post-detail-wrapper mx-auto">
-//         {/* 뒤로가기 */}
-//         <button
-//           className="btn btn-outline-secondary mb-4"
-//           onClick={() => navigate("/posts")}
-//         >
-//           ← 글 목록으로
-//         </button>
-
-//         {/* 메인 카드 */}
-//         <div className="border rounded p-4 shadow-sm bg-white post-main-card">
-//           {/* 제목 */}
-//           <h2 className="title mb-3">{post.title || "제목 없음"}</h2>
-
-//           {/* 언어 + CTA */}
-//           <div className="d-flex justify-content-between align-items-center mb-3">
-//             <div className="text-muted">
-//               {post.usingLanguage && post.learningLanguage && (
-//                 <>
-//                   🗣️ <strong>{post.usingLanguage}</strong> →{" "}
-//                   <strong>{post.learningLanguage}</strong>
-//                 </>
-//               )}
-//             </div>
-
-//             <button
-//               className="btn btn-sm"
-//               style={{ backgroundColor: "#b9e3b7a5" }}
-//               onClick={onMatchRequest}
-//             >
-//               친구 신청
-//             </button>
-//           </div>
-
-//           {/* 작성자 */}
-//           <div className="d-flex align-items-center mb-4">
-//             <img
-//               src={post.authorImageUrl || defaultProfile}
-//               alt="author"
-//               className="rounded-circle"
-//               style={{
-//                 width: "48px",
-//                 height: "48px",
-//                 objectFit: "cover",
-//               }}
-//             />
-//             <div className="ms-3">
-//               <div className="fw-semibold">{post.authorName}</div>
-//             </div>
-//           </div>
-
-//           {/* 이미지 */}
-//           {post.imageUrl && (
-//             <img
-//               src={post.imageUrl || defaultImage}
-//               alt="post"
-//               className="img-fluid rounded mb-4"
-//               style={{ maxHeight: "360px", objectFit: "cover" }}
-//             />
-//           )}
-
-//           {/* 본문 */}
-//           <p className="fs-5" style={{ whiteSpace: "pre-line" }}>
-//             {post.content || "내용이 없습니다."}
-//           </p>
-
-//           {/* 메타 정보 */}
-//           <div className="d-flex justify-content-between align-items-center mt-4 text-muted">
-//             <small>
-//               {createdText} · 조회 {post.viewCount}
-//             </small>
-
-//             <div className="d-flex gap-3 fs-5">
-//               <span>❤️ {post.heartCount}</span>
-//               <span>💬 {post.commentCount}</span>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Post;

@@ -1,10 +1,14 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "../../css/PostCard.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import defaultThumbnail from "../../assets/ssup_post_default_image.webp";
+import { postApi } from "@/api";
 
 const PostCard = ({ post }) => {
   const navigate = useNavigate();
+  const [hearted, setHearted] = useState(post.heartedByMe);
+  const [heartCount, setHeartCount] = useState(post.heartCount ?? 0);
 
   if (!post) return null;
 
@@ -12,6 +16,28 @@ const PostCard = ({ post }) => {
   const createdAt = post.createdAt
     ? new Date(post.createdAt).toLocaleDateString()
     : "";
+
+  const onToggleHeart = async (e) => {
+    e.stopPropagation(); // 카드 클릭 방지
+
+    const prevHearted = hearted;
+    const prevCount = heartCount;
+
+    // 🔥 optimistic UI
+    setHearted(!hearted);
+    setHeartCount((c) => (hearted ? c - 1 : c + 1));
+
+    try {
+      const res = await postApi.toggleHeart(post.id);
+      setHearted(res.data.hearted);
+      setHeartCount(res.data.heartCount);
+    } catch (e) {
+      // ❌ rollback
+      setHearted(prevHearted);
+      setHeartCount(prevCount);
+      alert("좋아요 처리에 실패했습니다.");
+    }
+  };
 
   return (
     <div className="col-12 col-sm-6 col-md-4 mb-4">
@@ -72,7 +98,9 @@ const PostCard = ({ post }) => {
 
             {/* ❤️ 💬 👁️ */}
             <div className="d-flex gap-3 text-muted small">
-              <span>❤️ {post.heartCount ?? 0}</span>
+              <span style={{ cursor: "pointer" }} onClick={onToggleHeart}>
+                {hearted ? "❤️" : "🤍"} {heartCount}
+              </span>
               <span>💬 {post.commentCount ?? 0}</span>
               <span>👁️ {post.viewCount ?? 0}</span>
             </div>
