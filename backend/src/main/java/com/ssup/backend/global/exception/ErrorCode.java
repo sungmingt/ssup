@@ -48,20 +48,24 @@ public enum ErrorCode {
     //INTEREST
     INTEREST_NOT_FOUND(400, "사용할 수 없는 관심사 항목입니다."),
 
+    //HEART
+    HEART_ALREADY_EXISTS(409, "이미 좋아요한 리소스입니다."),
+
     //POST
     POST_NOT_FOUND(404, "존재하지 않는 게시글입니다."),
 
     //GLOBAL
     INVALID_REQUEST(400, "요청 값이 올바르지 않습니다."),
     METHOD_NOT_ALLOWED(405, "허용되지 않은 HTTP 메서드입니다."),
-    INTERNAL_SERVER_ERROR(500, "서버 내부 오류입니다.");
+    INTERNAL_SERVER_ERROR(500, "서버 내부 오류입니다."),
+    TOO_MANY_TRAFFIC(409, "현재 요청이 많아 처리할 수 없습니다.");
 
     @Getter
     private final int status;
     @Getter
     private final String message;
 
-    ErrorCode(final int code, final String message){
+    ErrorCode(final int code, final String message) {
         this.status = code;
         this.message = message;
     }
