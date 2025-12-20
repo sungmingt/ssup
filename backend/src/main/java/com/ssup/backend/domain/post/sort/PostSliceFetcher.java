@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.post.sort;
 
+import com.ssup.backend.domain.heart.post.PostHeartRepository;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.post.dto.PostListResponse;
@@ -8,16 +9,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class PostSliceFetcher {
 
     private final PostRepository postRepository;
+    private final PostHeartRepository postHeartRepository;
 
-    public PostSliceResponse fetch(PostSortType sortType,
+    public PostSliceResponse fetch(Long userId,
+                                   PostSortType sortType,
                                    Long cursorKey,
                                    Long cursorId,
                                    int size
@@ -37,7 +44,10 @@ public class PostSliceFetcher {
         //초기화용이기 떄문에 삭제
         if (hasNext) posts.remove(size);
 
-        List<PostListResponse> items = PostListResponse.of(posts);
+        //유저가 좋아요한 글 목록 조회
+        Set<Long> heartedPostIds = findHeartedPostIds(userId, posts);
+
+        List<PostListResponse> items = PostListResponse.of(posts, userId, heartedPostIds);
 
         //다음 커서 저장
         Cursor nextCursor = Cursor.from(
@@ -46,5 +56,20 @@ public class PostSliceFetcher {
         );
 
         return new PostSliceResponse(items, nextCursor.getKey(), nextCursor.getId(), hasNext);
+    }
+
+    private Set<Long> findHeartedPostIds(Long userId, List<Post> posts) {
+        Set<Long> heartedPostIds = Collections.emptySet();
+
+        if (userId != null && !posts.isEmpty()) {
+            List<Long> postIds = posts.stream()
+                    .map(Post::getId)
+                    .toList();
+
+            heartedPostIds = new HashSet<>(
+                    postHeartRepository.findHeartedPostIds(userId, postIds)
+            );
+        }
+        return heartedPostIds;
     }
 }

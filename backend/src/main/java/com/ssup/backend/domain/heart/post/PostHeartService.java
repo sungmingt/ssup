@@ -36,7 +36,7 @@ public class PostHeartService implements HeartService {
                 .orElseThrow(() -> new SsupException(ErrorCode.USER_NOT_FOUND));
 
         //좋아요를 누른 상태 → 취소
-        if (heartRepository.existsByPostAndUser(post, user)) {
+        if (heartRepository.existsByPostIdAndUserId(postId, userId)) {
             heartRepository.deleteByPostAndUser(post, user);
             post.decreaseHeartCount();
             return HeartResponse.of(false, post.getHeartCount());

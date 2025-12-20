@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.post.slice;
 
+import com.ssup.backend.domain.heart.post.PostHeartRepository;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.post.PostService;
@@ -32,6 +33,8 @@ class PostFindServiceTest {
     @Mock
     private PostRepository postRepository;
     @Mock
+    private PostHeartRepository postHeartRepository;
+    @Mock
     private UserService userService;
     @Mock
     private ImageStorage imageStorage;
@@ -50,7 +53,7 @@ class PostFindServiceTest {
                 .willReturn(Optional.of(post));
 
         //when
-        PostResponse response = postService.find(1L);
+        PostResponse response = postService.find(1L, 1L);
 
         //then
         assertThat(response.getId()).isEqualTo(1L);
@@ -70,7 +73,7 @@ class PostFindServiceTest {
                 .willReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> postService.find(1L))
+        assertThatThrownBy(() -> postService.find(1L, 1L))
                 .isInstanceOf(SsupException.class)
                 .hasMessage(ErrorCode.POST_NOT_FOUND.getMessage());
 
@@ -85,9 +88,11 @@ class PostFindServiceTest {
         //given
         given(postRepository.findById(1L))
                 .willReturn(Optional.of(post));
+        given(postHeartRepository.existsByPostIdAndUserId(1L, 1L))
+                .willReturn(false);
 
         //when
-        postService.find(1L);
+        postService.find(1L, 1L);
 
         //then
         assertThat(post.getViewCount()).isEqualTo(1);

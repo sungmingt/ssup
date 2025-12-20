@@ -35,7 +35,7 @@ class PostHeartRepositoryTest {
 
         postHeartRepository.save(new PostHeart(post, user));
 
-        Assertions.assertThat(postHeartRepository.existsByPostAndUser(post, user))
+        Assertions.assertThat(postHeartRepository.existsByPostIdAndUserId(post.getId(), user.getId()))
                 .isTrue();
     }
 

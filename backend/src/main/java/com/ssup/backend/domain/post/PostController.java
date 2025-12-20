@@ -31,19 +31,19 @@ public class PostController {
             @RequestParam(name = "size", defaultValue = "15") int size
     ) {
 
-        return postService.findList(sortType, cursorKey, cursorValue, size);
+        return postService.findList(1L, sortType, cursorKey, cursorValue, size);
     }
 
     @Operation(summary = "글 조회", description = "글 상세 정보 조회")
     @GetMapping("/{id}")
     public PostResponse find(@PathVariable("id") Long id) {
-        return postService.find(id);
+        return postService.find(id, 1L);
     }
 
     @Operation(summary = "글 작성", description = "새로운 글 작성")
     @PostMapping
     @ResponseStatus(CREATED)
-    public PostResponse create(@RequestPart(name = "images", required = false) List<MultipartFile> images,
+    public PostCreateResponse create(@RequestPart(name = "images", required = false) List<MultipartFile> images,
                                    @RequestPart(name = "dto") @Validated PostCreateRequest request) {
 
         return postService.create(1L, images, request);
@@ -51,7 +51,7 @@ public class PostController {
 
     @Operation(summary = "글 수정", description = "작성한 글을 수정")
     @PutMapping("/{id}")
-    public PostResponse update(@PathVariable("id") Long id,
+    public PostUpdateResponse update(@PathVariable("id") Long id,
                                @RequestPart(name = "images", required = false) List<MultipartFile> images,
                                @RequestPart(name = "dto") @Validated PostUpdateRequest request) {
 

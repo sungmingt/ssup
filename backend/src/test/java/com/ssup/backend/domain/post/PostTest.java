@@ -53,7 +53,7 @@ class PostTest {
         );
 
         //when
-        PostResponse response = postService.find(post.getId());
+        PostResponse response = postService.find(post.getId(), user.getId());
 
         //then
         Post updatedPost = postRepository.findById(post.getId()).
@@ -67,7 +67,7 @@ class PostTest {
     @Test
     @DisplayName("존재하지 않는 게시글 조회 - 예외")
     void findPost_notFound() {
-        assertThatThrownBy(() -> postService.find(999L))
+        assertThatThrownBy(() -> postService.find(999L, 1L))
                 .isInstanceOf(SsupException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.POST_NOT_FOUND);
     }

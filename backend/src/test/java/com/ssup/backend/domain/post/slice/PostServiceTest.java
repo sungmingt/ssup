@@ -3,9 +3,7 @@ package com.ssup.backend.domain.post.slice;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.post.PostService;
-import com.ssup.backend.domain.post.dto.PostCreateRequest;
-import com.ssup.backend.domain.post.dto.PostResponse;
-import com.ssup.backend.domain.post.dto.PostUpdateRequest;
+import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserService;
 import com.ssup.backend.infra.s3.ImageStorage;
@@ -60,7 +58,7 @@ class PostServiceTest {
                 .build();
 
         //when
-        PostResponse response = postService.create(1L, images, request);
+        PostCreateResponse response = postService.create(1L, images, request);
 
         //then
         assertThat(response.getImageUrls()).hasSize(2);
@@ -92,7 +90,7 @@ class PostServiceTest {
                 .build();
 
         //when
-        PostResponse response = postService.update(1L, 1L, addedImages, request);
+        PostUpdateResponse response = postService.update(1L, 1L, addedImages, request);
 
         //then (기존 url1, url2 에서, url1만 유지 + url3, url4 추가)
         assertThat(response.getImageUrls()).hasSize(3);
