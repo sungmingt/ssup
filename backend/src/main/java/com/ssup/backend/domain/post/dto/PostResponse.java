@@ -39,7 +39,7 @@ public class PostResponse {
 
     private int commentCount;
 
-    private int heartCount;
+    private long heartCount;
 
     private long viewCount;
 
@@ -52,6 +52,6 @@ public class PostResponse {
     public static PostResponse of(User author, Post post, boolean heartedByMe) {
         return new PostResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(), post.getLearningLanguage(), author.getNickname(),
                 author.getImageUrl(), post.getTitle(), post.getContent(),
-                0, 0, post.getViewCount(), heartedByMe, post.getCreatedAt(), post.getUpdatedAt());
+                0, post.getHeartCount(), post.getViewCount(), heartedByMe, post.getCreatedAt(), post.getUpdatedAt());
     }
 }

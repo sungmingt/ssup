@@ -39,7 +39,7 @@ public class PostCreateResponse {
 
     private int commentCount;
 
-    private int heartCount;
+    private long heartCount;
 
     private long viewCount;
 
@@ -50,6 +50,6 @@ public class PostCreateResponse {
     public static PostCreateResponse of(User author, Post post) {
         return new PostCreateResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(), post.getLearningLanguage(), author.getNickname(),
                 author.getImageUrl(), post.getTitle(), post.getContent(),
-                0, 0, post.getViewCount(), post.getCreatedAt(), post.getUpdatedAt());
+                0, post.getHeartCount(), post.getViewCount(), post.getCreatedAt(), post.getUpdatedAt());
     }
 }
