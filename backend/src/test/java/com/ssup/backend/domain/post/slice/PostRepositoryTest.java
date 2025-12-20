@@ -116,6 +116,7 @@ class PostRepositoryTest {
     }
 
     //=== init ===
+
     @BeforeEach
     void setUp() {
         User author = initAndGetUser();
