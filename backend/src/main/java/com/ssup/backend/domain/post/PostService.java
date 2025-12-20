@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.post;
 
+import com.ssup.backend.domain.heart.post.PostHeartRepository;
 import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSliceFetcher;
 import com.ssup.backend.domain.post.sort.PostSortType;
@@ -27,11 +28,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostSliceFetcher postSliceFetcher;
+    private final PostHeartRepository postHeartRepository;
     private final UserService userService;
     private final ImageStorage imageStorage;
 
     //todo: userId -> appUser
-    public PostResponse create(Long userId, List<MultipartFile> images, PostCreateRequest request) {
+    public PostCreateResponse create(Long userId, List<MultipartFile> images, PostCreateRequest request) {
         Post post = request.toEntity();
         List<String> imageUrls = imageStorage.uploadMultiple(ImageType.POST, images);
         post.addImages(imageUrls);
@@ -40,35 +42,43 @@ public class PostService {
         post.setAuthor(user);
 
         Post savedPost = postRepository.save(post);
-        return PostResponse.of(user, savedPost);
+        return PostCreateResponse.of(user, savedPost);
     }
 
-    public PostResponse update(Long userId, Long postId, List<MultipartFile> addedImages, PostUpdateRequest request) {
+    public PostUpdateResponse update(Long userId, Long postId, List<MultipartFile> addedImages, PostUpdateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
         updateImages(addedImages, request.getKeepImageUrls(), post);
         post.update(request.getTitle(), request.getContent(), request.getUsingLanguage(), request.getLearningLanguage());
 
-        return PostResponse.of(post.getAuthor(), post);
+        return PostUpdateResponse.of(post.getAuthor(), post);
     }
 
     @Transactional(readOnly = true)
-    public PostSliceResponse findList(PostSortType sort,
+    public PostSliceResponse findList(Long userId,
+                                      PostSortType sort,
                                       Long cursorKey,
                                       Long cursorId,
                                       int size) {
 
-        return postSliceFetcher.fetch(sort, cursorKey, cursorId, size);
+        return postSliceFetcher.fetch(userId, sort, cursorKey, cursorId, size);
     }
 
-    public PostResponse find(Long id) {
+    public PostResponse find(Long id, Long userId) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
         post.increaseViewCount();
         User author = post.getAuthor();
-        return PostResponse.of(author, post);
+
+        boolean heartedByMe = false;
+
+        if (userId != null) {
+            heartedByMe = postHeartRepository.existsByPostIdAndUserId(id, userId);
+        }
+
+        return PostResponse.of(author, post, heartedByMe);
     }
 
     public void delete(Long id) {

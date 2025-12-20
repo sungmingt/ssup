@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -31,9 +32,11 @@ public class PostListResponse {
 
     private int commentCount;
 
-    private int heartCount;
+    private long heartCount;
 
     private long viewCount;
+
+    private boolean heartedByMe;
 
     private String thumbnailImageUrl;
 
@@ -41,7 +44,7 @@ public class PostListResponse {
 
     private LocalDateTime updatedAt;
 
-    public static List<PostListResponse> of(List<Post> postList) {
+    public static List<PostListResponse> of(List<Post> postList, Long userId, Set<Long> heartedPostIds) {
 
         return postList.stream()
                 .map(post -> PostListResponse.builder()
@@ -54,7 +57,8 @@ public class PostListResponse {
                                 .title(post.getTitle())
                                 .content(post.getContent())
                                 .viewCount(post.getViewCount())
-//                                .heartCount(post.getHearts.size())
+                                .heartedByMe(heartedPostIds.contains(post.getId()))
+                                .heartCount(post.getHeartCount())
 //                                .commentCount(post.getComments.size())
                                 .createdAt(post.getCreatedAt())
                                 .build()

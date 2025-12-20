@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostResponse {
+public class PostCreateResponse {
 
     private Long id;
 
@@ -43,15 +43,13 @@ public class PostResponse {
 
     private long viewCount;
 
-    private boolean heartedByMe;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    public static PostResponse of(User author, Post post, boolean heartedByMe) {
-        return new PostResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(), post.getLearningLanguage(), author.getNickname(),
+    public static PostCreateResponse of(User author, Post post) {
+        return new PostCreateResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(), post.getLearningLanguage(), author.getNickname(),
                 author.getImageUrl(), post.getTitle(), post.getContent(),
-                0, 0, post.getViewCount(), heartedByMe, post.getCreatedAt(), post.getUpdatedAt());
+                0, 0, post.getViewCount(), post.getCreatedAt(), post.getUpdatedAt());
     }
 }

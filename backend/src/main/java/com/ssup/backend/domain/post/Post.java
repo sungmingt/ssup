@@ -58,6 +58,8 @@ public class Post extends BaseTimeEntity {
 
     private long viewCount;
 
+    private long heartCount;
+
     public void setAuthor(User author) {
         this.author = author;
         author.getPosts().add(this);
@@ -81,5 +83,13 @@ public class Post extends BaseTimeEntity {
 
     public void addImages(List<String> newImageUrls) {
         this.imageUrls.addAll(newImageUrls);
+    }
+
+    public void increaseHeartCount() {
+        this.heartCount++;
+    }
+
+    public void decreaseHeartCount() {
+        this.heartCount--;
     }
 }

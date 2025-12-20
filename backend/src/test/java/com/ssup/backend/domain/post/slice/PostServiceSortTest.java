@@ -32,11 +32,13 @@ class PostServiceSortTest {
     @Autowired
     private UserRepository userRepository;
 
+    private User user;
+
     @DisplayName("최신순 첫 페이지 조회 - 성공")
     @Test
     void firstSearch_latest_success() {
         //given
-        PostSliceResponse response = postService.findList(PostSortType.LATEST, null, null, 3);
+        PostSliceResponse response = postService.findList(user.getId(), PostSortType.LATEST, null, null, 3);
 
         assertThat(response.getItems()).hasSize(3);
         assertThat(response.isHasNext()).isTrue();
@@ -49,6 +51,7 @@ class PostServiceSortTest {
     void firstSearch_sortByViews_success() {
         PostSliceResponse result =
                 postService.findList(
+                        user.getId(),
                         PostSortType.VIEWS,
                         null,
                         null,
@@ -69,6 +72,7 @@ class PostServiceSortTest {
         //given
         PostSliceResponse first =
                 postService.findList(
+                        user.getId(),
                         PostSortType.VIEWS,
                         null,
                         null,
@@ -78,6 +82,7 @@ class PostServiceSortTest {
         //when
         PostSliceResponse second =
                 postService.findList(
+                        user.getId(),
                         PostSortType.VIEWS,
                         first.getNextCursorKey(),
                         first.getNextCursorId(),
@@ -103,6 +108,7 @@ class PostServiceSortTest {
     void lastPage_hasNext_isFalse() {
         PostSliceResponse first =
                 postService.findList(
+                        user.getId(),
                         PostSortType.LATEST,
                         null,
                         null,
@@ -111,6 +117,7 @@ class PostServiceSortTest {
 
         PostSliceResponse second =
                 postService.findList(
+                        user.getId(),
                         PostSortType.LATEST,
                         null,
                         first.getNextCursorId(),
@@ -124,7 +131,7 @@ class PostServiceSortTest {
 
     @BeforeEach
     void setUp() {
-        User user = getUser();
+        user = getUser();
         createPost(user, 300);
         createPost(user, 300);
 

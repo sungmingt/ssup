@@ -3,10 +3,7 @@ package com.ssup.backend.domain.post.slice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssup.backend.domain.post.PostController;
 import com.ssup.backend.domain.post.PostService;
-import com.ssup.backend.domain.post.dto.PostCreateRequest;
-import com.ssup.backend.domain.post.dto.PostResponse;
-import com.ssup.backend.domain.post.dto.PostSliceResponse;
-import com.ssup.backend.domain.post.dto.PostUpdateRequest;
+import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSortType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,6 +44,7 @@ class PostControllerTest {
     void findList_latest_success() throws Exception {
         //given
         given(postService.findList(
+                eq(1L),
                 eq(PostSortType.LATEST),
                 isNull(),
                 isNull(),
@@ -65,6 +63,7 @@ class PostControllerTest {
     void findList_sortByViews_success() throws Exception {
         //given
         given(postService.findList(
+                eq(1L),
                 eq(PostSortType.VIEWS),
                 eq(250L),
                 eq(10L),
@@ -86,7 +85,7 @@ class PostControllerTest {
     @DisplayName("게시글 상세 조회 api - 성공")
     void findPost_success() throws Exception {
         //given
-        given(postService.find(1L))
+        given(postService.find(1L, 1L))
                 .willReturn(
                         PostResponse.builder()
                                 .id(1L)
@@ -105,7 +104,7 @@ class PostControllerTest {
     @Test
     @DisplayName("게시글 작성 api - 성공")
     void createPost_success() throws Exception {
-        PostResponse response = getPostResponse();
+        PostCreateResponse response = getPostCreateResponse();
         PostCreateRequest request = PostCreateRequest.builder().title("title1").build();
 
         //given
@@ -127,7 +126,7 @@ class PostControllerTest {
     @Test
     @DisplayName("게시글 수정 api - 성공")
     void updatePost_success() throws Exception {
-        PostResponse response = getPostResponse();
+        PostUpdateResponse response = getPostUpdateResponse();
         PostUpdateRequest request = PostUpdateRequest.builder().title("title1").build();
 
         //given
@@ -169,8 +168,16 @@ class PostControllerTest {
 
     //=== init ===
 
-    private PostResponse getPostResponse() {
-        return PostResponse.builder()
+    private PostCreateResponse getPostCreateResponse() {
+        return PostCreateResponse.builder()
+                .id(1L)
+                .title("title1")
+                .content("content1")
+                .build();
+    }
+
+    private PostUpdateResponse getPostUpdateResponse() {
+        return PostUpdateResponse.builder()
                 .id(1L)
                 .title("title1")
                 .content("content1")
