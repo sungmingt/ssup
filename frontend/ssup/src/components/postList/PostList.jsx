@@ -4,8 +4,6 @@ import PostTopBar from "./PostTopBar.jsx";
 import SearchModal from "./SearchModal.jsx";
 import { postApi } from "@/api";
 
-// import { fetchPosts } from "./PostApi.jsx";
-
 const PAGE_SIZE = 9;
 
 const PostList = () => {

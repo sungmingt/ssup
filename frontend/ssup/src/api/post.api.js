@@ -18,4 +18,6 @@ export const postApi = {
   updatePost: (postId, formData) => api.put(`/posts/${postId}`, formData),
 
   deletePost: (postId) => api.delete(`/posts/${postId}`),
+
+  toggleHeart: (postId) => api.post(`/posts/${postId}/hearts`),
 };
