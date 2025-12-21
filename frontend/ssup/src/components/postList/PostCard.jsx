@@ -23,7 +23,7 @@ const PostCard = ({ post }) => {
     const prevHearted = hearted;
     const prevCount = heartCount;
 
-    // 🔥 optimistic UI
+    //optimistic UI
     setHearted(!hearted);
     setHeartCount((c) => (hearted ? c - 1 : c + 1));
 

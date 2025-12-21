@@ -46,7 +46,6 @@ public class PostHeartService implements HeartService {
         try {
             heartRepository.save(new PostHeart(post, user));
             post.increaseHeartCount();
-
             return HeartResponse.of(true, post.getHeartCount());
         } catch (DataIntegrityViolationException e) {
             //UNIQUE(user_id, post_id) 충돌
