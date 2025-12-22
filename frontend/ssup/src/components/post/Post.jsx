@@ -3,9 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { postApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./../../css/Post.css";
+import "./../../css/post/Post.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import defaultImage from "./../../assets/ssup_post_default_image.webp";
+import CommentSection from "./../comment/CommentSection.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -102,7 +103,7 @@ const Post = () => {
   const createdAt = new Date(post.createdAt);
   const createdText = isNaN(createdAt)
     ? "날짜 없음"
-    : createdAt.toLocaleDateString();
+    : createdAt.toLocaleString();
 
   return (
     <div className="post-page-wrapper py-5">
@@ -139,7 +140,7 @@ const Post = () => {
         <div className="post-main-card bg-white shadow-sm rounded p-4">
           {/* 제목 + 언어 */}
           <div className="d-flex justify-content-between align-items-start mb-1 gap-2">
-            <h3 className="fw-bold mb-0">{post.title}</h3>
+            <h3 className="fw-bold mb-3">{post.title}</h3>
 
             {(post.usingLanguage || post.learningLanguage) && (
               <div className="language-badge">
@@ -200,6 +201,9 @@ const Post = () => {
               <span>💬 {post.commentCount}</span>
             </div>
           </div>
+
+          {/* 댓글 영역 */}
+          {post && <CommentSection postId={post.id} />}
         </div>
       </div>
     </div>

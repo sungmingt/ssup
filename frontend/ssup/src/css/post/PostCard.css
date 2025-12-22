@@ -39,6 +39,7 @@
 /* 본문 줄 제한 */
 .post-content {
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
