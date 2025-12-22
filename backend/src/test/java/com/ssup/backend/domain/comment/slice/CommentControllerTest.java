@@ -101,7 +101,7 @@ class CommentControllerTest {
         Long commentId = 3L;
 
         CommentUpdateRequest request = new CommentUpdateRequest("수정된 내용", false);
-        CommentResponse response = new CommentResponse(commentId, 1L, "수정된 내용", null, 0L, LocalDateTime.now());
+        CommentResponse response = new CommentResponse(commentId, postId, 1L, "image-url", "name", "수정된 내용", null, 0L, LocalDateTime.now());
 
         given(commentService.update(anyLong(), eq(postId), eq(commentId), any(), any()))
                 .willReturn(response);
@@ -218,6 +218,9 @@ class CommentControllerTest {
         return new CommentResponse(
                         id,
                         1L,
+                        1L,
+                "image-url",
+                        "name",
                         "댓글 내용",
                         null,
                         0L,
