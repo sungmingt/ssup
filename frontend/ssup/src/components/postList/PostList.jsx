@@ -7,16 +7,12 @@ import { postApi } from "@/api";
 const PAGE_SIZE = 9;
 
 const PostList = () => {
-  /** =========================
-   *  화면 렌더링용 state
-   *  ========================= */
+  //state
   const [posts, setPosts] = useState([]);
   const [sortType, setSortType] = useState("LATEST");
   const [loading, setLoading] = useState(false);
 
-  /** =========================
-   *  로직용 ref (렌더와 분리)
-   *  ========================= */
+  //ref
   const pageRef = useRef({
     cursorKey: null,
     cursorId: null,
@@ -27,9 +23,7 @@ const PostList = () => {
   const isReadyRef = useRef(false); // 초기 1페이지 로딩 완료 여부
   const observerRef = useRef(null);
 
-  /** =========================
-   *  데이터 로딩 함수
-   *  ========================= */
+  //data loading
   const loadPosts = useCallback(
     async (isFirst = false) => {
       const page = pageRef.current;
@@ -121,9 +115,7 @@ const PostList = () => {
     return () => observer.disconnect();
   }, [loadPosts, posts.length]);
 
-  /** =========================
-   *  렌더링
-   *  ========================= */
+  //redner
   return (
     <>
       <div className="container py-5">

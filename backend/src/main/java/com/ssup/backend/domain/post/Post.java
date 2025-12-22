@@ -1,5 +1,7 @@
 package com.ssup.backend.domain.post;
 
+import com.ssup.backend.domain.comment.Comment;
+import com.ssup.backend.domain.heart.post.PostHeart;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.global.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -31,11 +33,11 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-//    @OneToMany(mappedBy = "post")
-//    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "post")
-//    private List<Heart> hearts = new ArrayList<>();
+    @OneToMany(mappedBy = "post")
+    private List<PostHeart> hearts = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(
@@ -43,7 +45,7 @@ public class Post extends BaseTimeEntity {
             joinColumns = @JoinColumn(name = "post_id")
     )
     @Column(name = "image_url")
-    @Builder.Default
+    @Builder.Default //builder 생성 시 null 방지
     private List<String> imageUrls = new ArrayList<>();
 
     @Column(length = 100, nullable = false)
@@ -57,6 +59,8 @@ public class Post extends BaseTimeEntity {
     private String learningLanguage;
 
     private long viewCount;
+
+    private long commentCount;
 
     private long heartCount;
 
@@ -91,5 +95,13 @@ public class Post extends BaseTimeEntity {
 
     public void decreaseHeartCount() {
         this.heartCount--;
+    }
+
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) this.commentCount--;
     }
 }

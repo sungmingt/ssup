@@ -1,0 +1,168 @@
+/* container */
+.comment-input-wrapper {
+  position: relative;
+}
+
+/* text area */
+.comment-textarea {
+  padding-right: 120px;
+  padding-bottom: 40px; /* 하단 버튼 공간 */
+}
+
+/* 카메라 버튼 */
+.comment-icon.left {
+  position: absolute;
+  bottom: 8px;
+  left: 8px; /* 기본 텍스트 기준선 */
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 13px;
+  border-radius: 6px;
+  background-color: #f1f3f5;
+  cursor: pointer;
+
+  pointer-events: auto;
+}
+
+/* 작성 버튼 */
+.comment-icon.right {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+
+  height: 28px;
+  padding: 0 10px;
+
+  background-color: #73d783;
+  color: white;
+  border-radius: 5px;
+  border: none;
+}
+
+/* 제출 버튼 */
+.comment-submit-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+
+  height: 28px;
+  padding: 0 10px;
+
+  background-color: #fafafa;
+  color: rgb(18, 39, 22);
+
+  border-radius: 5px;
+  border: 1px solid #4ceb61;
+
+  font-size: 13px;
+  font-weight: 400;
+
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.comment-submit-btn:hover {
+  background-color: #16ed5d;
+  border-color: #69db7c;
+}
+
+.comment-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 이미지 미리보기 */
+.comment-image-preview {
+  margin-top: 8px; /* textarea 아래 간격 */
+  display: inline-block;
+  position: relative;
+}
+.comment-image-preview img {
+  max-height: 80px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+.remove-image-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+  border: none;
+
+  background-color: #495057;
+  color: white;
+
+  font-size: 12px;
+  cursor: pointer;
+}
+.remove-image-btn:hover {
+  background-color: #212529;
+}
+
+/* 작성 취소 버튼 */
+.comment-cancel-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 60px; /* submit 버튼 왼쪽 */
+
+  height: 28px;
+  padding: 0 10px;
+
+  background-color: #f1f3f5;
+  color: #495057;
+
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+
+  font-size: 13px;
+  cursor: pointer;
+}
+.comment-cancel-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 60px; /* submit 버튼 왼쪽 */
+
+  height: 28px;
+  padding: 0 10px;
+
+  background-color: #f1f3f5;
+  color: #495057;
+
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.comment-cancel-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 60px; /* submit 버튼 왼쪽 */
+
+  height: 28px;
+  padding: 0 10px;
+
+  background-color: #f1f3f5;
+  color: #495057;
+
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.comment-cancel-btn:hover {
+  background-color: #e9ecef;
+}

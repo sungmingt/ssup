@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import "../../css/PostCard.css";
+import "../../css/post/PostCard.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import defaultThumbnail from "../../assets/ssup_post_default_image.webp";
 import { postApi } from "@/api";
@@ -23,7 +23,7 @@ const PostCard = ({ post }) => {
     const prevHearted = hearted;
     const prevCount = heartCount;
 
-    // 🔥 optimistic UI
+    //optimistic UI
     setHearted(!hearted);
     setHeartCount((c) => (hearted ? c - 1 : c + 1));
 
