@@ -152,8 +152,6 @@ class PostControllerTest {
     @Test
     @DisplayName("게시글 삭제 api - 성공")
     void deletePost_success() throws Exception {
-        //given
-
         mockMvc.perform(
                         delete("/api/posts/{id}", 1)
                                 .with(req -> {
