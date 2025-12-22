@@ -21,10 +21,6 @@ public class PostResponse {
 
     private List<String> imageUrls;
 
-//    private List<CommentResponse> comments;
-
-//    private List<HeartResponse> comments;
-
     private String usingLanguage;
 
     private String learningLanguage;

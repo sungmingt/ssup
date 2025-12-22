@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.comment.dto;
 
 import com.ssup.backend.domain.comment.Comment;
+import com.ssup.backend.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,13 @@ public class CommentResponse {
 
     private Long id;
 
+    private Long postId;
+
     private Long authorId;
+
+    private String authorImageUrl;
+
+    private String authorName;
 
     private String content;
 
@@ -28,9 +35,14 @@ public class CommentResponse {
     private LocalDateTime createdAt;
 
     public static CommentResponse of(Comment comment) {
+        User author = comment.getAuthor();
+
         return CommentResponse.builder()
                 .id(comment.getId())
-                .authorId(comment.getAuthor().getId())
+                .postId(comment.getPost().getId())
+                .authorId(author.getId())
+                .authorImageUrl(author.getImageUrl())
+                .authorName(author.getNickname())
                 .content(comment.getContent())
                 .imageUrl(comment.getImageUrl())
                 .heartCount(comment.getHeartCount())

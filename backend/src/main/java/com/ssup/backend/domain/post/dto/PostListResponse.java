@@ -30,7 +30,7 @@ public class PostListResponse {
 
     private String content;
 
-    private int commentCount;
+    private long commentCount;
 
     private long heartCount;
 
@@ -59,7 +59,7 @@ public class PostListResponse {
                                 .viewCount(post.getViewCount())
                                 .heartedByMe(heartedPostIds.contains(post.getId()))
                                 .heartCount(post.getHeartCount())
-//                                .commentCount(post.getComments.size())
+                                .commentCount(post.getCommentCount())
                                 .createdAt(post.getCreatedAt())
                                 .build()
                 )
