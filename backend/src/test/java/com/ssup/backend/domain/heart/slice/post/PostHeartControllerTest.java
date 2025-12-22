@@ -24,7 +24,7 @@ class PostHeartControllerTest {
     @MockBean
     PostHeartFacade postHeartFacade;
 
-    @DisplayName("좋아요 요청 - 성공")
+    @DisplayName("글 좋아요 요청 - 성공")
     @Test
     void toggleHeart_success() throws Exception {
         given(postHeartFacade.tryToggleHeart(1L, 1L))

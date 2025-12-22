@@ -1,5 +1,7 @@
 package com.ssup.backend.domain.comment;
 
+import com.ssup.backend.domain.heart.comment.CommentHeart;
+import com.ssup.backend.domain.heart.post.PostHeart;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.global.BaseTimeEntity;
@@ -35,6 +37,10 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
+    @OneToMany(mappedBy = "comment")
+    @Builder.Default
+    private List<CommentHeart> hearts = new ArrayList<>();
+
     private String imageUrl;
 
     @Column(nullable = false)
@@ -57,5 +63,13 @@ public class Comment extends BaseTimeEntity {
 
     public void softDelete() {
         this.deleted = true;
+    }
+
+    public void increaseHeartCount() {
+        this.heartCount++;
+    }
+
+    public void decreaseHeartCount() {
+        this.heartCount--;
     }
 }
