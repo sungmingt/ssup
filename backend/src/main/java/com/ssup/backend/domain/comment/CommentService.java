@@ -37,6 +37,7 @@ public class CommentService {
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
         String imageUrl = imageStorage.upload(ImageType.COMMENT, image);
+        post.increaseCommentCount();
 
         Comment comment = Comment.builder()
                 .post(post)
@@ -69,6 +70,11 @@ public class CommentService {
                 .orElseThrow(() -> new SsupException(COMMENT_NOT_FOUND));
 
         validator.validateComment(comment, postId, userId);
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
+        post.increaseCommentCount();
+
         comment.softDelete();
     }
 
