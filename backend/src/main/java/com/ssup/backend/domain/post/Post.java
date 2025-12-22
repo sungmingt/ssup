@@ -43,7 +43,7 @@ public class Post extends BaseTimeEntity {
             joinColumns = @JoinColumn(name = "post_id")
     )
     @Column(name = "image_url")
-    @Builder.Default
+    @Builder.Default //builder 생성 시 null 방지
     private List<String> imageUrls = new ArrayList<>();
 
     @Column(length = 100, nullable = false)
