@@ -109,15 +109,20 @@ class CommentServiceTest {
         Long postId = 10L;
 
         Comment comment = mock(Comment.class);
+        Post post = mock(Post.class);
 
         given(commentRepository.findById(commentId))
                 .willReturn(Optional.of(comment));
+
+        given(postRepository.findById(postId))
+                .willReturn(Optional.of(post));
 
         //when
         commentService.delete(userId, postId, commentId);
 
         //then
         verify(comment).softDelete();
+        verify(post).decreaseCommentCount();
     }
 
     @DisplayName("특정 글의 댓글 목록 조회 - 성공")

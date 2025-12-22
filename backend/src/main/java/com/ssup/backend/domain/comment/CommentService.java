@@ -73,7 +73,8 @@ public class CommentService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
-        post.increaseCommentCount();
+
+        post.decreaseCommentCount();
 
         comment.softDelete();
     }
