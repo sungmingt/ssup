@@ -2,6 +2,7 @@ package com.ssup.backend.global.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,6 +46,7 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponse> handleBusinessException(SsupException e) {
         log.warn("Business Exception: {}", e.getMessage());
         ErrorCode errorCode = e.getErrorCode();
+
         return ResponseEntity
                 .status(errorCode.getStatus())
                 .body(ErrorResponse.of(errorCode));
@@ -52,9 +54,10 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("Unexpected Exception", e);
+        log.error("Unexpected Exception: {}", e);
+
         return ResponseEntity
-                .status(INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR));
     }
 }

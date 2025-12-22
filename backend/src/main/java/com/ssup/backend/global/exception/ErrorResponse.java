@@ -14,16 +14,12 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
 
-    private final LocalDateTime timestamp;
-    private final int status;
-    private final String code;
+    private final String code; //비즈니스적 code (httpStatus X)
     private final String message;
     private final List<ErrorDetail> errors;
 
     public static ErrorResponse of(ErrorCode errorCode) {
         return new ErrorResponse(
-                LocalDateTime.now(),
-                errorCode.getStatus(),
                 errorCode.name(),
                 errorCode.getMessage(),
                 List.of()
@@ -32,8 +28,6 @@ public class ErrorResponse {
 
     public static ErrorResponse of(ErrorCode errorCode, List<ErrorDetail> errors) {
         return new ErrorResponse(
-                LocalDateTime.now(),
-                errorCode.getStatus(),
                 errorCode.name(),
                 errorCode.getMessage(),
                 errors
