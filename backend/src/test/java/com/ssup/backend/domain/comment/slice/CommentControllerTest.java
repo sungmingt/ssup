@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssup.backend.domain.comment.CommentController;
 import com.ssup.backend.domain.comment.CommentService;
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
+import com.ssup.backend.domain.comment.dto.CommentListResponse;
 import com.ssup.backend.domain.comment.dto.CommentResponse;
 import com.ssup.backend.domain.comment.dto.CommentUpdateRequest;
 import com.ssup.backend.global.exception.GlobalControllerAdvice;
@@ -160,13 +161,14 @@ class CommentControllerTest {
     @Test
     void findCommentList_success() throws Exception {
         //given
+        Long userId = 1L;
         Long postId = 10L;
 
-        CommentResponse response1 = getCommentResponse(1L);
-        CommentResponse response2 = getCommentResponse(2L);
-        List<CommentResponse> responses = List.of(response1, response2);
+        CommentListResponse response1 = getCommentListResponse(1L);
+        CommentListResponse response2 = getCommentListResponse(2L);
+        List<CommentListResponse> responses = List.of(response1, response2);
 
-        given(commentService.findList(postId)).willReturn(responses);
+        given(commentService.findList(userId, postId)).willReturn(responses);
 
         //when, then
         mockMvc.perform(
@@ -225,6 +227,21 @@ class CommentControllerTest {
                         null,
                         0L,
                         LocalDateTime.now()
+        );
+    }
+
+    private static CommentListResponse getCommentListResponse(Long id) {
+        return new CommentListResponse(
+                id,
+                1L,
+                1L,
+                "image-url",
+                "name",
+                "댓글 내용",
+                null,
+                0L,
+                false,
+                LocalDateTime.now()
         );
     }
 }

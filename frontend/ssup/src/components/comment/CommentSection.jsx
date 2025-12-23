@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { postApi } from "@/api";
+import { commentApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CommentList from "./CommentList.jsx";
 import CommentForm from "./CommentForm.jsx";
@@ -11,7 +11,7 @@ const CommentSection = ({ postId }) => {
 
   const fetchComments = async () => {
     try {
-      const res = await postApi.getCommentList(postId);
+      const res = await commentApi.getCommentList(postId);
       setComments(res.data);
     } catch (e) {
       console.error("댓글 조회 실패", e);

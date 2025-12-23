@@ -94,7 +94,7 @@ public class Post extends BaseTimeEntity {
     }
 
     public void decreaseHeartCount() {
-        this.heartCount--;
+        if (this.heartCount > 0) this.heartCount--;
     }
 
     public void increaseCommentCount() {

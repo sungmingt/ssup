@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -31,6 +30,8 @@ public class CommentResponse {
     private String imageUrl;
 
     private long heartCount;
+
+//    private boolean hearted;
 
     private LocalDateTime createdAt;
 
