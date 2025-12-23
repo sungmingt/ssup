@@ -19,7 +19,7 @@ public class LanguageController {
 
     private final LanguageService languageService;
 
-    @Operation(summary = "글 목록 조회", description = "전체 글 목록 조회")
+    @Operation(summary = "언어 목록 조회", description = "전체 언어 목록 조회")
     @GetMapping
     public List<LanguageResponse> findList() {
 
