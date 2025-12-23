@@ -32,12 +32,16 @@ class CommentHeartServiceTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PostRepository postRepository;
+
     @DisplayName("좋아요 최초 시도 - 성공")
     @Test
     void findHearts_firstTime_success() {
         //given
         User user = getUser();
-        Comment comment = getComment(user);
+        Post post = getPost(user);
+        Comment comment = getComment(user, post);
 
         //when
         HeartResponse response =
@@ -53,7 +57,8 @@ class CommentHeartServiceTest {
     void undoHeart_success() {
         //given
         User user = getUser();
-        Comment comment = getComment(user);
+        Post post = getPost(user);
+        Comment comment = getComment(user, post);
 
         //when
         commentHeartService.toggleHeart(comment.getId(), user.getId());
@@ -65,13 +70,24 @@ class CommentHeartServiceTest {
         assertThat(response.getHeartCount()).isZero();
     }
 
-    private Comment getComment(User author) {
+    private Comment getComment(User author, Post post) {
         Comment comment = Comment.builder()
+                .content("content")
+                .author(author)
+                .post(post)
+                .build();
+
+        return commentRepository.save(comment);
+    }
+
+    private Post getPost(User author) {
+        Post post = Post.builder()
+                .title("title ")
                 .content("content")
                 .author(author)
                 .build();
 
-        return commentRepository.save(comment);
+        return postRepository.save(post);
     }
 
     private User getUser() {

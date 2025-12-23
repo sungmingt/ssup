@@ -13,6 +13,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -51,5 +56,21 @@ public class CommentHeartService implements HeartService {
             //UNIQUE(user_id, comment_id) 충돌
             throw new SsupException(ErrorCode.HEART_ALREADY_EXISTS);
         }
+    }
+
+    public Set<Long> findHeartedCommentIds(Long userId, List<Comment> comments) {
+        Set<Long> heartedCommentIds = Collections.emptySet();
+
+        if (userId != null && !comments.isEmpty()) {
+            List<Long> commentIds = comments.stream()
+                    .map(Comment::getId)
+                    .toList();
+
+            heartedCommentIds = new HashSet<>(
+                    heartRepository.findHeartedCommentIds(userId, commentIds)
+            );
+        }
+
+        return heartedCommentIds;
     }
 }

@@ -5,8 +5,10 @@ import com.ssup.backend.domain.comment.CommentRepository;
 import com.ssup.backend.domain.comment.CommentService;
 import com.ssup.backend.domain.comment.CommentValidator;
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
+import com.ssup.backend.domain.comment.dto.CommentListResponse;
 import com.ssup.backend.domain.comment.dto.CommentResponse;
 import com.ssup.backend.domain.comment.dto.CommentUpdateRequest;
+import com.ssup.backend.domain.heart.comment.CommentHeartService;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
@@ -24,9 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.mock;
@@ -39,6 +43,8 @@ class CommentServiceTest {
     private CommentService commentService;
     @Mock
     private CommentRepository commentRepository;
+    @Mock
+    private CommentHeartService commentHeartService;
     @Mock
     private PostRepository postRepository;
     @Mock
@@ -133,12 +139,15 @@ class CommentServiceTest {
         Post post = getPost(10, user);
         Comment comment1 = getComment(post, user, "content1", false);
         Comment comment2 = getComment(post, user, "content2", false);
+        List<Comment> commentList = List.of(comment1, comment2);
 
         given(commentRepository.findByPostIdAndDeletedFalseOrderByCreatedAtAsc(1L))
-                .willReturn(List.of(comment1, comment2));
+                .willReturn(commentList);
+        given(commentHeartService.findHeartedCommentIds(1L, commentList))
+                .willReturn(Set.of());
 
         //when
-        List<CommentResponse> result = commentService.findList(1L);
+        List<CommentListResponse> result = commentService.findList(user.getId(), 1L);
 
         //then
         assertThat(result).hasSize(2);

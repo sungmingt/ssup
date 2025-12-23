@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.comment;
 
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
+import com.ssup.backend.domain.comment.dto.CommentListResponse;
 import com.ssup.backend.domain.comment.dto.CommentResponse;
 import com.ssup.backend.domain.comment.dto.CommentUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,7 +57,7 @@ public class CommentController {
 
     @Operation(summary = "특정 글의 댓글 목록 조회", description = "특정 글의 댓글 목록 조회")
     @GetMapping
-    public List<CommentResponse> findList(@PathVariable("postId") Long postId) {
-        return commentService.findList(postId);
+    public List<CommentListResponse> findList(@PathVariable("postId") Long postId) {
+        return commentService.findList(1L, postId);
     }
 }

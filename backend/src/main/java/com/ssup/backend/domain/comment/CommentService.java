@@ -1,8 +1,10 @@
 package com.ssup.backend.domain.comment;
 
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
+import com.ssup.backend.domain.comment.dto.CommentListResponse;
 import com.ssup.backend.domain.comment.dto.CommentResponse;
 import com.ssup.backend.domain.comment.dto.CommentUpdateRequest;
+import com.ssup.backend.domain.heart.comment.CommentHeartService;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.ssup.backend.global.exception.ErrorCode.*;
 
@@ -25,6 +28,7 @@ import static com.ssup.backend.global.exception.ErrorCode.*;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentHeartService commentHeartService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ImageStorage imageStorage;
@@ -92,11 +96,10 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> findList(Long postId) {
-        return commentRepository.findByPostIdAndDeletedFalseOrderByCreatedAtAsc(postId)
-                .stream()
-                .map(CommentResponse::of)
-                .toList();
+    public List<CommentListResponse> findList(Long userId, Long postId) {
+        List<Comment> comments = commentRepository.findByPostIdAndDeletedFalseOrderByCreatedAtAsc(postId);
+        Set<Long> heartedCommentIds = commentHeartService.findHeartedCommentIds(userId, comments);
+        return CommentListResponse.of(comments, heartedCommentIds);
     }
 
     private void updateImage(MultipartFile image, boolean removeImage, Comment comment) {
