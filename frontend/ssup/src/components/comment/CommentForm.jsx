@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { postApi } from "@/api";
+import { commentApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../../css/comment/CommentForm.css";
 
@@ -49,9 +49,9 @@ const CommentForm = ({
 
     try {
       if (isEdit) {
-        await postApi.updateComment(postId, comment.id, formData);
+        await commentApi.updateComment(postId, comment.id, formData);
       } else {
-        await postApi.createComment(postId, formData);
+        await commentApi.createComment(postId, formData);
         setContent("");
         setImage(null);
         setImageUrl(null);

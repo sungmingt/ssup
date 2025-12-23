@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { postApi } from "@/api";
+import { commentApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import defaultProfile from "./../../assets/ssup_user_default_image.png";
 
 const CommentItem = ({ comment, onRefresh, onEdit }) => {
   const isMine = true; //TODO: 로그인 유저 ID 비교
   const [deleting, setDeleting] = useState(false);
+
+  const [hearted, setHearted] = useState(comment.hearted);
+  const [heartCount, setHeartCount] = useState(comment.heartCount);
+  const [heartLoading, setHeartLoading] = useState(false);
 
   const onDelete = async () => {
     if (deleting) return;
@@ -17,12 +21,29 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
     setDeleting(true);
 
     try {
-      await postApi.deleteComment(comment.postId, comment.id);
+      await commentApi.deleteComment(comment.postId, comment.id);
       onRefresh();
     } catch {
       alert("댓글 삭제에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const onToggleHeart = async () => {
+    if (heartLoading) return;
+
+    setHeartLoading(true);
+
+    try {
+      const res = await commentApi.toggleHeart(comment.id);
+
+      setHearted(res.data.hearted);
+      setHeartCount(res.data.heartCount);
+    } catch {
+      alert("댓글 좋아요 처리 실패");
+    } finally {
+      setHeartLoading(false);
     }
   };
 
@@ -79,7 +100,15 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
           {/*작성일 + 좋아요 */}
           <div className="d-flex justify-content-between text-muted small">
             <span>{new Date(comment.createdAt).toLocaleString()}</span>
-            <span style={{ cursor: "pointer" }}>🤍 {comment.heartCount}</span>
+            <span
+              onClick={onToggleHeart}
+              style={{
+                cursor: heartLoading ? "default" : "pointer",
+                userSelect: "none",
+              }}
+            >
+              {hearted ? "❤️" : "🤍"} {heartCount}
+            </span>
           </div>
         </div>
       </div>
