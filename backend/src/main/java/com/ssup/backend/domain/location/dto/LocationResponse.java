@@ -19,7 +19,4 @@ public class LocationResponse {
 
     @Schema(description = "위치 레벨", example = "1")
     private int level;
-
-    @Schema(description = "상위 위치")
-    private LocationResponse parent;
 }
