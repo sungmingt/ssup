@@ -14,6 +14,25 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //N+1 제거
     @Query("""
     select u from User u
+    left join fetch u.interests ui
+    left join fetch ui.interest i
+    left join fetch i.category
+    where u.id = :id
+    """)
+    Optional<User> findMeProfileById(@Param("userId") Long id);
+
+    //N+1 제거 (상대방 프로필)
+    @Query("""
+    select u from User u
+    left join fetch u.interests ui
+    left join fetch ui.interest i
+    where u.id = :id
+    """)
+    Optional<User> findUserProfileById(@Param("userId") Long id);
+
+    //N+1 제거
+    @Query("""
+    select u from User u
     join fetch u.languages ul
     join fetch ul.language
     where u.id = :userId
