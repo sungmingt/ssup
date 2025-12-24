@@ -22,14 +22,7 @@ public class UserLanguageController {
         return userLanguageService.findUserLanguages(userId);
     }
 
-    @Operation(summary = "유저의 사용언어/학습언어 생성", description = "유저의 사용언어/학습언어 등록")
-    @PutMapping("/me/languages")
-    public void createUserLanguage(@RequestBody UserLanguageUpdateRequest request) {
-
-        userLanguageService.createUserLanguages(1L, request);
-    }
-
-    @Operation(summary = "유저의 사용언어/학습언어 수정", description = "유저의 사용언어/학습언어 수정")
+    @Operation(summary = "유저의 사용언어/학습언어 생성 및 수정", description = "유저의 사용언어/학습언어 생성 및 수정")
     @PutMapping("/me/languages")
     public void updateUserLanguage(@RequestBody UserLanguageUpdateRequest request) {
 

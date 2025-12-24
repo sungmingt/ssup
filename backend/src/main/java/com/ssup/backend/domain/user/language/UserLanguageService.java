@@ -54,23 +54,6 @@ public class UserLanguageService {
         return new UserLanguageResponse(using, learning);
     }
 
-    public void createUserLanguages(Long userId, UserLanguageUpdateRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
-
-        for (UserLanguageRequestItem item : request.getLanguages()) {
-            Language language = languageRepository.findById(item.getLanguageId())
-                    .orElseThrow(() -> new SsupException(LANGUAGE_NOT_FOUND));
-
-            new UserLanguage(
-                    user,
-                    language,
-                    item.getLevel(),
-                    item.getType()
-            );
-        }
-    }
-
     public void updateUserLanguages(Long userId, UserLanguageUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
