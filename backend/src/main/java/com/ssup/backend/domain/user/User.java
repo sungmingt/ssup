@@ -117,5 +117,6 @@ public class User extends BaseTimeEntity {
         this.contact = contact;
         this.location = location;
 
+        this.status = UserStatus.ACTIVE;
     }
 }
