@@ -5,7 +5,7 @@ import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSliceFetcher;
 import com.ssup.backend.domain.post.sort.PostSortType;
 import com.ssup.backend.domain.user.User;
-import com.ssup.backend.domain.user.UserService;
+import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostSliceFetcher postSliceFetcher;
     private final PostHeartRepository postHeartRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final ImageStorage imageStorage;
 
     //todo: userId -> appUser
@@ -38,7 +37,9 @@ public class PostService {
         List<String> imageUrls = imageStorage.uploadMultiple(ImageType.POST, images);
         post.addImages(imageUrls);
 
-        User user = userService.findUserById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
+
         post.setAuthor(user);
 
         Post savedPost = postRepository.save(post);
