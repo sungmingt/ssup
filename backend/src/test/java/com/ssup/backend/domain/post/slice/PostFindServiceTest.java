@@ -6,7 +6,7 @@ import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.PostResponse;
 import com.ssup.backend.domain.user.User;
-import com.ssup.backend.domain.user.UserService;
+import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.s3.ImageStorage;
@@ -35,7 +35,7 @@ class PostFindServiceTest {
     @Mock
     private PostHeartRepository postHeartRepository;
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
     @Mock
     private ImageStorage imageStorage;
     @InjectMocks

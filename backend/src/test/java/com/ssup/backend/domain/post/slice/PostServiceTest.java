@@ -5,7 +5,7 @@ import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.user.User;
-import com.ssup.backend.domain.user.UserService;
+import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ class PostServiceTest {
     @Mock
     private PostRepository postRepository;
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
     @Mock
     private ImageStorage imageStorage;
     @InjectMocks
@@ -43,8 +43,8 @@ class PostServiceTest {
     @Test
     void createPost_success() {
         //given
-        given(userService.findUserById(1L))
-                .willReturn(user);
+        given(userRepository.findById(1L))
+                .willReturn(Optional.of(user));
         given(imageStorage.uploadMultiple(eq(ImageType.POST), anyList()))
                 .willReturn(List.of("url1", "url2"));
         given(postRepository.save(any(Post.class)))
