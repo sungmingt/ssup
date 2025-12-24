@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.user.profile;
 
+import com.ssup.backend.domain.user.profile.dto.UserMeProfileCreateRequest;
 import com.ssup.backend.domain.user.profile.dto.UserMeProfileResponse;
 import com.ssup.backend.domain.user.profile.dto.UserProfileResponse;
 import com.ssup.backend.domain.user.profile.dto.UserProfileUpdateRequest;
@@ -19,6 +20,12 @@ public class UserMeProfileController {
     @GetMapping("/profile")
     public UserMeProfileResponse findMyProfile() {
         return userProfileService.findMyProfile(1L);
+    }
+
+    @PostMapping("/profile")
+    public UserMeProfileResponse createMyProfile(@RequestPart(value = "image", required = false) MultipartFile image,
+                                                 @RequestPart("dto") UserMeProfileCreateRequest request) {
+        return userProfileService.createMyProfile(1L, request);
     }
 
     @PutMapping("/profile")

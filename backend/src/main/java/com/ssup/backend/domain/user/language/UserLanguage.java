@@ -39,7 +39,6 @@ public class UserLanguage {
     @Enumerated(EnumType.STRING)
     private LanguageType type;
 
-
     public UserLanguage (User user, Language language, LanguageLevel level, LanguageType type) {
         this.user = user;
         this.language = language;

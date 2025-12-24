@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +21,5 @@ public class UserProfileUpdateRequest {
     private boolean removeImage;
 
     private UserLocationUpdateRequest userLocationUpdateRequest;
+    private List<Long> interestIds;
 }

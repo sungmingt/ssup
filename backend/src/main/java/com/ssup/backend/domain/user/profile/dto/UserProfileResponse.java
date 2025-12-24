@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.user.profile.dto;
 
+import com.ssup.backend.domain.interest.dto.UserInterestViewResponse;
 import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.lang.Nullable;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -32,6 +35,8 @@ public class UserProfileResponse {
 
     private UserLocationResponse location;
 
+    private List<UserInterestViewResponse> interests;
+
     public static UserProfileResponse of(User user) {
         Location siGunGu = user.getLocation();
         Location siDo = siGunGu.getParent();
@@ -42,6 +47,12 @@ public class UserProfileResponse {
                 .siGunGuName(siGunGu.getName())
                 .build();
 
+        //interests
+        List<UserInterestViewResponse> interests =
+                user.getInterests().stream()
+                        .map(UserInterestViewResponse::of)
+                        .toList();
+
         return UserProfileResponse.builder()
                 .id(user.getId())
                 .nickname(user.getNickname())
@@ -50,6 +61,7 @@ public class UserProfileResponse {
                 .age(user.getAge())
                 .contact(user.getContact()) //todo: 매치된 사용자에게만 표시.
                 .location(location)
+                .interests(interests)
                 .build();
     }
 }
