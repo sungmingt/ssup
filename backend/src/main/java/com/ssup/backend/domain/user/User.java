@@ -3,16 +3,13 @@ package com.ssup.backend.domain.user;
 import com.ssup.backend.domain.comment.Comment;
 import com.ssup.backend.domain.heart.comment.CommentHeart;
 import com.ssup.backend.domain.heart.post.PostHeart;
-import com.ssup.backend.domain.language.UserLanguage;
+import com.ssup.backend.domain.interest.UserInterest;
+import com.ssup.backend.domain.user.language.UserLanguage;
 import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +21,8 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User extends BaseTimeEntity {
+
+    //===== mapping =====
 
     @OneToMany(mappedBy = "author")
     @Builder.Default
@@ -41,9 +40,26 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private List<CommentHeart> commentHearts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserLanguage> languages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserInterest> interests = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    //===== fields =====
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @Column(length = 30)
     private String imageUrl;
@@ -54,7 +70,6 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -67,16 +82,40 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private Location location;
-
     private String intro;
 
     @Column(length = 70)
     private String contact;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<UserLanguage> languages = new ArrayList<>();
+    //===== domian methods =====
+
+    public void updateProfile(
+            String nickname, String intro,
+            int age, Gender gender, String contact
+    ) {
+        this.nickname = nickname;
+        this.imageUrl = imageUrl;
+        this.intro = intro;
+        this.age = age;
+        this.gender = gender;
+        this.contact = contact;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void updateLocation(Location location) {
+        this.location = location;
+    }
+
+    public void initProfile(String imageUrl, int age, Gender gender, String intro, String contact, Location location) {
+        this.imageUrl = imageUrl;
+        this.age = age;
+        this.gender = gender;
+        this.intro = intro;
+        this.contact = contact;
+        this.location = location;
+
+    }
 }
