@@ -27,9 +27,9 @@ public class LocationController {
                                                 @RequestParam(required = false, value = "parent_id") Long parentId) {
 
         if (parentId != null) {
-            return locationService.getGuList(parentId);
+            return locationService.getSiGunGuList(parentId);
         }
 
-        return locationService.getSiList();
+        return locationService.getSiDoList();
     }
 }

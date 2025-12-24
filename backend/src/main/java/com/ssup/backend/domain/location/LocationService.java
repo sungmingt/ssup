@@ -11,11 +11,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LocationService {
 
-
     private final LocationRepository locationRepository;
 
-    // ✅ 시/도 조회
-    public List<LocationResponse> getSiList() {
+    //시/도 조회
+    public List<LocationResponse> getSiDoList() {
         return locationRepository.findByLevel(1).stream()
                 .map(l -> new LocationResponse(
                         l.getId(),
@@ -25,8 +24,8 @@ public class LocationService {
                 .toList();
     }
 
-    // ✅ 특정 시/도의 군/구 조회
-    public List<LocationResponse> getGuList(Long parentId) {
+    //특정 시/도의 군/구 조회
+    public List<LocationResponse> getSiGunGuList(Long parentId) {
         return locationRepository.findByParentId(parentId).stream()
                 .map(l -> new LocationResponse(
                         l.getId(),
