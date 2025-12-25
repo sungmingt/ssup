@@ -22,6 +22,6 @@ public class Interest {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private InterestCategory category;
 }
