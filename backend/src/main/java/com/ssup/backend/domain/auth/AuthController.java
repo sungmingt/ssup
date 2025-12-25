@@ -2,8 +2,6 @@ package com.ssup.backend.domain.auth;
 
 import com.ssup.backend.domain.auth.dto.SignUpRequest;
 import com.ssup.backend.domain.auth.dto.SignUpResponse;
-import com.ssup.backend.domain.user.profile.UserProfileService;
-import com.ssup.backend.domain.user.profile.dto.UserProfileResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

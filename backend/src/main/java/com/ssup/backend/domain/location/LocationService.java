@@ -1,6 +1,5 @@
 package com.ssup.backend.domain.location;
 
-
 import com.ssup.backend.domain.location.dto.LocationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     left join fetch i.category
     where u.id = :id
     """)
-    Optional<User> findMeProfileById(@Param("userId") Long id);
+    Optional<User> findMeProfileById(@Param("id") Long id);
 
     //N+1 제거 (상대방 프로필)
     @Query("""
@@ -28,14 +28,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     left join fetch ui.interest i
     where u.id = :id
     """)
-    Optional<User> findUserProfileById(@Param("userId") Long id);
+    Optional<User> findUserProfileById(@Param("id") Long id);
 
     //N+1 제거
     @Query("""
     select u from User u
     join fetch u.languages ul
     join fetch ul.language
-    where u.id = :userId
+    where u.id = :id
     """)
-    Optional<User> findWithLanguages(@Param("userId") Long userId);
+    Optional<User> findWithLanguages(@Param("id") Long id);
 }

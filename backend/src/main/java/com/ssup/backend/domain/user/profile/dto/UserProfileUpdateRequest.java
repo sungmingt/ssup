@@ -2,6 +2,7 @@ package com.ssup.backend.domain.user.profile.dto;
 
 import com.ssup.backend.domain.user.Gender;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserProfileUpdateRequest {
 
     private String nickname;
