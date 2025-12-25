@@ -2,10 +2,10 @@ package com.ssup.backend.domain.user.profile;
 
 import com.ssup.backend.domain.user.profile.dto.UserMeProfileCreateRequest;
 import com.ssup.backend.domain.user.profile.dto.UserMeProfileResponse;
-import com.ssup.backend.domain.user.profile.dto.UserProfileResponse;
 import com.ssup.backend.domain.user.profile.dto.UserProfileUpdateRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,5 +34,11 @@ public class UserMeProfileController {
             @RequestPart("dto") UserProfileUpdateRequest request
     ) {
         return userProfileService.updateMyProfile(1L, image, request);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMyAccount() {
+        userProfileService.deleteMyAccount(1L);
+        return ResponseEntity.noContent().build();
     }
 }
