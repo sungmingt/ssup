@@ -116,7 +116,7 @@ public class UserProfileService {
             Interest interest = interestRepository.findById(interestId)
                     .orElseThrow(() -> new SsupException(INTEREST_NOT_FOUND));
 
-            UserInterest userInterest = new UserInterest(user, interest);
+            user.addInterest(interest);
         }
     }
 }

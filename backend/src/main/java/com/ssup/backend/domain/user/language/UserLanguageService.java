@@ -65,12 +65,7 @@ public class UserLanguageService {
             Language language = languageRepository.findById(item.getLanguageId())
                     .orElseThrow(() -> new SsupException(LANGUAGE_NOT_FOUND));
 
-            new UserLanguage(
-                    user,
-                    language,
-                    item.getLevel(),
-                    item.getType()
-            );
+            user.addLanguage(language, item.getLevel(), item.getType());
         }
     }
 }
