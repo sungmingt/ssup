@@ -10,6 +10,9 @@ import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,8 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "users")
+@FilterDef(name = "activeUserFilter", parameters = @ParamDef(name = "status", type = String.class))
+@Filter(name = "activeUserFilter", condition = "status = :status")
 public class User extends BaseTimeEntity {
 
     //===== mapping =====
