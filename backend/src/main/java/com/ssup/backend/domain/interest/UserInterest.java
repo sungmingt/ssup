@@ -29,7 +29,6 @@ public class UserInterest {
     public UserInterest(User user, Interest interest) {
         this.user = user;
         this.interest = interest;
-        user.getInterests().add(this);
     }
 }
 

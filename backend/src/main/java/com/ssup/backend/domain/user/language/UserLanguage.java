@@ -44,6 +44,5 @@ public class UserLanguage {
         this.language = language;
         this.level = level;
         this.type = type;
-        user.getLanguages().add(this);
     }
 }

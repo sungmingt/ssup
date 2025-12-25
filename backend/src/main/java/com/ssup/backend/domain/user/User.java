@@ -3,7 +3,11 @@ package com.ssup.backend.domain.user;
 import com.ssup.backend.domain.comment.Comment;
 import com.ssup.backend.domain.heart.comment.CommentHeart;
 import com.ssup.backend.domain.heart.post.PostHeart;
+import com.ssup.backend.domain.interest.Interest;
 import com.ssup.backend.domain.interest.UserInterest;
+import com.ssup.backend.domain.language.Language;
+import com.ssup.backend.domain.language.LanguageLevel;
+import com.ssup.backend.domain.language.LanguageType;
 import com.ssup.backend.domain.user.language.UserLanguage;
 import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.post.Post;
@@ -99,7 +103,6 @@ public class User extends BaseTimeEntity {
             int age, Gender gender, String contact
     ) {
         this.nickname = nickname;
-        this.imageUrl = imageUrl;
         this.intro = intro;
         this.age = age;
         this.gender = gender;
@@ -123,5 +126,21 @@ public class User extends BaseTimeEntity {
         this.location = location;
 
         this.status = UserStatus.ACTIVE;
+    }
+
+    public void addLanguage(Language language, LanguageLevel level, LanguageType type) {
+        this.languages.add(new UserLanguage(this, language, level, type));
+    }
+
+    public void addInterest(Interest interest) {
+        this.interests.add(new UserInterest(this, interest));
+    }
+
+    public void activate() {
+        this.status = UserStatus.ACTIVE;
+    }
+
+    public void delete() {
+        this.status = UserStatus.DELETED;
     }
 }
