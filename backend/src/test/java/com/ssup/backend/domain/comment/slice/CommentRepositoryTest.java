@@ -4,7 +4,9 @@ import com.ssup.backend.domain.comment.Comment;
 import com.ssup.backend.domain.comment.CommentRepository;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.user.User;
-import org.assertj.core.api.Assertions;
+import com.ssup.backend.fixture.user.UserJpaFixture;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +26,19 @@ class CommentRepositoryTest {
     private CommentRepository commentRepository;
 
     @Autowired
-    private TestEntityManager em;
+    private TestEntityManager tem;
+    private EntityManager em;
+
+    @BeforeEach
+    void setUp() {
+        this.em = tem.getEntityManager();
+    }
 
     @DisplayName("특정 글의 댓글목록 조회 - 삭제되지 않은 댓글만 조회")
     @Test
     void findList_onlyUndeletedComments() {
         //given
-        User user = getUser();
+        User user = UserJpaFixture.createUser(em);
         Post post = getPost(10, user);
         getComment(post, user, "comment1", false);
         getComment(post, user, "comment2", true);
@@ -47,7 +55,7 @@ class CommentRepositoryTest {
     //=== init ===
 
     private Comment getComment(Post post, User user, String content, boolean deleted) {
-        Comment comment = em.persist(Comment.builder()
+        Comment comment = tem.persist(Comment.builder()
                 .post(post)
                 .author(user)
                 .content(content)
@@ -60,7 +68,7 @@ class CommentRepositoryTest {
     }
 
     private Post getPost(int viewCount, User author) {
-        Post post = em.persist(Post.builder()
+        Post post = tem.persist(Post.builder()
                 .title("title ")
                 .content("content")
                 .author(author)
@@ -70,15 +78,5 @@ class CommentRepositoryTest {
         em.flush();
         em.clear();
         return post;
-    }
-
-    private User getUser() {
-        User user = em.persist(User.builder()
-                .email("email123@gmail.com")
-                .build());
-
-        em.flush();
-        em.clear();
-        return user;
     }
 }

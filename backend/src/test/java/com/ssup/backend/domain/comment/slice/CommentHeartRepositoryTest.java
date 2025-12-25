@@ -1,18 +1,19 @@
 package com.ssup.backend.domain.comment.slice;
 
 import com.ssup.backend.domain.comment.Comment;
-import com.ssup.backend.domain.comment.CommentRepository;
 import com.ssup.backend.domain.heart.comment.CommentHeart;
 import com.ssup.backend.domain.heart.comment.CommentHeartRepository;
 import com.ssup.backend.domain.post.Post;
-import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
-import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.fixture.user.UserJpaFixture;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -23,18 +24,18 @@ class CommentHeartRepositoryTest {
     CommentHeartRepository commentHeartRepository;
 
     @Autowired
-    CommentRepository commentRepository;
+    private TestEntityManager tem;
+    private EntityManager em;
 
-    @Autowired
-    PostRepository postRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    @BeforeEach
+    void setUp() {
+        this.em = tem.getEntityManager();
+    }
 
     @DisplayName("존재하는 좋아요 조회 시도 - 성공")
     @Test
     void existsByCommentAndUser_success() {
-        User user = getUser();
+        User user = UserJpaFixture.createUser(em);
         Post post = getPost(user);
         Comment comment = getComment(post, user);
 
@@ -53,7 +54,7 @@ class CommentHeartRepositoryTest {
                 .post(post)
                 .build();
 
-        return commentRepository.save(comment);
+        return tem.persist(comment);
     }
 
     private Post getPost(User author) {
@@ -63,14 +64,6 @@ class CommentHeartRepositoryTest {
                 .author(author)
                 .build();
 
-        return postRepository.save(post);
-    }
-
-    private User getUser() {
-        User user = User.builder()
-                .email("email123@gmail.com")
-                .build();
-
-        return userRepository.save(user);
+        return tem.persist(post);
     }
 }

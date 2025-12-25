@@ -11,6 +11,7 @@ import com.ssup.backend.domain.user.language.UserLanguageService;
 import com.ssup.backend.domain.user.language.dto.UserLanguageRequestItem;
 import com.ssup.backend.domain.user.language.dto.UserLanguageResponse;
 import com.ssup.backend.domain.user.language.dto.UserLanguageUpdateRequest;
+import com.ssup.backend.fixture.user.UserFixture;
 import com.ssup.backend.global.exception.SsupException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,13 +43,7 @@ class UserLanguageServiceTest {
     @Test
     void findUserLanguages_success() {
         //given
-        User user = getUser();
-        Language english = getLanguage(1L, "EN");
-        Language korean = getLanguage(2L, "KO");
-
-        new UserLanguage(user, english, LanguageLevel.NATIVE, LanguageType.USING);
-        new UserLanguage(user, korean, LanguageLevel.BEGINNER, LanguageType.LEARNING);
-
+        User user = UserFixture.createUser();
         given(userRepository.findWithLanguages(1L)).willReturn(Optional.of(user));
 
         //when
@@ -57,8 +52,8 @@ class UserLanguageServiceTest {
         //then
         assertThat(response.getUsingLanguages()).hasSize(1);
         assertThat(response.getLearningLanguages()).hasSize(1);
-        assertThat(response.getUsingLanguages().get(0).getCode()).isEqualTo("EN");
-        assertThat(response.getLearningLanguages().get(0).getCode()).isEqualTo("KO");
+        assertThat(response.getUsingLanguages().get(0).getCode()).isEqualTo("KO");
+        assertThat(response.getLearningLanguages().get(0).getCode()).isEqualTo("EN");
     }
 
     @DisplayName("유저 언어 조회 - 실패 (유저 없음)")
@@ -142,7 +137,6 @@ class UserLanguageServiceTest {
                 .languages(new ArrayList<>())
                 .build();
     }
-
 
     private Language getLanguage(Long id, String code) {
         return Language.builder()

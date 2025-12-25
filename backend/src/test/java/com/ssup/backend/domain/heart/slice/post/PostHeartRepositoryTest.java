@@ -3,15 +3,16 @@ package com.ssup.backend.domain.heart.slice.post;
 import com.ssup.backend.domain.heart.post.PostHeart;
 import com.ssup.backend.domain.heart.post.PostHeartRepository;
 import com.ssup.backend.domain.post.Post;
-import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
-import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.fixture.user.UserJpaFixture;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -22,20 +23,20 @@ class PostHeartRepositoryTest {
     PostHeartRepository postHeartRepository;
 
     @Autowired
-    PostRepository postRepository;
+    private TestEntityManager tem;
+    private EntityManager em;
 
-    @Autowired
-    UserRepository userRepository;
+    private User author;
 
     @DisplayName("존재하는 좋아요 조회 시도 - 성공")
     @Test
     void existsByPostAndUser_success() {
-        User user = getUser();
-        Post post = getPost(1L, 10, user);
+        //given
+        Post post = getPost(1L, 10, author);
+        postHeartRepository.save(new PostHeart(post, author));
 
-        postHeartRepository.save(new PostHeart(post, user));
-
-        Assertions.assertThat(postHeartRepository.existsByPostIdAndUserId(post.getId(), user.getId()))
+        //when, then
+        Assertions.assertThat(postHeartRepository.existsByPostIdAndUserId(post.getId(), author.getId()))
                 .isTrue();
     }
 
@@ -43,7 +44,9 @@ class PostHeartRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        User author = getUser();
+        this.em = tem.getEntityManager();
+
+        author = UserJpaFixture.createUser(em);
 
         // viewCount 기준 정렬 테스트용
         getPost(1, 300, author);
@@ -63,14 +66,6 @@ class PostHeartRepositoryTest {
                 .viewCount(viewCount)
                 .build();
 
-        return postRepository.save(post);
-    }
-
-    private User getUser() {
-        User user = User.builder()
-                .email("email123@gmail.com")
-                .build();
-
-        return userRepository.save(user);
+        return tem.persist(post);
     }
 }

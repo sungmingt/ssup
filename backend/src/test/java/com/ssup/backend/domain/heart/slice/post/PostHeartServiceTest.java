@@ -3,9 +3,9 @@ package com.ssup.backend.domain.heart.slice.post;
 import com.ssup.backend.domain.heart.dto.HeartResponse;
 import com.ssup.backend.domain.heart.post.PostHeartService;
 import com.ssup.backend.domain.post.Post;
-import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
-import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.fixture.user.UserJpaFixture;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +24,13 @@ class PostHeartServiceTest {
     PostHeartService postHeartService;
 
     @Autowired
-    PostRepository postRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    EntityManager em;
 
     @DisplayName("좋아요 최초 시도 - 성공")
     @Test
     void findHearts_firstTime_success() {
         //given
-        User user = getUser();
+        User user = UserJpaFixture.createUser(em);
         Post post = getPost(10, user);
 
         //when
@@ -49,7 +46,7 @@ class PostHeartServiceTest {
     @Test
     void undoHeart_success() {
         //given
-        User user = getUser();
+        User user = UserJpaFixture.createUser(em);
         Post post = getPost(10, user);
 
         //when
@@ -70,14 +67,7 @@ class PostHeartServiceTest {
                 .viewCount(viewCount)
                 .build();
 
-        return postRepository.save(post);
-    }
-
-    private User getUser() {
-        User user = User.builder()
-                .email("email123@gmail.com")
-                .build();
-
-        return userRepository.save(user);
+        em.persist(post);
+        return post;
     }
 }
