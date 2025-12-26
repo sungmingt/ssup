@@ -16,7 +16,6 @@ import java.util.List;
 @Tag(name = "Language", description = "언어 API")
 public class LanguageController {
 
-
     private final LanguageService languageService;
 
     @Operation(summary = "언어 목록 조회", description = "전체 언어 목록 조회")

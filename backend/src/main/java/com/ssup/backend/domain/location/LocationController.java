@@ -1,8 +1,6 @@
 package com.ssup.backend.domain.location;
 
 import com.ssup.backend.domain.location.dto.LocationResponse;
-import com.ssup.backend.domain.post.PostService;
-import com.ssup.backend.domain.post.dto.PostListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +21,7 @@ public class LocationController {
 
     @Operation(summary = "지역 조회", description = "시/도 or 군/구 조회")
     @GetMapping
-    public List<LocationResponse> getLocation(@RequestParam(required = false, value = "level") Long level,
-                                                @RequestParam(required = false, value = "parent_id") Long parentId) {
+    public List<LocationResponse> findLocations(@RequestParam(required = false, value = "parentId") Long parentId) {
 
         if (parentId != null) {
             return locationService.getSiGunGuList(parentId);
