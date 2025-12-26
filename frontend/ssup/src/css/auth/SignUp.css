@@ -1,0 +1,31 @@
+.intro-form {
+  height: 80px;
+}
+
+.signup-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f4fbf7, #ffffff);
+  padding-top: 80px;
+}
+
+.signup-box {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+}
+
+.signup-title {
+  font-weight: 700;
+}
+
+.signup-btn {
+  background: linear-gradient(135deg, #6fcf97, #27ae60);
+  border: none;
+  font-weight: 600;
+}
+
+.signup-btn:hover {
+  background: linear-gradient(135deg, #4fbf7f, #219653);
+}
