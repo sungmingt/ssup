@@ -7,6 +7,7 @@ import "./../../css/post/Post.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import defaultImage from "./../../assets/ssup_post_default_image.webp";
 import CommentSection from "./../comment/CommentSection.jsx";
+import InfoLayout from "./../../layouts/InfoLayout";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -106,107 +107,109 @@ const Post = () => {
     : createdAt.toLocaleString();
 
   return (
-    <div className="post-page-wrapper py-5">
-      <div className="post-detail-wrapper mx-auto">
-        {/* 뒤로가기 */}
-        {/* 상단 네비게이션 + 수정/삭제 */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => navigate("/posts")}
-          >
-            ← 목록으로
-          </button>
+    <InfoLayout>
+      <div className="post-page-wrapper py-5">
+        <div className="post-detail-wrapper mx-auto">
+          {/* 뒤로가기 */}
+          {/* 상단 네비게이션 + 수정/삭제 */}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => navigate("/posts")}
+            >
+              ← 목록으로
+            </button>
 
-          {isMyPost && (
-            <div className="d-flex gap-2">
-              <button
-                className="btn btn-outline-secondary btn-sm"
-                onClick={() => navigate(`/posts/${post.id}/update`)}
-              >
-                수정
-              </button>
-              <button
-                className="btn btn-outline-danger btn-sm"
-                onClick={onDelete}
-              >
-                삭제
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 메인 카드 */}
-        <div className="post-main-card bg-white shadow-sm rounded p-4">
-          {/* 제목 + 언어 */}
-          <div className="d-flex justify-content-between align-items-start mb-1 gap-2">
-            <h3 className="fw-bold mb-3">{post.title}</h3>
-
-            {(post.usingLanguage || post.learningLanguage) && (
-              <div className="language-badge">
-                {post.usingLanguage || "—"} → {post.learningLanguage || "—"}
+            {isMyPost && (
+              <div className="d-flex gap-2">
+                <button
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() => navigate(`/posts/${post.id}/update`)}
+                >
+                  수정
+                </button>
+                <button
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={onDelete}
+                >
+                  삭제
+                </button>
               </div>
             )}
           </div>
 
-          {/* 작성일 */}
-          <div className="text-muted small mb-4">{createdText}</div>
+          {/* 메인 카드 */}
+          <div className="post-main-card bg-white shadow-sm rounded p-4">
+            {/* 제목 + 언어 */}
+            <div className="d-flex justify-content-between align-items-start mb-1 gap-2">
+              <h3 className="fw-bold mb-3">{post.title}</h3>
 
-          {/* 작성자 + 친구 신청 */}
-          <div className="d-flex align-items-center mb-4 gap-3">
-            <div className="d-flex align-items-center">
-              <img
-                src={post.authorImageUrl || defaultProfile}
-                alt="author"
-                className="rounded-circle"
-                style={{ width: 44, height: 44, objectFit: "cover" }}
-              />
-              <div className="fw-semibold ms-1">{post.authorName}</div>
+              {(post.usingLanguage || post.learningLanguage) && (
+                <div className="language-badge">
+                  {post.usingLanguage || "—"} → {post.learningLanguage || "—"}
+                </div>
+              )}
             </div>
 
-            <button
-              className="btn btn-sm"
-              style={{ backgroundColor: "#cff3cda5" }}
-              onClick={onMatchRequest}
-            >
-              친구 신청
-            </button>
-          </div>
+            {/* 작성일 */}
+            <div className="text-muted small mb-4">{createdText}</div>
 
-          {/* 이미지 */}
-          {post.imageUrls?.length > 0 && (
-            <div className="mb-4">
-              {post.imageUrls.map((url, idx) => (
+            {/* 작성자 + 친구 신청 */}
+            <div className="d-flex align-items-center mb-4 gap-3">
+              <div className="d-flex align-items-center">
                 <img
-                  key={idx}
-                  src={url || defaultImage}
-                  alt={`post-${idx}`}
-                  className="img-fluid rounded mb-2"
-                  style={{ maxHeight: 360, objectFit: "cover" }}
+                  src={post.authorImageUrl || defaultProfile}
+                  alt="author"
+                  className="rounded-circle"
+                  style={{ width: 44, height: 44, objectFit: "cover" }}
                 />
-              ))}
-            </div>
-          )}
+                <div className="fw-semibold ms-1">{post.authorName}</div>
+              </div>
 
-          {/* 본문 */}
-          <p className="post-content">{post.content || "내용이 없습니다."}</p>
-
-          {/* 메타 정보 */}
-          <div className="d-flex justify-content-between align-items-center mt-4 text-muted small">
-            <span>조회 {post.viewCount}</span>
-            <div className="d-flex gap-3">
-              <span style={{ cursor: "pointer" }} onClick={onToggleHeart}>
-                {hearted ? "❤️" : "🤍"} {heartCount}
-              </span>
-              <span>💬 {post.commentCount}</span>
+              <button
+                className="btn btn-sm"
+                style={{ backgroundColor: "#cff3cda5" }}
+                onClick={onMatchRequest}
+              >
+                친구 신청
+              </button>
             </div>
+
+            {/* 이미지 */}
+            {post.imageUrls?.length > 0 && (
+              <div className="mb-4">
+                {post.imageUrls.map((url, idx) => (
+                  <img
+                    key={idx}
+                    src={url || defaultImage}
+                    alt={`post-${idx}`}
+                    className="img-fluid rounded mb-2"
+                    style={{ maxHeight: 360, objectFit: "cover" }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* 본문 */}
+            <p className="post-content">{post.content || "내용이 없습니다."}</p>
+
+            {/* 메타 정보 */}
+            <div className="d-flex justify-content-between align-items-center mt-4 text-muted small">
+              <span>조회 {post.viewCount}</span>
+              <div className="d-flex gap-3">
+                <span style={{ cursor: "pointer" }} onClick={onToggleHeart}>
+                  {hearted ? "❤️" : "🤍"} {heartCount}
+                </span>
+                <span>💬 {post.commentCount}</span>
+              </div>
+            </div>
+
+            {/* 댓글 영역 */}
+            {post && <CommentSection postId={post.id} />}
           </div>
-
-          {/* 댓글 영역 */}
-          {post && <CommentSection postId={post.id} />}
         </div>
       </div>
-    </div>
+    </InfoLayout>
   );
 };
 
