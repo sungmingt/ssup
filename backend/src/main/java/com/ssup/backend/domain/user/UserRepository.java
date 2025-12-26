@@ -13,20 +13,29 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     //N+1 제거
     @Query("""
-    select u from User u
-    left join fetch u.interests ui
-    left join fetch ui.interest i
-    left join fetch i.category
-    where u.id = :id
+        select distinct u from User u
+        left join fetch u.languages ul
+        left join fetch ul.language
+        left join fetch u.interests ui
+        left join fetch ui.interest i
+        left join fetch i.category
+        left join fetch u.location l
+        left join fetch l.parent
+        where u.id = :id
     """)
     Optional<User> findMeProfileById(@Param("id") Long id);
 
     //N+1 제거 (상대방 프로필)
     @Query("""
-    select u from User u
-    left join fetch u.interests ui
-    left join fetch ui.interest i
-    where u.id = :id
+        select distinct u from User u
+        left join fetch u.languages ul
+        left join fetch ul.language
+        left join fetch u.interests ui
+        left join fetch ui.interest i
+        left join fetch i.category
+        left join fetch u.location l
+        left join fetch l.parent
+        where u.id = :id
     """)
     Optional<User> findUserProfileById(@Param("id") Long id);
 
