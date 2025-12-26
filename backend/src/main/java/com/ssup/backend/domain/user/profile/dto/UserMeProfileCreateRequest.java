@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,4 +28,6 @@ public class UserMeProfileCreateRequest {
 
     @NotEmpty
     private UserLocationUpdateRequest location;
+
+    private List<UserInterestRequestItem> interests;
 }

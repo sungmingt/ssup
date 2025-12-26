@@ -7,6 +7,7 @@ import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.location.LocationRepository;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.interest.UserInterestRepository;
 import com.ssup.backend.domain.user.profile.dto.*;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
@@ -30,6 +31,7 @@ public class UserProfileService {
     private final ImageStorage imageStorage;
     private final LocationRepository locationRepository;
     private final InterestRepository interestRepository;
+    private final UserInterestRepository userInterestRepository;
 
     @Transactional(readOnly = true)
     public UserProfileResponse findUserProfile(Long userId) {
@@ -54,6 +56,23 @@ public class UserProfileService {
 
         Location location = locationRepository.findById(request.getLocation().getSiGunGuId())
                 .orElseThrow(() -> new SsupException(LOCATION_NOT_FOUND));
+
+        List<Long> interestIds = request.getInterests().stream()
+                .map(UserInterestRequestItem::getInterestId)
+                .toList();
+
+        if (!interestIds.isEmpty()) {
+            userInterestRepository.deleteByUserId(user.getId());
+
+            List<Interest> interests = interestRepository.findAllById(interestIds);
+            if (interests.size() != interestIds.size()) {
+                throw new SsupException(INTEREST_NOT_FOUND);
+            }
+
+            interests.forEach(i ->
+                    userInterestRepository.save(new UserInterest(user, i))
+            );
+        }
 
         user.initProfile(request.getImageUrl(), request.getAge(), request.getGender(),
                 request.getIntro(), request.getContact(), location
