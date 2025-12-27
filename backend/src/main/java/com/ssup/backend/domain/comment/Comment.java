@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +22,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Builder
-@FilterDef(name = "activeCommentFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "activeCommentFilter", condition = "deleted = :isDeleted")
 public class Comment extends BaseTimeEntity {
 
     @Id

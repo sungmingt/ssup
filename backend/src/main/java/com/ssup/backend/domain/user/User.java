@@ -14,9 +14,6 @@ import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,8 +26,6 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "users")
-@FilterDef(name = "activeUserFilter", parameters = @ParamDef(name = "status", type = String.class))
-@Filter(name = "activeUserFilter", condition = "status = :status")
 public class User extends BaseTimeEntity {
 
     //===== mapping =====
@@ -72,7 +67,7 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @Column(length = 30)
+    @Column(length = 255)
     private String imageUrl;
 
     @Column(length = 10, nullable = false)
@@ -119,15 +114,11 @@ public class User extends BaseTimeEntity {
         this.location = location;
     }
 
-    public void initProfile(String imageUrl, int age, Gender gender, String intro, String contact, Location location) {
-        this.imageUrl = imageUrl;
+    public void initProfile(int age, Gender gender, String intro, String contact) {
         this.age = age;
         this.gender = gender;
         this.intro = intro;
         this.contact = contact;
-        this.location = location;
-
-        this.status = UserStatus.ACTIVE;
     }
 
     public void addLanguage(Language language, LanguageLevel level, LanguageType type) {
