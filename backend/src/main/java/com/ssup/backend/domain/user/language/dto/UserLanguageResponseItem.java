@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserLanguageResponseItem {
 
-    private Long languageId;
+    private Long id;
 
     private String code;
 
