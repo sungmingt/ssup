@@ -55,6 +55,22 @@ function Profile({ isMyProfile = false }) {
     fetchUserLanguages();
   }, [id]);
 
+  const onDeleteAccount = async () => {
+    const ok = window.confirm(
+      "정말 계정을 삭제할까요? 삭제 후 복구할 수 없습니다."
+    );
+    if (!ok) return;
+
+    try {
+      await profileApi.deleteMyProfile(); // 백엔드 delete API에 맞춰서
+      alert("계정이 삭제되었습니다.");
+      navigate("/"); // 또는 로그인 페이지
+    } catch (e) {
+      console.error(e);
+      alert("계정 삭제 실패");
+    }
+  };
+
   if (!profile) return <div className="text-center mt-5">로딩중...</div>;
 
   return (
@@ -91,7 +107,10 @@ function Profile({ isMyProfile = false }) {
 
               {/* 친구 요청 / 수정 버튼 */}
               {isMyProfile ? (
-                <button className="btn btn-outline-secondary btn-sm profile-action-btn">
+                <button
+                  className="btn btn-outline-secondary btn-sm profile-action-btn"
+                  onClick={() => navigate("/me/profile/edit")}
+                >
                   프로필 수정
                 </button>
               ) : (
@@ -127,6 +146,18 @@ function Profile({ isMyProfile = false }) {
           <div className="profile-section card contact-card">
             <h5>연락처</h5>
             <p>{profile.contact}</p>
+          </div>
+        )}
+
+        {isMyProfile && (
+          <div className="mt-3 text-end">
+            <button
+              type="button"
+              className="btn account-delete-btn profile-delete-btn"
+              onClick={onDeleteAccount}
+            >
+              계정 삭제
+            </button>
           </div>
         )}
       </div>

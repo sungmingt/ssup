@@ -148,3 +148,15 @@
   border: 4px solid #b9e3b7;
   background: #fff;
 }
+
+.account-delete-btn {
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  background: #fff;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+.account-delete-btn:hover {
+  background: rgba(255, 107, 107, 0.08);
+}

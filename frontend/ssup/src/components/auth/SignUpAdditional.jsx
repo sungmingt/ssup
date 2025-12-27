@@ -4,12 +4,16 @@ import { profileApi } from "@/api";
 import { locationApi } from "@/api";
 import { interestApi } from "@/api";
 import FormLayout from "./../../layouts/FormLayout";
+import defaultProfile from "@/assets/ssup_user_default_image.png";
 import "./../../css/auth/SignUpAdditional.css";
 
 function SignUpAdditional() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const userId = state?.userId;
+
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const [siDoId, setSiDoId] = useState("");
   const [siDoList, setSiDoList] = useState([]);
@@ -62,6 +66,18 @@ function SignUpAdditional() {
 
   if (!userId) return <p>잘못된 접근입니다.</p>;
 
+  const onImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  const removeProfileImage = () => {
+    setImage(null);
+    setPreview(null);
+  };
+
   const onChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -86,6 +102,8 @@ function SignUpAdditional() {
       new Blob([JSON.stringify(dto)], { type: "application/json" })
     );
 
+    if (image instanceof File) formData.append("image", image);
+
     try {
       await profileApi.createMyProfile(formData);
       navigate("/profile");
@@ -98,6 +116,27 @@ function SignUpAdditional() {
     <FormLayout>
       <h3 className="fw-bold mb-4 text-center">추가 정보 입력</h3>
       <form onSubmit={onSubmit}>
+        {/* === 프로필 이미지 === */}
+        <div className="text-center mb-4">
+          <img
+            src={preview || defaultProfile}
+            className="profile-edit-avatar mb-2"
+          />
+
+          <div className="interest-select-box justify-content-center">
+            <label className="interest-chip">
+              이미지 변경
+              <input type="file" hidden onChange={onImageChange} />
+            </label>
+
+            {preview && (
+              <span className="interest-chip" onClick={removeProfileImage}>
+                이미지 삭제
+              </span>
+            )}
+          </div>
+        </div>
+
         <span className="form-label-title">나이</span>
 
         <input
