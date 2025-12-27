@@ -1,0 +1,65 @@
+package com.ssup.backend.global.config;
+
+import com.ssup.backend.domain.auth.oauth.CustomOAuth2UserService;
+import com.ssup.backend.domain.auth.oauth.JwtAuthenticationFilter;
+import com.ssup.backend.domain.auth.oauth.OAuth2SuccessHandler;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import static com.ssup.backend.domain.auth.oauth.PathMatcher.*;
+
+@RequiredArgsConstructor
+@Configuration
+public class SecurityConfig {
+
+    private final CorsConfigurationSource corsConfigurationSource;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable) //기본 인증 로그인 비활성화
+                .formLogin(AbstractHttpConfigurer::disable) //Spring 기본 로그인 페이지 제거
+                .logout(AbstractHttpConfigurer::disable) //세션 기반 로그아웃 엔드포인트 제거
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+
+                //cors
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+
+                //permit requests
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(SWAGGER).permitAll()
+                        .requestMatchers(AUTH).permitAll()
+                        .requestMatchers(OTHERS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+
+                        .anyRequest().authenticated()
+                )
+
+                //oauth2
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
+                )
+
+                //filter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+}
