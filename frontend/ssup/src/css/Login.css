@@ -1,0 +1,121 @@
+/* 화면 전체 흰색에 중앙 정렬 */
+.login-wrapper {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  /* background: #dbf5d9ab; */
+
+  display: flex;
+  justify-content: center; /* 수평 가운데 */
+  /* align-items 제거 */
+
+  padding-top: 120px;
+}
+
+/* 로그인 박스 → 배경/테두리 제거 (피그마처럼 flat) */
+.login-box {
+  width: 360px;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* 제목 */
+.login-box h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.login-btn {
+  background-color: #77e071a5;
+  border: none;
+  color: #000;
+}
+
+/* label 스타일 */
+.form-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* 입력창 피그마 스타일 */
+.form-control {
+  height: 44px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* 로그인 버튼 */
+.btn-primary {
+  height: 46px;
+  width: 280px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.login-btn {
+  width: 240px; /* 원하는 너비 */
+  height: 45px;
+
+  display: block; /* margin: auto가 먹도록 강제 */
+  margin: 0 auto; /* 가운데 정렬 */
+
+  /* Bootstrap 버튼 스타일 그대로 유지 */
+}
+
+/* 소셜 버튼 공통 */
+.btn-light,
+.btn-warning {
+  height: 46px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.btn-light {
+  border: 1px solid #e0e0e0 !important;
+}
+
+.btn-warning {
+  background-color: #fee500 !important;
+  border: 1px solid #e5d000 !important;
+  color: #3a1d1d !important;
+  font-weight: 600;
+}
+
+/* '또는' 구분선 (피그마 스타일) */
+.divider {
+  color: #999;
+  font-size: 13px;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #ddd;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #6fcf97, #27ae60);
+  border: none;
+  font-weight: 600;
+}
+
+.login-btn:hover {
+  background: linear-gradient(135deg, #4fbf7f, #219653);
+}
