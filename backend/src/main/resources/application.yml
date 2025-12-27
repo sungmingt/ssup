@@ -6,6 +6,7 @@ spring:
       - ssup-security/application.yml
       - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
+      - ssup-security/application-auth.yml
 
 ---
 
@@ -17,3 +18,4 @@ spring:
       - ssup-security/application.yml
       - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
+      - ssup-security/application-auth.yml
