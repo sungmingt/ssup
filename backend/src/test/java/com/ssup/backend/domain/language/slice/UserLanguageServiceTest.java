@@ -7,6 +7,7 @@ import com.ssup.backend.domain.language.LanguageType;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.domain.user.language.UserLanguage;
+import com.ssup.backend.domain.user.language.UserLanguageRepository;
 import com.ssup.backend.domain.user.language.UserLanguageService;
 import com.ssup.backend.domain.user.language.dto.UserLanguageRequestItem;
 import com.ssup.backend.domain.user.language.dto.UserLanguageResponse;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +40,9 @@ class UserLanguageServiceTest {
 
     @Mock
     private LanguageRepository languageRepository;
+
+    @Mock
+    private UserLanguageRepository userLanguageRepository;
 
     @DisplayName("유저 언어 조회 - 성공 (USING/LEARNING 분리)")
     @Test
@@ -89,8 +94,9 @@ class UserLanguageServiceTest {
 
         //then
         assertThat(user.getLanguages()).hasSize(1);
-        assertThat(user.getLanguages().get(0).getType())
-                .isEqualTo(LanguageType.LEARNING);
+        assertThat(user.getLanguages())
+                .extracting(UserLanguage::getType)
+                .contains(LanguageType.LEARNING);
     }
 
     @DisplayName("유저의 사용 언어 수정 - 성공")
@@ -134,7 +140,7 @@ class UserLanguageServiceTest {
     private User getUser() {
         return User.builder()
                 .id(1L)
-                .languages(new ArrayList<>())
+                .languages(new HashSet<>())
                 .build();
     }
 

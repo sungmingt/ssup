@@ -5,11 +5,9 @@ import com.ssup.backend.domain.interest.InterestCategory;
 import com.ssup.backend.domain.interest.InterestRepository;
 import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.location.LocationRepository;
+import com.ssup.backend.domain.user.interest.UserInterestRepository;
 import com.ssup.backend.domain.user.profile.UserProfileService;
-import com.ssup.backend.domain.user.profile.dto.UserLocationUpdateRequest;
-import com.ssup.backend.domain.user.profile.dto.UserMeProfileCreateRequest;
-import com.ssup.backend.domain.user.profile.dto.UserMeProfileResponse;
-import com.ssup.backend.domain.user.profile.dto.UserProfileUpdateRequest;
+import com.ssup.backend.domain.user.profile.dto.*;
 import com.ssup.backend.fixture.user.UserFixture;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
@@ -24,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +47,9 @@ class UserProfileServiceTest {
 
     @Mock
     private InterestRepository interestRepository;
+
+    @Mock
+    private UserInterestRepository userInterestRepository;
 
     @DisplayName("나의 프로필 조회 - 성공")
     @Test
@@ -78,13 +80,17 @@ class UserProfileServiceTest {
                 .age(20)
                 .contact("010")
                 .location(new UserLocationUpdateRequest(99L))
+                .interests(List.of(new UserInterestRequestItem(1L)))
                 .build();
 
         given(locationRepository.findById(99L))
                 .willReturn(Optional.empty());
+        given(interestRepository.findAllById(List.of(1L))).willReturn(List.of(getInterest(1L)));
+
+        MockMultipartFile image = getMockImage();
 
         //when, then
-        assertThatThrownBy(() -> userProfileService.createMyProfile(1L, request))
+        assertThatThrownBy(() -> userProfileService.createMyProfile(1L, image, request))
                 .isInstanceOf(SsupException.class)
                 .hasMessageContaining(ErrorCode.LOCATION_NOT_FOUND.getMessage());
     }
@@ -153,8 +159,7 @@ class UserProfileServiceTest {
         Interest i2 = getInterest(2L);
 
         given(userRepository.findMeProfileById(1L)).willReturn(Optional.of(user));
-        given(interestRepository.findById(1L)).willReturn(Optional.of(i1));
-        given(interestRepository.findById(2L)).willReturn(Optional.of(i2));
+        given(interestRepository.findAllById(List.of(i1.getId(), i2.getId()))).willReturn(List.of(i1, i2));
 
         UserProfileUpdateRequest request = UserProfileUpdateRequest.builder()
                 .intro("hihi")
@@ -170,13 +175,17 @@ class UserProfileServiceTest {
         assertThat(user.getInterests()).hasSize(2);
     }
 
+    @DisplayName("계정 삭제 시, soft delete가 수행된다.")
     @Test
     void deleteMyAccount_softDelete_success() {
+        //given
         User user = UserFixture.createUser();
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
+        //when
         userProfileService.deleteMyAccount(1L);
 
+        //then
         assertThat(user.getStatus()).isEqualTo(UserStatus.DELETED);
     }
 
@@ -187,7 +196,7 @@ class UserProfileServiceTest {
                 .id(1L)
                 .imageUrl("old.png")
                 .age(33)
-                .languages(new ArrayList<>())
+                .languages(new HashSet<>())
                 .location(new Location(1L, "강남구", 1, Location.builder().id(1L).name("서울특별시").level(1).build()))
                 .build();
     }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 @WebMvcTest(UserMeProfileController.class)
 class UserMeProfileControllerTest {
 
@@ -64,14 +66,14 @@ class UserMeProfileControllerTest {
         MockMultipartFile dto = getDtoPart(request);
         MockMultipartFile image = getImagePart();
 
-        given(userProfileService.createMyProfile(eq(1L), any()))
+        given(userProfileService.createMyProfile(any(), any(), any()))
                 .willReturn(UserMeProfileResponse.builder().id(1L).build());
 
-        // when & then
+        //when, then
         mockMvc.perform(multipart("/api/users/me/profile")
                         .file(dto)
                         .file(image))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L));
     }
 
