@@ -50,4 +50,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     and u.status = 'ACTIVE'
     """)
     Optional<User> findWithLanguages(@Param("id") Long id);
+
+    Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 }
