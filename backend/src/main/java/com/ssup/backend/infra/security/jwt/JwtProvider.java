@@ -1,4 +1,4 @@
-package com.ssup.backend.domain.auth.oauth.token;
+package com.ssup.backend.infra.security.jwt;
 
 import com.ssup.backend.global.exception.SsupException;
 import io.jsonwebtoken.*;
@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.ssup.backend.domain.auth.oauth.token.TokenInfo.*;
+import static com.ssup.backend.infra.security.jwt.TokenInfo.*;
 import static com.ssup.backend.global.exception.ErrorCode.*;
 
 @Component

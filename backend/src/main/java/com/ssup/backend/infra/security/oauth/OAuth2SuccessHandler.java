@@ -1,7 +1,7 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.infra.security.oauth;
 
-import com.ssup.backend.domain.auth.oauth.token.JwtCookieProvider;
-import com.ssup.backend.domain.auth.oauth.token.JwtProvider;
+import com.ssup.backend.infra.security.jwt.JwtCookieProvider;
+import com.ssup.backend.infra.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

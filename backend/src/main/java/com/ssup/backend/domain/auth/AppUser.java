@@ -1,4 +1,4 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.domain.auth;
 
 import lombok.Getter;
 

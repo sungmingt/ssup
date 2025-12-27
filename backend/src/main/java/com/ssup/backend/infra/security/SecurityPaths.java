@@ -1,11 +1,11 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.infra.security;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PathMatcher {
+public class SecurityPaths {
 
-    private PathMatcher(){}
+    private SecurityPaths(){}
 
     public static final String[] SWAGGER = {
             "/", "/error", "/favicon.ico",

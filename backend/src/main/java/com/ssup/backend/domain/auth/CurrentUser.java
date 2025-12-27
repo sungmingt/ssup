@@ -1,4 +1,4 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.domain.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

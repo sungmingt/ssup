@@ -1,7 +1,6 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.infra.security.jwt;
 
-import com.ssup.backend.domain.auth.oauth.token.JwtProvider;
-import com.ssup.backend.domain.auth.oauth.token.TokenInfo;
+import com.ssup.backend.domain.auth.AppUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -18,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
-import static com.ssup.backend.domain.auth.oauth.token.TokenInfo.ACCESS_TOKEN;
+import static com.ssup.backend.infra.security.jwt.TokenInfo.ACCESS_TOKEN;
 
 @Slf4j
 @Component

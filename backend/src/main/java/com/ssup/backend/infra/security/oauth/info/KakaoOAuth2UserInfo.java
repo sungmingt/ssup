@@ -1,4 +1,4 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.infra.security.oauth.info;
 
 import com.ssup.backend.domain.user.SocialType;
 

@@ -1,8 +1,8 @@
 package com.ssup.backend.global.config;
 
-import com.ssup.backend.domain.auth.oauth.CustomOAuth2UserService;
-import com.ssup.backend.domain.auth.oauth.JwtAuthenticationFilter;
-import com.ssup.backend.domain.auth.oauth.OAuth2SuccessHandler;
+import com.ssup.backend.infra.security.oauth.CustomOAuth2UserService;
+import com.ssup.backend.infra.security.jwt.JwtAuthenticationFilter;
+import com.ssup.backend.infra.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import static com.ssup.backend.domain.auth.oauth.PathMatcher.*;
+import static com.ssup.backend.infra.security.SecurityPaths.*;
 
 @RequiredArgsConstructor
 @Configuration

@@ -1,5 +1,7 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.global.resolver;
 
+import com.ssup.backend.domain.auth.AppUser;
+import com.ssup.backend.domain.auth.CurrentUser;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

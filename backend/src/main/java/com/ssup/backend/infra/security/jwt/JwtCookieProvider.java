@@ -1,11 +1,11 @@
-package com.ssup.backend.domain.auth.oauth.token;
+package com.ssup.backend.infra.security.jwt;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-import static com.ssup.backend.domain.auth.oauth.token.TokenInfo.*;
+import static com.ssup.backend.infra.security.jwt.TokenInfo.*;
 
 @Component
 public class JwtCookieProvider {

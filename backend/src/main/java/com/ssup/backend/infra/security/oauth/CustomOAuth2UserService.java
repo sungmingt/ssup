@@ -1,7 +1,9 @@
-package com.ssup.backend.domain.auth.oauth;
+package com.ssup.backend.infra.security.oauth;
 
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.infra.security.oauth.info.OAuth2UserInfo;
+import com.ssup.backend.infra.security.oauth.info.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

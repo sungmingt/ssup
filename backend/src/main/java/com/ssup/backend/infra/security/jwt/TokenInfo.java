@@ -1,4 +1,4 @@
-package com.ssup.backend.domain.auth.oauth.token;
+package com.ssup.backend.infra.security.jwt;
 
 public class TokenInfo {
 
