@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm";
 import PostList from "./components/postList/PostList";
 import Login from "./components/Login";
 import Profile from "./components/user/Profile";
+import ProfileEdit from "./components/user/ProfileEdit";
 import PostCreateForm from "./components/post/PostCreateForm";
 import PostUpdateForm from "./components/post/PostUpdateForm";
 import Post from "./components/post/Post";
@@ -28,6 +29,7 @@ function App() {
 
           <Route path="/profile" element={<Profile isMyProfile />} />
           <Route path="/users/:id/profile" element={<Profile />} />
+          <Route path="/me/profile/edit" element={<ProfileEdit />} />
 
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup/additional" element={<SignUpAdditional />} />
