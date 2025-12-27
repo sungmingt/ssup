@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-@Profile("!test")
+//@Profile("!test")
 //@Profile("local")
 @Order(3)
 public class LocationInitializer implements CommandLineRunner {

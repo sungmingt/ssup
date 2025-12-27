@@ -2,14 +2,9 @@ package com.ssup.backend.domain.user.slice;
 
 import com.ssup.backend.domain.interest.Interest;
 import com.ssup.backend.domain.interest.InterestCategory;
-import com.ssup.backend.domain.language.Language;
-import com.ssup.backend.domain.language.LanguageLevel;
-import com.ssup.backend.domain.language.LanguageType;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
-import com.ssup.backend.domain.user.language.UserLanguage;
-import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
+import com.ssup.backend.fixture.user.UserJpaFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +23,12 @@ class UserRepositoryTest {
 
     @Autowired
     private TestEntityManager tem;
-    private EntityManager em;
-
-    @BeforeEach
-    void setUp() {
-        this.em = tem.getEntityManager();
-    }
 
     @DisplayName("이메일/닉네임으로 유저 조회 - 성공")
     @Test
     void existsByEmailAndNickname_success() {
         //given
-        User user = saveAndGetUser();
+        User user = UserJpaFixture.createUser(tem.getEntityManager());
 
         //when, then
         assertThat(userRepository.existsByEmail(user.getEmail())).isTrue();
@@ -50,19 +39,21 @@ class UserRepositoryTest {
     @Test
     void findMeProfileById_fetchJoin_success() {
         //given
-        User user = saveAndGetUser();
-        InterestCategory category = tem.persist(saveAndGetInterestCategory());
+        User user = UserJpaFixture.createUser(tem.getEntityManager());
+        InterestCategory category = saveAndGetInterestCategory();
         Interest interest = saveAndGetInterest("헬스", category);
         user.addInterest(interest);
-        em.persist(user);
+        tem.flush();
+        tem.clear();
 
         //when
         User findUser = userRepository.findMeProfileById(user.getId()).get();
 
         //then
         assertThat(findUser.getInterests()).hasSize(1);
-        assertThat(findUser.getInterests().get(0).getInterest().getCategory().getName())
-                .isEqualTo("운동");
+        assertThat(findUser.getInterests())
+                .extracting(ui -> ui.getInterest().getCategory().getName())
+                .contains("운동");
     }
 
     @DisplayName("타인의 프로필 조회 시, 연관된 엔티티를 fetch join 한다.")
@@ -72,9 +63,9 @@ class UserRepositoryTest {
         InterestCategory category = InterestCategory.builder().code("SPORTS").name("농구").build();
         tem.persist(category);
         Interest interest = saveAndGetInterest("영화", category);
-        User user = saveAndGetUser();
+        User user = UserJpaFixture.createUser(tem.getEntityManager());
         user.addInterest(interest);
-        em.persist(user);
+        tem.persist(user);
 
         //when
         User findUser = userRepository.findUserProfileById(user.getId()).get();
@@ -87,33 +78,34 @@ class UserRepositoryTest {
     @Test
     void findWithLanguages_fetchJoin_success() {
         //given
-        Language language = tem.persist(Language.builder().code("KO").name("Korean").build());
-        User user = saveAndGetUser();
-        em.persist(new UserLanguage(user, language, LanguageLevel.BEGINNER, LanguageType.LEARNING));
+//        Language language = tem.persist(Language.builder().code("KO").name("Korean").build());
+        User user = UserJpaFixture.createUser(tem.getEntityManager());
+//        tem.persist(new UserLanguage(user, language, LanguageLevel.BEGINNER, LanguageType.LEARNING));
 
         //when
         User findUser = userRepository.findWithLanguages(user.getId()).get();
 
         //then
-        assertThat(findUser.getLanguages()).hasSize(1);
-        assertThat(findUser.getLanguages().get(0).getLanguage().getName())
-                .isEqualTo("Korean");
+        assertThat(findUser.getLanguages()).hasSize(2);
+        assertThat(findUser.getLanguages())
+                .extracting(ul -> ul.getLanguage().getName())
+                .contains("한국어");
+    }
+
+    @DisplayName("삭제된 계정은 더이상 조회 쿼리에 포함되지 않는다.")
+    @Test
+    void deletedAccount_notContainedInFindQueryAnymore() {
+        //given
+        User user = UserJpaFixture.createUser(tem.getEntityManager());
+
+        //when
+        user.delete();
+
+        //then
+        assertThat(userRepository.findUserProfileById(user.getId())).isEmpty();
     }
 
     //===== init ======
-
-    private User saveAndGetUser() {
-        User user = User.builder()
-                .nickname("james")
-                .email("email123@gmail.com")
-                .build();
-
-        em.persist(user);
-        em.flush();
-        em.clear();
-
-        return em.find(User.class, user.getId());
-    }
 
     private InterestCategory saveAndGetInterestCategory() {
         return tem.persist(InterestCategory.builder()

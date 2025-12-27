@@ -5,6 +5,7 @@ import com.ssup.backend.domain.language.LanguageLevel;
 import com.ssup.backend.domain.language.LanguageType;
 import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.user.User;
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.fixture.language.LanguageJpaFixture;
 import com.ssup.backend.fixture.location.LocationJpaFixture;
 import jakarta.persistence.EntityManager;
@@ -24,12 +25,14 @@ public class UserJpaFixture {
                 .imageUrl("old.png")
                 .age(33)
                 .location(siGunGu)
+                .status(UserStatus.ACTIVE)
                 .build();
 
         user.addLanguage(korean, LanguageLevel.NATIVE, LanguageType.USING);
         user.addLanguage(english, LanguageLevel.ADVANCED, LanguageType.LEARNING);
 
         em.persist(user);
+        em.flush();
         return user;
     }
 }
