@@ -50,33 +50,32 @@ public class UserProfileService {
     }
 
     //추가정보 기입 + userStatus: ACTIVE
-    public UserMeProfileResponse createMyProfile(Long userId, UserMeProfileCreateRequest request) {
+    public UserMeProfileResponse createMyProfile(Long userId, MultipartFile image, UserMeProfileCreateRequest request) {
         User user = userRepository.findMeProfileById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
-
-        Location location = locationRepository.findById(request.getLocation().getSiGunGuId())
-                .orElseThrow(() -> new SsupException(LOCATION_NOT_FOUND));
 
         List<Long> interestIds = request.getInterests().stream()
                 .map(UserInterestRequestItem::getInterestId)
                 .toList();
 
         if (!interestIds.isEmpty()) {
-            userInterestRepository.deleteByUserId(user.getId());
-
             List<Interest> interests = interestRepository.findAllById(interestIds);
             if (interests.size() != interestIds.size()) {
                 throw new SsupException(INTEREST_NOT_FOUND);
             }
 
             interests.forEach(i ->
-                    userInterestRepository.save(new UserInterest(user, i))
+                    user.getInterests().add(new UserInterest(user, i))
             );
         }
 
-        user.initProfile(request.getImageUrl(), request.getAge(), request.getGender(),
-                request.getIntro(), request.getContact(), location
+        updateMyProfileImage(image, false, user);
+        updateMyLocation(request.getLocation(), user);
+
+        user.initProfile(request.getAge(), request.getGender(),
+                request.getIntro(), request.getContact()
         );
+        user.activate();
 
         return UserMeProfileResponse.of(user);
     }
@@ -141,13 +140,20 @@ public class UserProfileService {
         //삭제: [], 수정없음: null
         if (interestIds == null) return;
 
-        user.getInterests().clear();  //orphanRemoval
+        user.getInterests().clear();  // orphanRemoval 이 DB delete 처리
 
-        for (Long interestId : interestIds) {
-            Interest interest = interestRepository.findById(interestId)
-                    .orElseThrow(() -> new SsupException(INTEREST_NOT_FOUND));
+        //Hibernate가 기존 row의 delete를 반영해야함. -> Unique index error 방지
+        userInterestRepository.flush();
 
-            user.addInterest(interest);
+        if (!interestIds.isEmpty()) {
+            List<Interest> interests = interestRepository.findAllById(interestIds);
+            if (interests.size() != interestIds.size()) {
+                throw new SsupException(INTEREST_NOT_FOUND);
+            }
+
+            interests.forEach(i ->
+                    user.getInterests().add(new UserInterest(user, i))
+            );
         }
     }
 }

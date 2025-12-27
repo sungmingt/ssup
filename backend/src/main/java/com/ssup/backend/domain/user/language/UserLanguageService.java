@@ -25,6 +25,7 @@ import static com.ssup.backend.global.exception.ErrorCode.*;
 public class UserLanguageService {
 
     private final UserRepository userRepository;
+    private final UserLanguageRepository userLanguageRepository;
     private final LanguageRepository languageRepository;
 
     @Transactional(readOnly = true)
@@ -58,8 +59,8 @@ public class UserLanguageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
-        //기존 언어 모두 제거 (orphanRemoval)
         user.getLanguages().clear();
+        userLanguageRepository.flush();
 
         for (UserLanguageRequestItem item : request.getLanguages()) {
             Language language = languageRepository.findById(item.getLanguageId())
