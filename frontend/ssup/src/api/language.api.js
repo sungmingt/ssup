@@ -1,6 +1,7 @@
 import { api } from "./axios";
 
 export const languageApi = {
+  getLanguageList: (userId) => api.get(`/languages`),
   getUserLanguages: (userId) => api.get(`/users/${userId}/languages`),
-  updateUserLanguages: () => api.put("/users/me/languages"),
+  updateMyLanguages: (formData) => api.put("/users/me/languages", formData),
 };
