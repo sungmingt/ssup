@@ -1,8 +1,8 @@
 import { useAuthStore } from "@/store/authStore";
 import { Navigate } from "react-router-dom";
-import Spinner from "@/Spinner";
+import Spinner from "@/components/common/Spinner";
 
-//권한 제어 및 리다이렉트 주체
+//컴포넌트 권한 제어 및 리다이렉트 주체
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuthStore();
 

@@ -15,7 +15,8 @@ import SignUpAdditional from "./components/auth/SignUpAdditional";
 import MainPage from "./components/MainPage";
 import "./App.css";
 import { useAuthStore } from "./store/authStore";
-import ProtectedRoute from "@/ProtectedRoute";
+import ProtectedRoute from "@/routes/ProtectedRoute";
+import GlobalErrorLayer from "./components/common/GlobalErrorLayer";
 
 function App() {
   const initAuth = useAuthStore((s) => s.initAuth);
@@ -31,6 +32,7 @@ function App() {
     <Router>
       <div className="app-wrapper">
         <Header />
+        <GlobalErrorLayer />
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/posts/:id" element={<Post />} />

@@ -16,5 +16,7 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  clearAuth: () => set({ user: null }),
+  logout: () => set({ user: null }),
+
+  clearAuth: () => set({ user: null, loading: false }),
 }));
