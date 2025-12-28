@@ -1,13 +1,13 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import "./../css/Login.css";
+import { useAuthStore } from "@/store/authStore";
+import { authApi } from "@/api";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./../css/auth/Login.css";
 import kakaoIcon from "../assets/kakaoLogo.png";
 import googleIcon from "../assets/googleIcon.png";
 import FormLayout from "@/layouts/FormLayout";
-import { useAuthStore } from "@/store/authStore";
-import { authApi } from "@/api";
 
 function Login() {
   const navigate = useNavigate();
