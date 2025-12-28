@@ -48,19 +48,70 @@ public class AuthService {
         return new MeResponse(user.getId(), user.getStatus());
     }
 
+    public void reissue(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = cookieProvider.getTokenFromCookie(request, REFRESH_TOKEN)
+                .orElseThrow(() -> new SsupException(REFRESH_TOKEN_NOT_FOUND));
 
-//    public Long signUp(OAuthSignUpRequest request) {
-//        OAuthUserInfo info = oauthService.getUserInfo(request);
-//        User user = createSocialUser(info);
-//
-//    User user = User.builder()
-//            .email(oauthEmail)
-//            .nickname(oauthNickname)
-//            .imageUrl(oauthProfileImage)
-//            .status(PENDING)
-//            .socialType(KAKAO)
-//            .socialId(oauthId)
-//            .build();
-//        return user.getId();
-//    }
+        TokenStatus tokenStatus = jwtProvider.validateToken(refreshToken);
+
+        //유효하지 않은 토큰
+        if (tokenStatus == TokenStatus.INVALID) {
+            cookieProvider.deleteAuthCookies(response);
+            throw new SsupException(INVALID_REFRESH_TOKEN);
+        }
+
+        Long userId = jwtProvider.getUserIdFromToken(refreshToken);
+
+        //만료된 토큰
+        if (tokenStatus == TokenStatus.EXPIRED) {
+            refreshTokenRepository.deleteById(userId);
+            cookieProvider.deleteAuthCookies(response);
+            throw new SsupException(REFRESH_TOKEN_EXPIRED);
+        }
+
+        String savedRefresh = refreshTokenRepository.findByUserId(userId)
+                .orElseThrow(() -> new SsupException(REFRESH_TOKEN_NOT_FOUND));
+
+        //올바른 토큰이지만, DB 일치 x
+        if (!jwtProvider.checkRefreshTokenSameness(refreshToken, savedRefresh)) {
+            //탈취 의심 -> 폐기 후 재로그인 유도
+            refreshTokenRepository.deleteById(userId);
+            cookieProvider.deleteAuthCookies(response);
+            throw new SsupException(REFRESH_TOKEN_MISMATCH);
+        }
+
+        String newAccessToken = jwtProvider.createAccessToken(userId);
+        ResponseCookie accessTokenCookie = cookieProvider.reissueAccessTokenCookie(newAccessToken);
+        response.addHeader(COOKIE_HEADER, accessTokenCookie.toString());
+    }
+
+    public void login(LoginRequest request, HttpServletResponse response) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new SsupException(EMAIL_NOT_EXISTS));
+
+        if (!request.getPassword().equals(user.getPassword())) {
+            throw new SsupException(PASSWORD_NOT_MATCH);
+        }
+
+        String accessToken = jwtProvider.createAccessToken(user.getId());
+        String refreshToken = jwtProvider.createRefreshToken(user.getId());
+
+        ResponseCookie accessTokenCookie = cookieProvider.createAccessTokenCookie(accessToken);
+        ResponseCookie refreshTokenCookie = cookieProvider.createRefreshTokenCookie(refreshToken);
+        response.addHeader(COOKIE_HEADER, accessTokenCookie.toString());
+        response.addHeader(COOKIE_HEADER, refreshTokenCookie.toString());
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = cookieProvider.getTokenFromCookie(request, REFRESH_TOKEN).orElse(null);
+
+        if (refreshToken != null) {
+            Long userId = jwtProvider.parseClaims(refreshToken)
+                    .get("userId", Long.class);
+
+            refreshTokenRepository.deleteById(userId);
+        }
+
+        cookieProvider.deleteAuthCookies(response);
+    }
 }

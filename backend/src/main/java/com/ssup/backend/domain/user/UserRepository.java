@@ -68,4 +68,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findWithLanguages(@Param("id") Long id);
 
     Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
+
+    Optional<User> findByEmail(String email);
 }
