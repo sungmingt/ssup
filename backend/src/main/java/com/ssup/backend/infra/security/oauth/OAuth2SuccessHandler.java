@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static com.ssup.backend.infra.security.jwt.JwtCookieProvider.COOKIE_HEADER;
+
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -39,18 +41,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ResponseCookie accessCookie = jwtCookieProvider.createAccessTokenCookie(accessToken);
         ResponseCookie refreshCookie = jwtCookieProvider.createRefreshTokenCookie(refreshToken);
-        response.addHeader("Set-Cookie", accessCookie.toString());
-        response.addHeader("Set-Cookie", refreshCookie.toString());
-
-        System.out.println("### frontOrigin: " + frontOrigin);
-        System.out.println("### userId: " + userId);
-        System.out.println("### userStatus: " + userStatus);
+        response.addHeader(COOKIE_HEADER, accessCookie.toString());
+        response.addHeader(COOKIE_HEADER, refreshCookie.toString());
 
         if (userStatus == (UserStatus.PENDING)) {
             response.sendRedirect(frontOrigin + "/signup/additional");
         } else if (userStatus.equals(UserStatus.ACTIVE)) {
             response.sendRedirect(frontOrigin);
         }
-
     }
 }
