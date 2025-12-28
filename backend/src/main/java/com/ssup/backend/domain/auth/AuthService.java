@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.auth;
 
+import com.ssup.backend.domain.auth.dto.MeResponse;
 import com.ssup.backend.domain.auth.dto.SignUpRequest;
 import com.ssup.backend.domain.auth.dto.SignUpResponse;
 import com.ssup.backend.domain.user.SocialType;
@@ -40,6 +41,12 @@ public class AuthService {
         return SignUpResponse.of(savedUser);
     }
 
+    public MeResponse me(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new SsupException(ErrorCode.USER_NOT_FOUND));
+
+        return new MeResponse(user.getId(), user.getStatus());
+    }
 
 
 //    public Long signUp(OAuthSignUpRequest request) {

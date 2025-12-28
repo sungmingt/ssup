@@ -1,5 +1,7 @@
 package com.ssup.backend.domain.user.language;
 
+import com.ssup.backend.domain.auth.AppUser;
+import com.ssup.backend.domain.auth.CurrentUser;
 import com.ssup.backend.domain.user.language.dto.UserLanguageResponse;
 import com.ssup.backend.domain.user.language.dto.UserLanguageUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,14 +20,13 @@ public class UserLanguageController {
     @Operation(summary = "유저의 사용언어/학습언어 조회", description = "유저의 사용언어/학습언어 조회")
     @GetMapping("/{userId}/languages")
     public UserLanguageResponse findUserLanguage(@PathVariable("userId") Long userId) {
-
         return userLanguageService.findUserLanguages(userId);
     }
 
     @Operation(summary = "유저의 사용언어/학습언어 생성 및 수정", description = "유저의 사용언어/학습언어 생성 및 수정")
     @PutMapping("/me/languages")
-    public void updateUserLanguage(@RequestBody UserLanguageUpdateRequest request) {
-
-        userLanguageService.updateUserLanguages(1L, request);
+    public void updateUserLanguage(@RequestBody UserLanguageUpdateRequest request,
+                                   @CurrentUser AppUser appUser) {
+        userLanguageService.updateUserLanguages(appUser.getId(), request);
     }
 }

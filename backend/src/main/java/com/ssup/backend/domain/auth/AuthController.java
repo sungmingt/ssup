@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.auth;
 
+import com.ssup.backend.domain.auth.dto.MeResponse;
 import com.ssup.backend.domain.auth.dto.SignUpRequest;
 import com.ssup.backend.domain.auth.dto.SignUpResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,5 +20,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public SignUpResponse signUp(@RequestBody SignUpRequest request) {
         return authService.signUp(request);
+    }
+
+    @GetMapping("/me")
+    public MeResponse me(@CurrentUser AppUser appUser) {
+        return authService.me(appUser.getId());
     }
 }

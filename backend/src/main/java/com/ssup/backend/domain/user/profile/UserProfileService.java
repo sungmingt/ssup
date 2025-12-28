@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.user.profile;
 
+import com.ssup.backend.domain.auth.AppUser;
 import com.ssup.backend.domain.interest.Interest;
 import com.ssup.backend.domain.interest.InterestRepository;
 import com.ssup.backend.domain.interest.UserInterest;
@@ -51,7 +52,7 @@ public class UserProfileService {
 
     //추가정보 기입 + userStatus: ACTIVE
     public UserMeProfileResponse createMyProfile(Long userId, MultipartFile image, UserMeProfileCreateRequest request) {
-        User user = userRepository.findMeProfileById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
         List<Long> interestIds = request.getInterests().stream()

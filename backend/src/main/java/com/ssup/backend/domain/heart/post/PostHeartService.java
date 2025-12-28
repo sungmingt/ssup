@@ -28,7 +28,7 @@ public class PostHeartService implements HeartService {
      * - 낙관적 락(@Version)은 Post 엔티티에서 동작
      */
     @Override
-    public HeartResponse toggleHeart(Long postId, Long userId) {
+    public HeartResponse toggleHeart(Long userId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(ErrorCode.POST_NOT_FOUND));
 

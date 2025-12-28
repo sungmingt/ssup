@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Set;
 
+import static com.ssup.backend.domain.comment.CommentValidator.validateComment;
 import static com.ssup.backend.global.exception.ErrorCode.*;
 
 @Service
@@ -32,7 +33,6 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ImageStorage imageStorage;
-    private final CommentValidator validator;
 
     public CommentResponse create(Long userId, Long postId, MultipartFile image, CommentCreateRequest request) {
         Post post = postRepository.findById(postId)
@@ -60,7 +60,7 @@ public class CommentService {
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
         //validate
-        validator.validateComment(comment, postId, userId);
+        validateComment(comment, postId, userId);
 
         //update
         comment.updateContent(request.getContent().trim());
@@ -73,7 +73,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(COMMENT_NOT_FOUND));
 
-        validator.validateComment(comment, postId, userId);
+        validateComment(comment, postId, userId);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
@@ -84,7 +84,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentResponse find(Long postId, Long commentId) {
+    public CommentResponse find(Long userId, Long postId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(COMMENT_NOT_FOUND));
 

@@ -11,7 +11,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
     Boolean existsByNickname(String nickname);
 
-    //N+1 제거
+//    //PENDING 상태의 유저 검색
+//    @Query("""
+//        select u from User u
+//        left join fetch u.languages ul
+//        left join fetch ul.language
+//        left join fetch u.interests ui
+//        left join fetch ui.interest i
+//        left join fetch i.category
+//        left join fetch u.location l
+//        left join fetch l.parent
+//        where u.id = :id
+//        and u.status = 'ACTIVE'
+//    """)
+//    Optional<User> findPendingUserById(@Param("id") Long id);
+
+
+    //N+1 제거 (내 프로필)
     @Query("""
         select distinct u from User u
         left join fetch u.languages ul

@@ -1,10 +1,12 @@
 package com.ssup.backend.infra.security.oauth;
 
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.infra.security.jwt.JwtCookieProvider;
 import com.ssup.backend.infra.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -17,6 +19,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    @Value("${front.origin}")
+    private String frontOrigin;
+
     private final JwtProvider jwtProvider;
     private final JwtCookieProvider jwtCookieProvider;
 
@@ -27,6 +32,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                         Authentication authentication) throws IOException {
         DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();
         Long userId = (Long) principal.getAttributes().get("userId");
+        UserStatus userStatus = (UserStatus) principal.getAttributes().get("userStatus");
 
         String accessToken = jwtProvider.createAccessToken(userId);
         String refreshToken = jwtProvider.createRefreshToken(userId);
@@ -36,6 +42,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader("Set-Cookie", accessCookie.toString());
         response.addHeader("Set-Cookie", refreshCookie.toString());
 
-        response.sendRedirect("https://ssup.site/signup/additional");
+        System.out.println("### frontOrigin: " + frontOrigin);
+        System.out.println("### userId: " + userId);
+        System.out.println("### userStatus: " + userStatus);
+
+        if (userStatus == (UserStatus.PENDING)) {
+            response.sendRedirect(frontOrigin + "/signup/additional");
+        } else if (userStatus.equals(UserStatus.ACTIVE)) {
+            response.sendRedirect(frontOrigin);
+        }
+
     }
 }

@@ -46,7 +46,7 @@ public enum ErrorCode {
 
     //COMMENT
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
-    COMMENT_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "댓글 작성자가 아닙니다."),
+    NOT_COMMENT_OWNER(HttpStatus.FORBIDDEN, "댓글 작성자가 아닙니다."),
     COMMENT_CONTENT_INVALID(HttpStatus.BAD_REQUEST, "댓글 내용은 비어 있을 수 없습니다."),
 
     //INTEREST
@@ -57,6 +57,7 @@ public enum ErrorCode {
 
     //POST
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."),
+    NOT_POST_OWNER(HttpStatus.FORBIDDEN, "글 작성자가 아닙니다."),
 
     //GLOBAL
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "요청 값이 올바르지 않습니다."),

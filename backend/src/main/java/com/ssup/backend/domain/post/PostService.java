@@ -6,6 +6,7 @@ import com.ssup.backend.domain.post.sort.PostSliceFetcher;
 import com.ssup.backend.domain.post.sort.PostSortType;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
@@ -16,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+import static com.ssup.backend.domain.post.PostValidator.*;
 import static com.ssup.backend.global.exception.ErrorCode.*;
 
 @Service
@@ -50,6 +54,7 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
+        validatePostOwner(userId, post.getAuthor().getId());
         updateImages(addedImages, request.getKeepImageUrls(), post);
         post.update(request.getTitle(), request.getContent(), request.getUsingLanguage(), request.getLearningLanguage());
 
@@ -82,16 +87,18 @@ public class PostService {
         return PostResponse.of(author, post, heartedByMe);
     }
 
-    public void delete(Long id) {
-        postRepository.deleteById(id);
+    public void delete(Long userId, Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
-        //todo: 연관 comment, heart, images 모두 delete
+        validatePostOwner(userId, post.getAuthor().getId());
+        postRepository.deleteById(id);
     }
 
     //=====
 
     private void updateImages(List<MultipartFile> addedImages, List<String> keepImageUrls, Post post) {
-        //삭제 대상 이미지 계산
+        //삭제 대상 이미지 추출
         List<String> removedImages = post.getImageUrls().stream()
                 .filter(url -> !keepImageUrls.contains(url))
                 .toList();

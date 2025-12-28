@@ -7,6 +7,8 @@ spring:
       - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
       - ssup-security/application-auth.yml
+front:
+  origin: http://localhost:5173
 
 ---
 
@@ -19,3 +21,5 @@ spring:
       - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
       - ssup-security/application-auth.yml
+front:
+  origin: https://ssup.site
