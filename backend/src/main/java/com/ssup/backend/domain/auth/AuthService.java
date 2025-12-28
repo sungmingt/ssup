@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.auth;
 
+import com.ssup.backend.domain.auth.dto.LoginRequest;
 import com.ssup.backend.domain.auth.dto.MeResponse;
 import com.ssup.backend.domain.auth.dto.SignUpRequest;
 import com.ssup.backend.domain.auth.dto.SignUpResponse;
@@ -9,9 +10,19 @@ import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.security.jwt.JwtCookieProvider;
+import com.ssup.backend.infra.security.jwt.JwtProvider;
+import com.ssup.backend.infra.security.jwt.TokenStatus;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.ssup.backend.global.exception.ErrorCode.*;
+import static com.ssup.backend.infra.security.jwt.JwtCookieProvider.COOKIE_HEADER;
+import static com.ssup.backend.infra.security.jwt.TokenInfo.REFRESH_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtProvider jwtProvider;
+    private final JwtCookieProvider cookieProvider;
 
     public SignUpResponse signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
