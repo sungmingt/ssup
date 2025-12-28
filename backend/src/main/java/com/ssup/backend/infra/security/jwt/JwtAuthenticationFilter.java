@@ -1,6 +1,7 @@
 package com.ssup.backend.infra.security.jwt;
 
 import com.ssup.backend.domain.auth.AppUser;
+import com.ssup.backend.infra.security.SecurityPaths;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,10 +13,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.ssup.backend.infra.security.jwt.TokenInfo.ACCESS_TOKEN;
 
@@ -26,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final JwtCookieProvider cookieProvider;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -55,7 +60,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getRequestURI().startsWith("/api/auth")
-                || request.getRequestURI().startsWith("/oauth2");
+        String uri = request.getRequestURI();
+
+        return Stream.of(
+                        SecurityPaths.SWAGGER,
+                        SecurityPaths.AUTH,
+                        SecurityPaths.PUBLIC_GET,
+                        SecurityPaths.OTHERS
+                ).flatMap(Arrays::stream)
+                .anyMatch(pattern -> pathMatcher.match(pattern, uri));
     }
 }
