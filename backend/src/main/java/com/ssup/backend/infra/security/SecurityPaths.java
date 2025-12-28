@@ -15,8 +15,9 @@ public class SecurityPaths {
     };
 
     public static final String[] AUTH = {
-            "/oauth2/**", "/login/**", "/auth/**", "/signup/**",
-            "/auth/success", "/login/oauth2/**", "/user/*/oauth2/info",
+            "/api/auth/reissue", "/api/auth/login/**",  "/api/auth/signup/**",
+            "/login/**", "/auth/**", "/auth/success",
+            "/login/oauth2/**", "/user/*/oauth2/info", "/oauth2/**",
     };
 
     public static final String[] PUBLIC_GET = {
