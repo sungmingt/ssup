@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
@@ -12,12 +12,21 @@ import Post from "./components/post/Post";
 import Header from "./components/Header";
 import SignUp from "./components/auth/SignUp";
 import SignUpAdditional from "./components/auth/SignUpAdditional";
-import MainPage from "./components/MainPage.jsx";
+import MainPage from "./components/MainPage";
 import "./App.css";
 import { useAuthStore } from "./store/authStore";
 import ProtectedRoute from "@/ProtectedRoute";
 
 function App() {
+  const initAuth = useAuthStore((s) => s.initAuth);
+  const loading = useAuthStore((s) => s.loading);
+
+  useEffect(() => {
+    initAuth();
+  }, [initAuth]);
+
+  if (loading) return null;
+
   return (
     <Router>
       <div className="app-wrapper">
