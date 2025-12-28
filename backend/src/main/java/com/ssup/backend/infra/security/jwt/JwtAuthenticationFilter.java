@@ -3,19 +3,19 @@ package com.ssup.backend.infra.security.jwt;
 import com.ssup.backend.domain.auth.AppUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 
 import static com.ssup.backend.infra.security.jwt.TokenInfo.ACCESS_TOKEN;
 
@@ -25,34 +25,37 @@ import static com.ssup.backend.infra.security.jwt.TokenInfo.ACCESS_TOKEN;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final JwtCookieProvider cookieProvider;
 
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        String token = resolveToken(request);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain chain)
+            throws ServletException, IOException {
 
-        if (token == null) {
-            filterChain.doFilter(request, response);
+        String accessToken = cookieProvider.getTokenFromCookie(request, ACCESS_TOKEN).orElse(null);
+        TokenStatus status = jwtProvider.validateToken(accessToken);
+
+        if (status == TokenStatus.INVALID || status == TokenStatus.EXPIRED) {
+            response.sendError(401);
             return;
         }
 
-        Long userId = jwtProvider.getUserIdFromToken(token);
+        Long userId = jwtProvider.getUserIdFromToken(accessToken);
         AppUser appUser = new AppUser(userId);
+
         Authentication auth =
-                new UsernamePasswordAuthenticationToken(appUser, null, Collections.emptyList());
+                new UsernamePasswordAuthenticationToken(
+                        appUser, null, List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                );
 
         SecurityContextHolder.getContext().setAuthentication(auth);
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        if (request.getCookies() == null) return null;
-
-        for (Cookie cookie : request.getCookies()) {
-            if (ACCESS_TOKEN.equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-
-        return null;
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getRequestURI().startsWith("/api/auth")
+                || request.getRequestURI().startsWith("/oauth2");
     }
 }

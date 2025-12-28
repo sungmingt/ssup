@@ -56,11 +56,29 @@ public class JwtProvider {
     }
 
     public Long getUserIdFromToken(String token) {
-        Claims claims = validateAndParseClaims(token);
-        return Long.valueOf(claims.getSubject());
+        try {
+            return Long.valueOf(Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload().getSubject());
+        } catch (ExpiredJwtException e) {
+            return Long.valueOf(e.getClaims().getSubject());
+        }
     }
 
-    private Claims validateAndParseClaims(String token) {
+    public TokenStatus validateToken(String token) {
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            return TokenStatus.VALID;
+        } catch (ExpiredJwtException e) {
+            return TokenStatus.EXPIRED;
+        } catch (JwtException | IllegalArgumentException e) {
+            return TokenStatus.INVALID;
+        }
+    }
+
+    public Claims parseClaims(String token) {
         try {
             Objects.requireNonNull(token);
             return Jwts.parser().verifyWith(secretKey).build()
@@ -68,20 +86,18 @@ public class JwtProvider {
         } catch (ExpiredJwtException e) {
             throw new SsupException(TOKEN_EXPIRED);
         } catch (MalformedJwtException e) {
-            throw new SsupException(TOKEN_INVALID);
+            throw new SsupException(INVALID_TOKEN);
         } catch (SecurityException e) {
             throw new SsupException(TOKEN_SIGNATURE_INVALID);
         }
     }
 
-    public void checkRefreshTokenSameness(String inputRefreshToken, String exRefreshToken) {
-        if (!inputRefreshToken.equals(exRefreshToken)) {
-            throw new SsupException(REFRESH_TOKEN_INVALID);
-        }
+    public boolean checkRefreshTokenSameness(String inputRefreshToken, String exRefreshToken) {
+        return inputRefreshToken.equals(exRefreshToken);
     }
 
     public Long getTimeToLiveLeft(String accessToken) {
-        Date expiration = validateAndParseClaims(accessToken).getExpiration();
+        Date expiration = parseClaims(accessToken).getExpiration();
         Date now = new Date();
         return expiration.getTime() - now.getTime();
     }
