@@ -5,6 +5,7 @@ import { languageApi } from "@/api";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import "./../../css/Profile.css";
 import InfoLayout from "./../../layouts/InfoLayout";
+import { useAuthStore } from "@/store/authStore";
 
 function Profile({ isMyProfile = false }) {
   const { id } = useParams();

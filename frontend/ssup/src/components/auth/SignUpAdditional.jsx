@@ -1,16 +1,18 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { profileApi } from "@/api";
 import { locationApi } from "@/api";
 import { interestApi } from "@/api";
+import { profileApi } from "@/api";
+import { useAuthStore } from "@/store/authStore";
 import FormLayout from "./../../layouts/FormLayout";
 import defaultProfile from "@/assets/ssup_user_default_image.png";
 import "./../../css/auth/SignUpAdditional.css";
 
 function SignUpAdditional() {
-  const { state } = useLocation();
   const navigate = useNavigate();
-  const userId = state?.userId;
+
+  const { user, loading: authLoading } = useAuthStore();
+  const [pageLoading, setPageLoading] = useState(true);
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -32,11 +34,30 @@ function SignUpAdditional() {
   });
 
   useEffect(() => {
-    locationApi.getSiDoList().then((res) => setSiDoList(res.data));
-  }, []);
+    if (authLoading) return;
+
+    if (!user) navigate("/login");
+    else if (user.status !== "PENDING") navigate("/");
+  }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    interestApi.getAll().then((res) => setInterests(res.data));
+    const load = async () => {
+      try {
+        const [siDoRes, interestRes] = await Promise.all([
+          locationApi.getSiDoList(),
+          interestApi.getAll(),
+        ]);
+
+        setSiDoList(siDoRes.data);
+        setInterests(interestRes.data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    load();
   }, []);
 
   const toggleInterest = (id) => {
@@ -63,8 +84,6 @@ function SignUpAdditional() {
     const value = e.target.value;
     setForm((prev) => ({ ...prev, siGunGuId: value }));
   };
-
-  if (!userId) return <p>잘못된 접근입니다.</p>;
 
   const onImageChange = (e) => {
     const file = e.target.files[0];
@@ -111,6 +130,8 @@ function SignUpAdditional() {
       alert("프로필 저장 실패");
     }
   };
+
+  if (authLoading || pageLoading) return null;
 
   return (
     <FormLayout>

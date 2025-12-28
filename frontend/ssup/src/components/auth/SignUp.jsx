@@ -4,6 +4,7 @@ import { authApi } from "@/api";
 import { useNavigate } from "react-router-dom";
 import "./../../css/auth/SignUp.css";
 import FormLayout from "./../../layouts/FormLayout";
+import { useAuthStore } from "@/store/authStore";
 
 function Signup() {
   const navigate = useNavigate();
@@ -21,7 +22,13 @@ function Signup() {
     e.preventDefault();
     try {
       const res = await authApi.signUp(form);
-      navigate("/signup/additional", { state: { userId: res.data.id } });
+      await useAuthStore.userInit();
+
+      if (useAuthStore.getState().user.status === "PENDING") {
+        navigate("/signup/additional");
+      } else {
+        navigate("/");
+      }
     } catch {
       alert("회원가입 실패");
     }
