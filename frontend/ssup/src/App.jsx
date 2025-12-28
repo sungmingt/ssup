@@ -14,6 +14,8 @@ import SignUp from "./components/auth/SignUp";
 import SignUpAdditional from "./components/auth/SignUpAdditional";
 import MainPage from "./components/MainPage.jsx";
 import "./App.css";
+import { useAuthStore } from "./store/authStore";
+import ProtectedRoute from "@/ProtectedRoute";
 
 function App() {
   return (
@@ -24,12 +26,33 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/posts/:id" element={<Post />} />
           <Route path="/posts" element={<PostList />} />
-          <Route path="/posts/create" element={<PostCreateForm />} />
-          <Route path="/posts/:id/update" element={<PostUpdateForm />} />
+          <Route
+            path="/posts/create"
+            element={
+              <ProtectedRoute>
+                <PostCreateForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/posts/:id/update"
+            element={
+              <ProtectedRoute>
+                <PostUpdateForm />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/profile" element={<Profile isMyProfile />} />
           <Route path="/users/:id/profile" element={<Profile />} />
-          <Route path="/me/profile/edit" element={<ProfileEdit />} />
+          <Route
+            path="/me/profile/edit"
+            element={
+              <ProtectedRoute>
+                <ProfileEdit />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup/additional" element={<SignUpAdditional />} />
