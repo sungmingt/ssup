@@ -109,6 +109,7 @@ public class AuthService {
 
         String accessToken = jwtProvider.createAccessToken(user.getId());
         String refreshToken = jwtProvider.createRefreshToken(user.getId());
+        refreshTokenRepository.save(user.getId(), refreshToken);
 
         ResponseCookie accessTokenCookie = cookieProvider.createAccessTokenCookie(accessToken);
         ResponseCookie refreshTokenCookie = cookieProvider.createRefreshTokenCookie(refreshToken);
@@ -120,8 +121,7 @@ public class AuthService {
         String refreshToken = cookieProvider.getTokenFromCookie(request, REFRESH_TOKEN).orElse(null);
 
         if (refreshToken != null) {
-            Long userId = jwtProvider.parseClaims(refreshToken)
-                    .get("userId", Long.class);
+            Long userId = jwtProvider.getUserIdFromToken(refreshToken);
 
             refreshTokenRepository.deleteById(userId);
         }
