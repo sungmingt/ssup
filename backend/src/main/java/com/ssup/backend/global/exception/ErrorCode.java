@@ -24,17 +24,20 @@ public enum ErrorCode {
     INVALID_SOCIAL_TYPE(HttpStatus.BAD_REQUEST, "올바르지 않은 소셜 로그인 제공자입니다."),
 
     //TOKEN
-    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "access token 만료, reissue 요청이 필요합니다."),
-    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "refresh token 만료, 강제 로그아웃"),
-    ACCESS_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 access token 입니다."),
-    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 refresh token 입니다."),
-    REQUIRED_TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
-    TOKEN_FROM_BLACKLIST(HttpStatus.UNAUTHORIZED, "blacklist에 등록된 토큰입니다."),
-    PAYLOAD_NOT_VALID(HttpStatus.UNAUTHORIZED, "토큰의 payload가 유효하지 않습니다."),
-
-    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
-    TOKEN_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED, "올바르지 않은 토큰 시그니처입니다."),
+    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 access token입니다."),
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 refresh token입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 존재하지 않습니다."),
+    REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다."),
+
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 액세스 토큰입니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    TOKEN_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED, "올바르지 않은 토큰 시그니처입니다."),
+
+    TOKEN_FROM_BLACKLIST(HttpStatus.UNAUTHORIZED, "blacklist에 등록된 토큰입니다."),
+    TOKEN_REISSUED(HttpStatus.OK, "토큰이 재발급되었습니다."),
 
     //FILE
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "이미지가 존재하지 않습니다."),
