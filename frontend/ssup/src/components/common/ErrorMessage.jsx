@@ -47,6 +47,18 @@ export const ERROR_MESSAGE = {
     message: "탈퇴했거나 존재하지 않는 회원입니다.",
   },
 
+  LOGIN_REQUIRED: {
+    title: "로그인이 필요한 기능입니다",
+    message: "로그인 후 이용해주세요.",
+    redirect: "/login",
+  },
+
+  USER_STATUS_PENDING: {
+    title: "프로필 미완성 상태입니다",
+    message: "프로필 정보 입력을 완료해주세요.",
+    redirect: "/signup/additional",
+  },
+
   //global
   INTERNAL_SERVER_ERROR: {
     title: "서버에서 오류가 발생했습니다.",
