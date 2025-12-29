@@ -1,7 +1,6 @@
 package com.ssup.backend.infra.security.jwt;
 
 import com.ssup.backend.domain.auth.AppUser;
-import com.ssup.backend.infra.security.SecurityPaths;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,9 +16,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static com.ssup.backend.infra.security.jwt.TokenInfo.ACCESS_TOKEN;
 
@@ -60,14 +57,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String uri = request.getRequestURI();
+        String accessToken = cookieProvider.getTokenFromCookie(request, ACCESS_TOKEN).orElse(null);
+        return accessToken == null;
 
-        return Stream.of(
-                        SecurityPaths.SWAGGER,
-                        SecurityPaths.AUTH,
-                        SecurityPaths.PUBLIC_GET,
-                        SecurityPaths.OTHERS
-                ).flatMap(Arrays::stream)
-                .anyMatch(pattern -> pathMatcher.match(pattern, uri));
+//        String uri = request.getRequestURI();
+//        String method = request.getMethod();
+//
+//        //Swagger, Auth 등 open
+//        if (pathMatcher.match("/swagger-ui/**", uri)
+//                || pathMatcher.match("/v3/api-docs/**", uri)
+//                || pathMatcher.match("/api/auth/**", uri)) {
+//            return true;
+//        }
+//
+//        //PUBLIC GET 만 허용
+//        if (HttpMethod.GET.matches(method)) {
+//            return Arrays.stream(SecurityPaths.PUBLIC_GET)
+//                    .anyMatch(pattern -> pathMatcher.match(pattern, uri));
+//        }
+//
+//        return false;
     }
 }

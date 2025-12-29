@@ -16,12 +16,19 @@ public class SecurityPaths {
 
     public static final String[] AUTH = {
             "/api/auth/reissue", "/api/auth/login/**",  "/api/auth/signup/**",
-            "/login/**", "/auth/**", "/auth/success",
+            "/login/**", "/auth/success",
             "/login/oauth2/**", "/user/*/oauth2/info", "/oauth2/**",
     };
 
     public static final String[] PUBLIC_GET = {
-            "/posts/**", "/posts/*/comments/**", "/users/*/profile", "/comments/**"
+            //posts, comments
+            "/api/posts/**", "/api/posts/*/comments/**", "/api/comments/**",
+
+            //user
+            "/api/users/*/languages", "/api/users/*/profile",
+
+            //language, location, interest
+            "/api/languages/**", "/api/locations/**", "/api/interests/**"
     };
 
     public static final String[] OTHERS = {

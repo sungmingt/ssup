@@ -3,6 +3,7 @@ package com.ssup.backend.global.config;
 import com.ssup.backend.infra.security.oauth.CustomOAuth2UserService;
 import com.ssup.backend.infra.security.jwt.JwtAuthenticationFilter;
 import com.ssup.backend.infra.security.oauth.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,11 +42,29 @@ public class SecurityConfig {
 
                 //permit requests
                 .authorizeHttpRequests(request -> request
+                        //me
+                        .requestMatchers("/api/users/me/**").authenticated()
+                        .requestMatchers("/api/auth/me/**").authenticated()
+
+                        //posts
+                        .requestMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
+
+                        //comments
+                        .requestMatchers(HttpMethod.POST, "/api/posts/*/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/posts/*/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/*/comments/**").authenticated()
+
+                        //hearts
+                        .requestMatchers(HttpMethod.POST, "/api/posts/*/hearts/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/comments/*/hearts/**").authenticated()
+
+                        //permitAll
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
                         .requestMatchers(SWAGGER).permitAll()
                         .requestMatchers(AUTH).permitAll()
                         .requestMatchers(OTHERS).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
