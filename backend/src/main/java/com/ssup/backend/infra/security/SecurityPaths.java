@@ -16,7 +16,7 @@ public class SecurityPaths {
 
     public static final String[] AUTH = {
             "/api/auth/reissue", "/api/auth/login/**",  "/api/auth/signup/**",
-            "/login/**", "/auth/success",
+            "/api/auth/logout", "/login/**", "/auth/success",
             "/login/oauth2/**", "/user/*/oauth2/info", "/oauth2/**",
     };
 

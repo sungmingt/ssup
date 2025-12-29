@@ -44,6 +44,7 @@ public class UserProfileService {
         return UserProfileResponse.of(user);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     @Transactional(readOnly = true)
     public UserMeProfileResponse findMyProfile(Long userId) {
         User user = userRepository.findMeProfileById(userId)

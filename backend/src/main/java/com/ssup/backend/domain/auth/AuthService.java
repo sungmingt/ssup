@@ -103,6 +103,10 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new SsupException(EMAIL_NOT_EXISTS));
 
+        if (user.getStatus().equals(UserStatus.DELETED)) {
+            throw new SsupException(DELETED_USER);
+        }
+
         if (!request.getPassword().equals(user.getPassword())) {
             throw new SsupException(PASSWORD_NOT_MATCH);
         }
