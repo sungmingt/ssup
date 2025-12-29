@@ -59,7 +59,7 @@ public class AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SsupException(ErrorCode.USER_NOT_FOUND));
 
-        return new MeResponse(user.getId(), user.getStatus());
+        return MeResponse.of(user);
     }
 
     public void reissue(HttpServletRequest request, HttpServletResponse response) {

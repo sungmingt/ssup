@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.comment;
 
 import com.ssup.backend.domain.auth.AppUser;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.auth.CurrentUser;
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
 import com.ssup.backend.domain.comment.dto.CommentListResponse;
@@ -22,48 +23,45 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final AppUserProvider appUserProvider;
 
     @Operation(summary = "댓글 작성", description = "댓글 작성")
     @PostMapping
     public CommentResponse create(@PathVariable("postId") Long postId,
-                                  @CurrentUser AppUser appUser,
                                   @RequestPart(name = "image", required = false) MultipartFile image,
                                   @RequestPart(name = "dto") CommentCreateRequest request) {
-        return commentService.create(appUser.getId(), postId, image, request);
+        return commentService.create(appUserProvider.getUserId(), postId, image, request);
     }
 
     @Operation(summary = "댓글 수정", description = "작성한 댓글 수정")
     @PutMapping("/{id}")
     public CommentResponse update(@PathVariable("postId") Long postId,
                                   @PathVariable("id") Long id,
-                                  @CurrentUser AppUser appUser,
                                   @RequestPart(name = "image", required = false) MultipartFile image,
                                   @RequestPart(name = "dto") CommentUpdateRequest request) {
-        return commentService.update(appUser.getId(), postId, id, image, request);
+        return commentService.update(appUserProvider.getUserId(), postId, id, image, request);
     }
 
     @Operation(summary = "댓글 삭제", description = "작성한 댓글 삭제")
     @DeleteMapping("/{id}")
     public HttpStatus delete(@PathVariable("postId") Long postId,
-                             @PathVariable("id") Long id,
-                             @CurrentUser AppUser appUser) {
-        commentService.delete(appUser.getId(), postId, id);
+                             @PathVariable("id") Long id
+    ) {
+        commentService.delete(appUserProvider.getUserId(), postId, id);
         return HttpStatus.NO_CONTENT;
     }
 
     @Operation(summary = "댓글 조회", description = "댓글 조회")
     @GetMapping("/{id}")
     public CommentResponse find(@PathVariable("postId") Long postId,
-                                @PathVariable("id") Long id,
-                                @CurrentUser AppUser appUser
+                                @PathVariable("id") Long id
     ) {
-        return commentService.find(appUser.getId(), postId, id);
+        return commentService.find(appUserProvider.getUserId(), postId, id);
     }
 
     @Operation(summary = "특정 글의 댓글 목록 조회", description = "특정 글의 댓글 목록 조회")
     @GetMapping
-    public List<CommentListResponse> findList(@PathVariable("postId") Long postId,
-                                              @CurrentUser AppUser appUser) {
-        return commentService.findList(appUser.getId(), postId);
+    public List<CommentListResponse> findList(@PathVariable("postId") Long postId) {
+        return commentService.findList(appUserProvider.getUserId(), postId);
     }
 }

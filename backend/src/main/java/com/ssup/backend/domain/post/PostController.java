@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.post;
 
 import com.ssup.backend.domain.auth.AppUser;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.auth.CurrentUser;
 import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSortType;
@@ -21,6 +22,7 @@ import static org.springframework.http.HttpStatus.*;
 public class PostController {
 
     private final PostService postService;
+    private final AppUserProvider appUserProvider;
 
     @Operation(summary = "글 목록 조회", description = "전체 글 목록 조회")
     @GetMapping
@@ -28,45 +30,38 @@ public class PostController {
             @RequestParam(name = "sortType", defaultValue = "LATEST") PostSortType sortType,
             @RequestParam(name = "cursorKey", required = false) Long cursorKey,
             @RequestParam(name = "cursorId", required = false) Long cursorValue,
-            @RequestParam(name = "size", defaultValue = "15") int size,
-            @CurrentUser AppUser appUser
-            ) {
+            @RequestParam(name = "size", defaultValue = "15") int size
+    ) {
 
-        return postService.findList(appUser.getId(), sortType, cursorKey, cursorValue, size);
+        return postService.findList(appUserProvider.getUserId(), sortType, cursorKey, cursorValue, size);
     }
 
     @Operation(summary = "글 조회", description = "글 상세 정보 조회")
     @GetMapping("/{id}")
     public PostResponse find(@PathVariable("id") Long id) {
-        return postService.find(id, 1L);
+        return postService.find(id, appUserProvider.getUserId());
     }
 
     @Operation(summary = "글 작성", description = "새로운 글 작성")
     @PostMapping
     @ResponseStatus(CREATED)
     public PostCreateResponse create(@RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                     @RequestPart(name = "dto") @Validated PostCreateRequest request,
-                                     @CurrentUser AppUser appUser) {
-
-        return postService.create(appUser.getId(), images, request);
+                                     @RequestPart(name = "dto") @Validated PostCreateRequest request) {
+        return postService.create(appUserProvider.getUserId(), images, request);
     }
 
     @Operation(summary = "글 수정", description = "작성한 글을 수정")
     @PutMapping("/{id}")
     public PostUpdateResponse update(@PathVariable("id") Long id,
                                      @RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                     @RequestPart(name = "dto") @Validated PostUpdateRequest request,
-                                     @CurrentUser AppUser appUser) {
-
-        return postService.update(appUser.getId(), id, images, request);
+                                     @RequestPart(name = "dto") @Validated PostUpdateRequest request) {
+        return postService.update(appUserProvider.getUserId(), id, images, request);
     }
 
     @Operation(summary = "글 삭제", description = "사용자가 작성한 글을 삭제")
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void deletePost(@PathVariable("id") Long id,
-                           @CurrentUser AppUser appUser
-    ) {
-        postService.delete(appUser.getId(), id);
+    public void deletePost(@PathVariable("id") Long id) {
+        postService.delete(appUserProvider.getUserId(), id);
     }
 }

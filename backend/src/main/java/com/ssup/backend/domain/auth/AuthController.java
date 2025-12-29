@@ -19,10 +19,11 @@ import static com.ssup.backend.global.exception.ErrorCode.TOKEN_REISSUED;
 public class AuthController {
 
     private final AuthService authService;
+    private final AppUserProvider appUserProvider;
 
     @GetMapping("/me")
-    public MeResponse me(@CurrentUser AppUser appUser) {
-        return authService.me(appUser.getId());
+    public MeResponse me() {
+        return authService.me(appUserProvider.getUserId());
     }
 
     @PostMapping("/signup")
@@ -30,7 +31,6 @@ public class AuthController {
     public SignUpResponse signUp(@RequestBody SignUpRequest request) {
         return authService.signUp(request);
     }
-
 
     @PostMapping("/reissue")
     public TokenReissueResponse reissue(HttpServletRequest request, HttpServletResponse response) {
@@ -44,11 +44,9 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return ResponseEntity.noContent().build();
     }
-
 }

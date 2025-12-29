@@ -44,7 +44,7 @@ public class PostListResponse {
 
     private LocalDateTime updatedAt;
 
-    public static List<PostListResponse> of(List<Post> postList, Long userId, Set<Long> heartedPostIds) {
+    public static List<PostListResponse> of(List<Post> postList, Set<Long> heartedPostIds) {
 
         return postList.stream()
                 .map(post -> PostListResponse.builder()
