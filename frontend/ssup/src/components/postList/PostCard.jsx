@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../../css/post/PostCard.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
-import defaultThumbnail from "../../assets/ssup_post_default_image.webp";
+import defaultThumbnail from "@/assets/ssup_post_default_image_2.png";
 import { postApi } from "@/api";
 
 const PostCard = ({ post }) => {
