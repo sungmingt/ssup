@@ -1,8 +1,6 @@
 package com.ssup.backend.domain.comment;
 
-import com.ssup.backend.domain.auth.AppUser;
 import com.ssup.backend.domain.auth.AppUserProvider;
-import com.ssup.backend.domain.auth.CurrentUser;
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
 import com.ssup.backend.domain.comment.dto.CommentListResponse;
 import com.ssup.backend.domain.comment.dto.CommentResponse;
