@@ -1,7 +1,6 @@
 package com.ssup.backend.domain.user.profile;
 
-import com.ssup.backend.domain.auth.AppUser;
-import com.ssup.backend.domain.auth.CurrentUser;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.user.profile.dto.UserMeProfileCreateRequest;
 import com.ssup.backend.domain.user.profile.dto.UserMeProfileResponse;
 import com.ssup.backend.domain.user.profile.dto.UserProfileUpdateRequest;
@@ -19,35 +18,33 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserMeProfileController {
 
     private final UserProfileService userProfileService;
+    private final AppUserProvider appUserProvider;
 
     @GetMapping("/profile")
-    public UserMeProfileResponse findMyProfile(@CurrentUser AppUser appUser) {
-        return userProfileService.findMyProfile(appUser.getId());
+    public UserMeProfileResponse findMyProfile() {
+        return userProfileService.findMyProfile(appUserProvider.getUserId());
     }
 
     @PostMapping("/profile")
     @ResponseStatus(HttpStatus.CREATED)
     public UserMeProfileResponse createMyProfile(
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart("dto") UserMeProfileCreateRequest request,
-            @CurrentUser AppUser appUser
-            ) {
-
-        return userProfileService.createMyProfile(appUser.getId(), image, request);
+            @RequestPart("dto") UserMeProfileCreateRequest request
+    ) {
+        return userProfileService.createMyProfile(appUserProvider.getUserId(), image, request);
     }
 
     @PutMapping("/profile")
     public UserMeProfileResponse updateMyProfile(
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart("dto") UserProfileUpdateRequest request,
-            @CurrentUser AppUser appUser
+            @RequestPart("dto") UserProfileUpdateRequest request
     ) {
-        return userProfileService.updateMyProfile(appUser.getId(), image, request);
+        return userProfileService.updateMyProfile(appUserProvider.getUserId(), image, request);
     }
 
     @DeleteMapping("/profile")
-    public ResponseEntity<Void> deleteMyAccount(@CurrentUser AppUser appUser) {
-        userProfileService.deleteMyAccount(appUser.getId());
+    public ResponseEntity<Void> deleteMyAccount() {
+        userProfileService.deleteMyAccount(appUserProvider.getUserId());
         return ResponseEntity.noContent().build();
     }
 }
