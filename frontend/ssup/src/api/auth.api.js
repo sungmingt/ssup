@@ -5,5 +5,11 @@ export const authApi = {
   login: (data) => api.post("/auth/login", data),
   logout: () => api.post("/auth/logout"),
   reissue: () => api.get("/auth/reissue"),
-  me: () => api.get("/auth/me", { withCredentials: true }),
+  me: async () => {
+    try {
+      return await api.get("/auth/me", { withCredentials: true });
+    } catch {
+      return null; //여기서 에러 방지
+    }
+  },
 };
