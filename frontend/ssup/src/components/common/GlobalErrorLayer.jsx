@@ -2,6 +2,9 @@ import { useErrorStore } from "@/store/errorStore";
 import "./GlobalErrorLayer.css";
 import { useNavigate } from "react-router-dom";
 
+//GlobalErrorLayer는 useErrorStore()를 통해 error 상태를 구독하고 있음.
+//상태변화 -> react가 자동으로 리렌더링
+//if(!error) 을 통과하지 못하고 모달을 렌더링
 const GlobalErrorLayer = () => {
   const { error, close } = useErrorStore();
   const navigate = useNavigate();

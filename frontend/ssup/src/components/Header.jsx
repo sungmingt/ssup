@@ -1,14 +1,29 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
+import { CONFIRM_MESSAGE } from "@/components/common/confirmMessage";
+import { useConfirmStore } from "@/store/confirmStore";
 import { useNavigate } from "react-router-dom";
 import "./../css/Header.css";
 import defaultProfileImage from "@/assets/ssup_user_default_image.png";
+import { authApi } from "@/api";
 
 function Header() {
   // 예: 로그인 상태 (실무에서는 context나 recoil, redux, query로 관리)
 
   const { user, isAuthenticated, logout } = useAuthStore();
+  const { open } = useConfirmStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    open(
+      CONFIRM_MESSAGE.LOGOUT(async () => {
+        await authApi.logout();
+        logout();
+        navigate("/");
+      })
+    );
+  };
 
   return (
     <header className="sticky-top bg-white shadow-sm">
@@ -70,7 +85,7 @@ function Header() {
                     style={{ background: "transparent" }}
                   >
                     <img
-                      src={user?.profileImageUrl || defaultProfileImage}
+                      src={user?.imageUrl || defaultProfileImage}
                       className="rounded-circle"
                       width="32"
                       height="32"
@@ -91,7 +106,7 @@ function Header() {
                     <li>
                       <button
                         className="dropdown-item text-danger"
-                        onClick={logout}
+                        onClick={handleLogout}
                       >
                         로그아웃
                       </button>

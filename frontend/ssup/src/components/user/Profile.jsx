@@ -6,8 +6,12 @@ import defaultProfile from "../../assets/ssup_user_default_image.png";
 import "./../../css/Profile.css";
 import InfoLayout from "./../../layouts/InfoLayout";
 import { useAuthStore } from "@/store/authStore";
+import { CONFIRM_MESSAGE } from "../common/confirmMessage";
+import { useConfirmStore } from "@/store/confirmStore";
 
 function Profile({ isMyProfile = false }) {
+  const { open } = useConfirmStore();
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
@@ -56,20 +60,15 @@ function Profile({ isMyProfile = false }) {
     fetchUserLanguages();
   }, [id]);
 
+  {
+    /* 계정 삭제 */
+  }
   const onDeleteAccount = async () => {
-    const ok = window.confirm(
-      "정말 계정을 삭제할까요? 삭제 후 복구할 수 없습니다."
+    open(
+      CONFIRM_MESSAGE.DELETE_USER(async () => {
+        await profileApi.deleteMyProfile();
+      })
     );
-    if (!ok) return;
-
-    try {
-      await profileApi.deleteMyProfile(); // 백엔드 delete API에 맞춰서
-      alert("계정이 삭제되었습니다.");
-      navigate("/"); // 또는 로그인 페이지
-    } catch (e) {
-      console.error(e);
-      alert("계정 삭제 실패");
-    }
   };
 
   if (!profile) return <div className="text-center mt-5">로딩중...</div>;

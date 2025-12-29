@@ -17,6 +17,7 @@ import "./App.css";
 import { useAuthStore } from "./store/authStore";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import GlobalErrorLayer from "@/components/common/GlobalErrorLayer";
+import GlobalConfirmLayer from "@/components/common/GlobalConfirmLayer";
 
 function App() {
   const initAuth = useAuthStore((s) => s.initAuth);
@@ -32,6 +33,7 @@ function App() {
     <Router>
       <div className="app-wrapper">
         <Header />
+        <GlobalConfirmLayer />
         <GlobalErrorLayer />
         <Routes>
           <Route path="/" element={<MainPage />} />

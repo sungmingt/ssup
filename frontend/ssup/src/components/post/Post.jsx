@@ -8,20 +8,27 @@ import defaultProfile from "../../assets/ssup_user_default_image.png";
 import defaultImage from "./../../assets/ssup_post_default_image.webp";
 import CommentSection from "./../comment/CommentSection.jsx";
 import InfoLayout from "./../../layouts/InfoLayout";
+import { CONFIRM_MESSAGE } from "@/components/common/confirmMessage";
+import { useConfirmStore } from "@/store/confirmStore";
+import { useAuthStore } from "@/store/authStore";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Post = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { open } = useConfirmStore();
+
+  const { user, isAuthenticated } = useAuthStore();
 
   const [post, setPost] = useState(null);
   const [hearted, setHearted] = useState(false);
   const [heartCount, setHeartCount] = useState(0);
 
-  const isMyPost = true; //TODO: 로그인 유저 id === post.authorId
-
   const [loading, setLoading] = useState(true);
+
+  const isMyPost =
+    isAuthenticated && user?.id && post?.authorId && user.id === post.authorId;
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -59,7 +66,6 @@ const Post = () => {
     } catch {
       setHearted(prevHearted);
       setHeartCount(prevCount);
-      alert("좋아요 처리 실패");
     }
   };
 
@@ -79,18 +85,12 @@ const Post = () => {
   };
 
   const onDelete = async () => {
-    const ok = window.confirm("정말 이 게시글을 삭제하시겠습니까?");
-    if (!ok) return;
-
-    try {
-      await postApi.deletePost(post.id);
-
-      alert("게시글이 삭제되었습니다.");
-      navigate("/posts");
-    } catch (e) {
-      console.error(e);
-      alert("게시글 삭제에 실패했습니다.");
-    }
+    open(
+      CONFIRM_MESSAGE.DELETE_POST(async () => {
+        await postApi.deletePost(post.id);
+        navigate("/posts");
+      })
+    );
   };
 
   if (loading) {

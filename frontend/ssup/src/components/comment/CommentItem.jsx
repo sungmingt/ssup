@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { commentApi } from "@/api";
+import { CONFIRM_MESSAGE } from "../common/confirmMessage";
+import { useConfirmStore } from "@/store/confirmStore";
 import "bootstrap/dist/css/bootstrap.min.css";
 import defaultProfile from "./../../assets/ssup_user_default_image.png";
 
 const CommentItem = ({ comment, onRefresh, onEdit }) => {
+  const { open } = useConfirmStore();
+
   const isMine = true; //TODO: 로그인 유저 ID 비교
   const [deleting, setDeleting] = useState(false);
 
@@ -12,22 +16,13 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
   const [heartCount, setHeartCount] = useState(comment.heartCount);
   const [heartLoading, setHeartLoading] = useState(false);
 
-  const onDelete = async () => {
-    if (deleting) return;
-
-    const ok = window.confirm("댓글을 삭제하시겠습니까?");
-    if (!ok) return;
-
-    setDeleting(true);
-
-    try {
-      await commentApi.deleteComment(comment.postId, comment.id);
-      onRefresh();
-    } catch {
-      alert("댓글 삭제에 실패했습니다. 다시 시도해주세요.");
-    } finally {
-      setDeleting(false);
-    }
+  const onDelete = () => {
+    open(
+      CONFIRM_MESSAGE.DELETE_COMMENT(async () => {
+        await commentApi.deleteComment(comment.postId, comment.id);
+        onRefresh();
+      })
+    );
   };
 
   const onToggleHeart = async () => {
