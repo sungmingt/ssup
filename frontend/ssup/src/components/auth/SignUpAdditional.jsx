@@ -125,6 +125,7 @@ function SignUpAdditional() {
 
     try {
       await profileApi.createMyProfile(formData);
+      useAuthStore.initAuth();
       navigate("/profile");
     } catch {
       alert("프로필 저장 실패");
