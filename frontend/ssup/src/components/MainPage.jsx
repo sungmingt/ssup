@@ -1,6 +1,8 @@
-import mainImage from "./../assets/ssup_main_image.png";
+import mainImage from "./../assets/ssup_logo_2.png";
+import mainImage3 from "./../assets/ssup_main_image_3.png";
 import "./../css/MainPage.css";
 import { useNavigate } from "react-router-dom";
+import InfoLayout from "@/layouts/InfoLayout";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -8,14 +10,17 @@ const MainPage = () => {
   return (
     <>
       <div className="main-container">
-        <img src={mainImage} alt="메인 페이지" className="main-image" />
-
         <h1 className="main-title">
-          지금, Suup!에서 새로운 친구를 만나보세요 🌍
+          지금 ssup! 에서 새로운 친구를 만나보세요 ✈️
         </h1>
-        <p className="main-subtitle"></p>
 
-        {/* 커뮤니티 바로가기 버튼 */}
+        <img src={mainImage} alt="메인 이미지" className="main-image" />
+
+        {/* <h2 className="main-subtitle"> */}
+        {/* 근처에 있는 언어 교류 메이트를 찾아보세요! */}
+        {/* </h2> */}
+
+        {/* <img src={mainImage3} alt="메인 이미지3" className="main-image-3" /> */}
 
         <button className="community-btn" onClick={() => navigate("/posts")}>
           커뮤니티 바로가기

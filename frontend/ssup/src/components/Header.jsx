@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import "./../css/Header.css";
 import defaultProfileImage from "@/assets/ssup_user_default_image.png";
 import { authApi } from "@/api";
+import ssupLogo from "@/assets/ssup_logo.png";
 
 function Header() {
   // 예: 로그인 상태 (실무에서는 context나 recoil, redux, query로 관리)
@@ -34,7 +35,8 @@ function Header() {
         <div className="container px-4">
           {/* 브랜드 로고 */}
           <Link className="navbar-brand fw-bold fs-3" to="/">
-            Suup!
+            <img src={ssupLogo} className="ssup-logo" width="32" height="32" />
+            ssup!
           </Link>
 
           {/* 모바일 토글 버튼 */}
