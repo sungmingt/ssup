@@ -6,14 +6,14 @@
   padding: 90px 20px; /* 높이는 padding으로만 조절 */
   box-sizing: border-box;
   text-align: center;
-  background-color: #ffffff;
+  background-color: #fffffffe;
 }
 
 .main-image,
 .main-image-2,
 .main-image-3 {
-  width: 500px;
-  height: auto;
+  width: 600px;
+  height: 800px;
   image-rendering: crisp-edges;
   max-width: 600px;
   margin-bottom: 32px;
@@ -22,7 +22,7 @@
 }
 
 .main-title {
-  margin-top: 30px;
+  margin-top: 10px;
   font-size: 2.4rem;
   font-weight: 700;
   margin-bottom: 50px;

@@ -1,6 +1,8 @@
 /* 카드 hover */
 .post-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  border-radius: 30px !important;
 }
 
 .post-card:hover .post-thumbnail {
