@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import static com.ssup.backend.global.exception.ErrorCode.USER_NOT_AUTHORIZED;
+import static com.ssup.backend.global.exception.ErrorCode.*;
 
 @Aspect
 @Component
@@ -27,12 +27,12 @@ public class UserStatusCheckAspect {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new SsupException(USER_NOT_AUTHORIZED);
+            throw new SsupException(LOGIN_REQUIRED);
         }
 
         AppUser appUser = (AppUser) authentication.getPrincipal();
         User user = userRepository.findById(appUser.getId())
-                .orElseThrow(() -> new SsupException(USER_NOT_AUTHORIZED));
+                .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
         UserStatus currentStatus = user.getStatus();
 
@@ -45,7 +45,7 @@ public class UserStatusCheckAspect {
         }
 
         if (!allowed) {
-            throw new SsupException(USER_NOT_AUTHORIZED);
+            throw new SsupException(USER_STATUS_PENDING);
         }
 
         return joinPoint.proceed();

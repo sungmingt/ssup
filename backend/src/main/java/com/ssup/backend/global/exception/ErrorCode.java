@@ -8,6 +8,9 @@ public enum ErrorCode {
     //USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "로그인되지 않은 사용자입니다."),
+    LOGIN_REQUIRED(HttpStatus.FORBIDDEN, "로그인이 필요한 기능입니다."),
+    USER_STATUS_PENDING(HttpStatus.FORBIDDEN, "추가 정보를 입력해주세요."),
+    DELETED_USER(HttpStatus.FORBIDDEN, "탈퇴한 사용자 계정입니다."),
     USER_ALREADY_AUTHORIZED(HttpStatus.BAD_REQUEST, "이미 로그인 상태입니다."),
     NOT_RESOURCE_OWNER(HttpStatus.FORBIDDEN, "해당 리소스의 소유자가 아닙니다."),
 
@@ -74,7 +77,6 @@ public enum ErrorCode {
     //LOCATION
     LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "올바르지 않은 지역 정보입니다."),
     INVALID_LOCATION_LEVEL(HttpStatus.BAD_REQUEST, "지역 정보는 군/구 단위여야 합니다.");
-
 
     @Getter
     private final HttpStatus status;
