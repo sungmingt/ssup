@@ -73,7 +73,11 @@ const CommentForm = ({
             rows={3}
             placeholder="댓글을 입력하세요"
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => {
+              setContent(e.target.value);
+              e.target.style.height = "auto";
+              e.target.style.height = e.target.scrollHeight + "px";
+            }}
           />
 
           {/* 카메라 버튼 */}
