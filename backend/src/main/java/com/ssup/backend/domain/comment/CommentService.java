@@ -9,7 +9,9 @@ import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.aop.CheckUserStatus;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final ImageStorage imageStorage;
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public CommentResponse create(Long userId, Long postId, MultipartFile image, CommentCreateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
@@ -56,6 +59,7 @@ public class CommentService {
         return CommentResponse.of(savedComment);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public CommentResponse update(Long userId, Long postId, Long commentId, MultipartFile image, CommentUpdateRequest request) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
@@ -70,6 +74,7 @@ public class CommentService {
         return CommentResponse.of(comment);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public void delete(Long userId, Long postId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(COMMENT_NOT_FOUND));

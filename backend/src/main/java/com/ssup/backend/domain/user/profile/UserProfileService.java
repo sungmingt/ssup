@@ -8,10 +8,12 @@ import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.location.LocationRepository;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.domain.user.interest.UserInterestRepository;
 import com.ssup.backend.domain.user.profile.dto.*;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.aop.CheckUserStatus;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +83,7 @@ public class UserProfileService {
         return UserMeProfileResponse.of(user);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public UserMeProfileResponse updateMyProfile(Long userId, MultipartFile image, UserProfileUpdateRequest request) {
         User user = userRepository.findMeProfileById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));

@@ -6,8 +6,10 @@ import com.ssup.backend.domain.post.sort.PostSliceFetcher;
 import com.ssup.backend.domain.post.sort.PostSortType;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.aop.CheckUserStatus;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +37,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final ImageStorage imageStorage;
 
-    //todo: userId -> appUser
+    @CheckUserStatus(UserStatus.ACTIVE)
     public PostCreateResponse create(Long userId, List<MultipartFile> images, PostCreateRequest request) {
         Post post = request.toEntity();
         List<String> imageUrls = imageStorage.uploadMultiple(ImageType.POST, images);
@@ -50,6 +52,7 @@ public class PostService {
         return PostCreateResponse.of(user, savedPost);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public PostUpdateResponse update(Long userId, Long postId, List<MultipartFile> addedImages, PostUpdateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
@@ -87,6 +90,7 @@ public class PostService {
         return PostResponse.of(author, post, heartedByMe);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public void delete(Long userId, Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
