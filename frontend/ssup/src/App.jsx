@@ -16,7 +16,7 @@ import MainPage from "./components/MainPage";
 import "./App.css";
 import { useAuthStore } from "./store/authStore";
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import GlobalErrorLayer from "./components/common/GlobalErrorLayer";
+import GlobalErrorLayer from "@/components/common/GlobalErrorLayer";
 
 function App() {
   const initAuth = useAuthStore((s) => s.initAuth);
@@ -24,7 +24,7 @@ function App() {
 
   useEffect(() => {
     initAuth();
-  }, [initAuth]);
+  }, []);
 
   if (loading) return null;
 

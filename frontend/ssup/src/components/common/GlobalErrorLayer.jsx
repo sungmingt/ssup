@@ -1,5 +1,5 @@
 import { useErrorStore } from "@/store/errorStore";
-import "@/css/GlobalErrorLayer.css";
+import "./GlobalErrorLayer.css";
 import { useNavigate } from "react-router-dom";
 
 const GlobalErrorLayer = () => {

@@ -3,6 +3,7 @@ import { useAuthStore } from "@/store/authStore";
 import { ENV } from "@/config/env";
 import { useErrorStore } from "@/store/errorStore";
 import { ERROR_MESSAGE } from "@/components/common/ErrorMessage";
+import { useNavigate } from "react-router-dom";
 
 export const api = axios.create({
   baseURL: ENV.API_BASE_URL + "/api",
@@ -40,6 +41,10 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config; //error.config = “이 에러를 일으킨 원래 요청 정보” (URL, method, headers 등)
 
+    if (originalRequest?.url?.includes("/auth/me")) {
+      return Promise.reject(error);
+    }
+
     //같은 요청을 한번만 재시도하도록 플래그 설정
     //401 응답이고 첫 시도라면
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -55,7 +60,7 @@ api.interceptors.response.use(
 
       try {
         await reissueApi.post("/auth/reissue");
-        await useAuthStore.getState().initAuth();
+        // await useAuthStore.getState().initAuth();
 
         //대기 중인 요청들 진행시키기
         processQueue();
@@ -64,7 +69,8 @@ api.interceptors.response.use(
       } catch (e) {
         processQueue(e);
         useAuthStore.getState().clearAuth();
-        window.location.href = "/login";
+        // useNavigate("/login");
+        // window.location.href = "/login";
         return Promise.reject(e);
       } finally {
         isRefreshing = false;

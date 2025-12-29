@@ -30,12 +30,13 @@ function Login() {
   const handlePassword = (e) => {
     setpassword(e.target.value);
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await authApi.login({ email, password });
-      await useAuthStore.getState().userInit();
+      await useAuthStore.getState().initAuth();
 
       const user = useAuthStore.getState().user;
 
