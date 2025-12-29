@@ -37,7 +37,7 @@ export const useAuthStore = create((set) => ({
       await authApi.logout();
     } finally {
       set({ user: null, isAuthenticated: false });
-      window.location.href = "/login";
+      window.location.href = "/";
     }
   },
 }));
