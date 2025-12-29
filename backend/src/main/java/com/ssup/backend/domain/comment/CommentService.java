@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -98,7 +99,12 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentListResponse> findList(Long userId, Long postId) {
         List<Comment> comments = commentRepository.findByPostIdAndDeletedFalseOrderByCreatedAtAsc(postId);
-        Set<Long> heartedCommentIds = commentHeartService.findHeartedCommentIds(userId, comments);
+
+        Set<Long> heartedCommentIds = new HashSet<>();
+        if (userId != null) {
+            heartedCommentIds = commentHeartService.findHeartedCommentIds(userId, comments);
+        }
+
         return CommentListResponse.of(comments, heartedCommentIds);
     }
 
