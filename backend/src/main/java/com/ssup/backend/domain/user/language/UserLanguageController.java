@@ -1,7 +1,6 @@
 package com.ssup.backend.domain.user.language;
 
-import com.ssup.backend.domain.auth.AppUser;
-import com.ssup.backend.domain.auth.CurrentUser;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.user.language.dto.UserLanguageResponse;
 import com.ssup.backend.domain.user.language.dto.UserLanguageUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserLanguageController {
 
     private final UserLanguageService userLanguageService;
+    private final AppUserProvider appUserProvider;
 
     @Operation(summary = "유저의 사용언어/학습언어 조회", description = "유저의 사용언어/학습언어 조회")
     @GetMapping("/{userId}/languages")
@@ -25,8 +25,7 @@ public class UserLanguageController {
 
     @Operation(summary = "유저의 사용언어/학습언어 생성 및 수정", description = "유저의 사용언어/학습언어 생성 및 수정")
     @PutMapping("/me/languages")
-    public void updateUserLanguage(@RequestBody UserLanguageUpdateRequest request,
-                                   @CurrentUser AppUser appUser) {
-        userLanguageService.updateUserLanguages(appUser.getId(), request);
+    public void updateUserLanguage(@RequestBody UserLanguageUpdateRequest request) {
+        userLanguageService.updateUserLanguages(appUserProvider.getUserId(), request);
     }
 }
