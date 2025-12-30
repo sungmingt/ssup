@@ -34,9 +34,11 @@ public class Post extends BaseTimeEntity {
     private User author;
 
     @OneToMany(mappedBy = "post")
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
+    @Builder.Default
     private List<PostHeart> hearts = new ArrayList<>();
 
     @ElementCollection
