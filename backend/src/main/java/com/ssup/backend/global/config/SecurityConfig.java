@@ -20,6 +20,7 @@ import static com.ssup.backend.infra.security.SecurityPaths.*;
 
 @RequiredArgsConstructor
 @Configuration
+@ConditionalOnProperty(name = "ssup.security.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
