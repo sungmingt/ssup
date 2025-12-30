@@ -53,7 +53,6 @@ public class UserProfileService {
         return UserMeProfileResponse.of(user);
     }
 
-    //추가정보 기입 + userStatus: ACTIVE
     public UserMeProfileResponse createMyProfile(Long userId, MultipartFile image, UserMeProfileCreateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));

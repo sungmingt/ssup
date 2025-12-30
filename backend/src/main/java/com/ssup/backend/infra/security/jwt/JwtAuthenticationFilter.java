@@ -21,13 +21,13 @@ import java.util.List;
 import static com.ssup.backend.infra.security.jwt.TokenInfo.ACCESS_TOKEN;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final JwtCookieProvider cookieProvider;
-    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+//    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

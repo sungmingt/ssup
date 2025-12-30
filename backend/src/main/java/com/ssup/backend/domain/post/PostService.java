@@ -74,7 +74,7 @@ public class PostService {
         return postSliceFetcher.fetch(userId, sort, cursorKey, cursorId, size);
     }
 
-    public PostResponse find(Long id, Long userId) {
+    public PostResponse find(Long userId, Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
 
