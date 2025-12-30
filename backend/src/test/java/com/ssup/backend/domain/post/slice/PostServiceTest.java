@@ -104,8 +104,15 @@ class PostServiceTest {
     @DisplayName("게시글을 삭제한다 - 성공")
     @Test
     void deletePost_success() {
+        //given
+        Post post = getPost();
+        Long authorId = post.getAuthor().getId();
+
+        given(postRepository.findById(post.getId()))
+                .willReturn(Optional.of(post));
+
         //when
-        postService.delete(1L);
+        postService.delete(1L, authorId);
 
         //then
         verify(postRepository).deleteById(1L);

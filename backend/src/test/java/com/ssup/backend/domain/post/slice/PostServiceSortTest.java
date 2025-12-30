@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest
 @ActiveProfiles("test")
+@SpringBootTest
 @Transactional
 class PostServiceSortTest {
 
@@ -33,6 +33,19 @@ class PostServiceSortTest {
     private UserRepository userRepository;
 
     private User user;
+
+    @BeforeEach
+    void setUp() {
+        user = getUser();
+        createPost(user, 300);
+        createPost(user, 300);
+
+        createPost(user, 250);
+        createPost(user, 220);
+
+        createPost(user, 200);
+        createPost(user, 150);
+    }
 
     @DisplayName("최신순 첫 페이지 조회 - 성공")
     @Test
@@ -127,20 +140,7 @@ class PostServiceSortTest {
         assertThat(second.isHasNext()).isFalse();
     }
 
-    //=== setup ===
-
-    @BeforeEach
-    void setUp() {
-        user = getUser();
-        createPost(user, 300);
-        createPost(user, 300);
-
-        createPost(user, 250);
-        createPost(user, 220);
-
-        createPost(user, 200);
-        createPost(user, 150);
-    }
+    //===== init =====
 
     private User getUser() {
         User user = User.builder()

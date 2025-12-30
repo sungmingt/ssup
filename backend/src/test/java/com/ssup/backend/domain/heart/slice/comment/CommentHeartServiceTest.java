@@ -53,9 +53,9 @@ class CommentHeartServiceTest {
         Comment comment = getComment(user, post);
 
         //when
-        commentHeartService.toggleHeart(comment.getId(), user.getId());
+        commentHeartService.toggleHeart(user.getId(), comment.getId());
         HeartResponse response =
-                commentHeartService.toggleHeart(comment.getId(), user.getId());
+                commentHeartService.toggleHeart(user.getId(), comment.getId());
 
         //then
         assertThat(response.isHearted()).isFalse();
