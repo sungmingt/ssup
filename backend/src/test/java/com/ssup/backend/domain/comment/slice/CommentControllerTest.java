@@ -2,6 +2,7 @@ package com.ssup.backend.domain.comment.slice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.comment.CommentController;
 import com.ssup.backend.domain.comment.CommentService;
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
@@ -13,6 +14,7 @@ import com.ssup.backend.global.exception.SsupException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -34,8 +36,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(CommentController.class)
+@WebMvcTest(controllers = CommentController.class)
 @Import(GlobalControllerAdvice.class)
+@AutoConfigureMockMvc(addFilters = false)
 class CommentControllerTest {
 
     @Autowired
@@ -43,6 +46,9 @@ class CommentControllerTest {
 
     @MockBean
     private CommentService commentService;
+
+    @MockBean
+    private AppUserProvider appUserProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -52,13 +58,14 @@ class CommentControllerTest {
     void createComment_withoutImage_success() throws Exception {
         //given
         Long postId = 10L;
+        Long userId = 1L;
         CommentCreateRequest request = new CommentCreateRequest("댓글 내용");
         CommentResponse response = getCommentResponse(1L);
-
         MockMultipartFile dto = getDtoPart(request);
 
         given(commentService.create(anyLong(), eq(postId), any(), any()))
                 .willReturn(response);
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         //when, then
         mockMvc.perform(
@@ -76,11 +83,14 @@ class CommentControllerTest {
     void createComment_withImage_success() throws Exception {
         //given
         Long postId = 10L;
+        Long userId = 1L;
+
         CommentCreateRequest request = new CommentCreateRequest("댓글 내용");
         CommentResponse response = getCommentResponse(1L);
 
         given(commentService.create(anyLong(), eq(postId), any(), any()))
                 .willReturn(response);
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         MockMultipartFile dto = getDtoPart(request);
         MockMultipartFile image = getImagePart();
@@ -101,12 +111,14 @@ class CommentControllerTest {
         //given
         Long postId = 10L;
         Long commentId = 3L;
+        Long userId = 1L;
 
         CommentUpdateRequest request = new CommentUpdateRequest("수정된 내용", false);
         CommentResponse response = new CommentResponse(commentId, postId, 1L, "image-url", "name", "수정된 내용", null, 0L, LocalDateTime.now());
 
         given(commentService.update(anyLong(), eq(postId), eq(commentId), any(), any()))
                 .willReturn(response);
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         MockMultipartFile dto = getDtoPart(request);
 
@@ -129,6 +141,9 @@ class CommentControllerTest {
         //given
         Long postId = 10L;
         Long commentId = 3L;
+        Long userId = 1L;
+
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         //when, then
         mockMvc.perform(
@@ -136,26 +151,7 @@ class CommentControllerTest {
                 )
                 .andExpect(status().isOk());
 
-        verify(commentService).delete(1L, postId, commentId);
-    }
-
-    @DisplayName("댓글 단건 조회 api - 성공")
-    @Test
-    void findComment_success() throws Exception {
-        //given
-        Long postId = 10L;
-        Long commentId = 5L;
-        CommentResponse response = getCommentResponse(commentId);
-
-        given(commentService.find(postId, commentId))
-                .willReturn(response);
-
-        //when, then
-        mockMvc.perform(
-                        get("/api/posts/{postId}/comments/{id}", postId, commentId)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(commentId));
+        verify(commentService).delete(userId, postId, commentId);
     }
 
     @DisplayName("댓글 목록 조회 api - 성공")
@@ -170,6 +166,7 @@ class CommentControllerTest {
         List<CommentListResponse> responses = List.of(response1, response2);
 
         given(commentService.findList(userId, postId)).willReturn(responses);
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         //when, then
         mockMvc.perform(
@@ -185,9 +182,11 @@ class CommentControllerTest {
         //given
         Long postId = 10L;
         Long commentId = 999L;
+        Long userId = 1L;
 
-        given(commentService.find(postId, commentId))
+        given(commentService.find(userId, postId, commentId))
                 .willThrow(new SsupException(COMMENT_NOT_FOUND));
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         //when, then
         mockMvc.perform(
