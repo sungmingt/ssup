@@ -73,7 +73,7 @@ class UserProfileServiceTest {
         //given
         User user = User.builder().id(1L).build();
 
-        given(userRepository.findMeProfileById(1L))
+        given(userRepository.findById(user.getId()))
                 .willReturn(Optional.of(user));
 
         UserMeProfileCreateRequest request = UserMeProfileCreateRequest.builder()
@@ -90,7 +90,7 @@ class UserProfileServiceTest {
         MockMultipartFile image = getMockImage();
 
         //when, then
-        assertThatThrownBy(() -> userProfileService.createMyProfile(1L, image, request))
+        assertThatThrownBy(() -> userProfileService.createMyProfile(user.getId(), image, request))
                 .isInstanceOf(SsupException.class)
                 .hasMessageContaining(ErrorCode.LOCATION_NOT_FOUND.getMessage());
     }
