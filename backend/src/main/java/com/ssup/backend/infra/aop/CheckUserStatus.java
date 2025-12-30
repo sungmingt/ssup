@@ -8,5 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface CheckUserStatus {
+    //userId를 항상 첫번째 인자로 받자!
+    int userIdParamIndex() default 0;
     UserStatus[] value();
 }
