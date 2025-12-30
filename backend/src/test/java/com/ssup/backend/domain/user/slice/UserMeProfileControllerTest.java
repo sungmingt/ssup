@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.user.slice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.user.Gender;
 import com.ssup.backend.domain.user.profile.UserMeProfileController;
 import com.ssup.backend.domain.user.profile.UserProfileService;
@@ -8,6 +9,7 @@ import com.ssup.backend.domain.user.profile.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @WebMvcTest(UserMeProfileController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserMeProfileControllerTest {
 
     @Autowired
@@ -35,6 +38,9 @@ class UserMeProfileControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    AppUserProvider appUserProvider;
+
     @DisplayName("나의 프로필 조회 - 성공")
     @Test
     void findMyProfile_success() throws Exception {
@@ -42,6 +48,7 @@ class UserMeProfileControllerTest {
         UserMeProfileResponse response = getUserMeProfileResponse();
 
         given(userProfileService.findMyProfile(1L)).willReturn(response);
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         //when, then
         mockMvc.perform(get("/api/users/me/profile"))
@@ -68,6 +75,7 @@ class UserMeProfileControllerTest {
 
         given(userProfileService.createMyProfile(any(), any(), any()))
                 .willReturn(UserMeProfileResponse.builder().id(1L).build());
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         //when, then
         mockMvc.perform(multipart("/api/users/me/profile")
@@ -98,6 +106,7 @@ class UserMeProfileControllerTest {
 
         given(userProfileService.updateMyProfile(eq(1L), any(), any()))
                 .willReturn(UserMeProfileResponse.builder().id(1L).build());
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         //when, then
         mockMvc.perform(multipart("/api/users/me/profile")

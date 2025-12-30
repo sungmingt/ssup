@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.language.slice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.language.LanguageLevel;
 import com.ssup.backend.domain.language.LanguageType;
 import com.ssup.backend.domain.user.language.UserLanguageController;
@@ -12,6 +13,7 @@ import com.ssup.backend.domain.user.language.dto.UserLanguageUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @WebMvcTest(UserLanguageController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserLanguageControllerTest {
 
     @Autowired
@@ -37,10 +40,14 @@ class UserLanguageControllerTest {
     @MockBean
     private UserLanguageService userLanguageService;
 
+    @MockBean
+    AppUserProvider appUserProvider;
+
     @DisplayName("유저 언어 조회 api - 성공")
     @Test
     void findUserLanguages_success() throws Exception {
         //given
+        Long userId = 1L;
         UserLanguageResponse response =
                 UserLanguageResponse.builder()
                         .usingLanguages(List.of(
@@ -48,7 +55,8 @@ class UserLanguageControllerTest {
                         .learningLanguages(List.of())
                         .build();
 
-        given(userLanguageService.findUserLanguages(1L)).willReturn(response);
+        given(userLanguageService.findUserLanguages(userId)).willReturn(response);
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         //when, then
         mockMvc.perform(get("/api/users/1/languages"))
@@ -60,6 +68,7 @@ class UserLanguageControllerTest {
     @Test
     void saveMyLanguages_success() throws Exception {
         //given
+        Long userId = 1L;
         UserLanguageUpdateRequest request =
                 new UserLanguageUpdateRequest(
                         List.of(new UserLanguageRequestItem(1L, LanguageType.USING, LanguageLevel.ADVANCED))
@@ -70,6 +79,7 @@ class UserLanguageControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk());
+        given(appUserProvider.getUserId()).willReturn(userId);
 
         then(userLanguageService).should().updateUserLanguages(anyLong(), any());
     }

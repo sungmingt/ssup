@@ -1,14 +1,15 @@
 package com.ssup.backend.domain.post.slice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.post.PostController;
 import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSortType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PostController.class)
 @ContextConfiguration(classes = PostController.class) //Controller test: JPA 컨텍스트 로딩 x -> Jpa Auditing 설정 테스트에서 제외
+@AutoConfigureMockMvc(addFilters = false)
 class PostControllerTest {
 
     @Autowired
@@ -37,7 +40,8 @@ class PostControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    //todo: 인증 구현 후 userId -> AppUser
+    @MockBean
+    AppUserProvider appUserProvider;
 
     @DisplayName("최신순 목록 조회 - 성공")
     @Test
@@ -50,6 +54,8 @@ class PostControllerTest {
                 isNull(),
                 eq(15)
         )).willReturn(new PostSliceResponse(List.of(), 10L, 3L, false));
+
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         //when, then
         mockMvc.perform(get("/api/posts"))
@@ -93,6 +99,7 @@ class PostControllerTest {
                                 .authorName("sam")
                                 .build()
                 );
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         //when & then
         mockMvc.perform(get("/api/posts/{id}", 1))
@@ -110,6 +117,7 @@ class PostControllerTest {
         //given
         given(postService.create(anyLong(), anyList(), any()))
                 .willReturn(response);
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         MockMultipartFile dto = getDtoPart(request);
         MockMultipartFile images = getImagePart();
@@ -132,6 +140,7 @@ class PostControllerTest {
         //given
         given(postService.update(anyLong(), anyLong(), anyList(), any()))
                 .willReturn(response);
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         MockMultipartFile dto = getDtoPart(request);
         MockMultipartFile images = getImagePart();
@@ -152,8 +161,13 @@ class PostControllerTest {
     @Test
     @DisplayName("게시글 삭제 api - 성공")
     void deletePost_success() throws Exception {
+        //given
+        Long userId = 1L;
+        Long postId = 1L;
+        given(appUserProvider.getUserId()).willReturn(userId);
+
         mockMvc.perform(
-                        delete("/api/posts/{id}", 1)
+                        delete("/api/posts/{id}", postId)
                                 .with(req -> {
                                     req.setMethod(HttpMethod.DELETE.name());
                                     return req;
@@ -161,7 +175,7 @@ class PostControllerTest {
                 )
                 .andExpect(status().isNoContent());
 
-        BDDMockito.verify(postService).delete(1L);
+        verify(postService).delete(userId, postId);
     }
 
     //=== init ===
