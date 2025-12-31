@@ -22,6 +22,7 @@ let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error = null) => {
+  console.log("### PROCESS QUEUE. error=", !!error);
   failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve()));
   failedQueue = []; //refresh가 끝날 때까지 기다려야 하는 “실패한 요청들”의 대기열
 };
@@ -37,17 +38,26 @@ refresh가 실패하면 세션을 비우고 로그인으로 이동 */
 
 //api를 사용하는 요청에 모두 인터셉터 적용한다는 뜻
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    console.log("### RES OK:", res.config.url, res.status);
+    return res;
+  },
   async (error) => {
     const originalRequest = error.config; //error.config = “이 에러를 일으킨 원래 요청 정보” (URL, method, headers 등)
 
     if (originalRequest?.url?.includes("/auth/me")) {
-      return Promise.reject(error);
+      return Promise.resolve(error.response);
     }
 
     //같은 요청을 한번만 재시도하도록 플래그 설정
     //401 응답이고 첫 시도라면
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/me")
+    ) {
+      console.log("### REISSUE TRIGGERED BY:", originalRequest.url);
+
       //refresh가 이미 진행 중이면 큐에 넣고 기다림
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -59,19 +69,28 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        console.log("### REISSUE TRY");
         await reissueApi.post("/auth/reissue");
-        // await useAuthStore.getState().initAuth();
+        console.log("### REISSUE SUCCESS");
 
-        //대기 중인 요청들 진행시키기
-        processQueue();
-        //원래 요청 재시도
-        return api(originalRequest);
+        //////////
+        await useAuthStore.getState().initAuth();
+
+        processQueue(); //대기 중인 요청들 진행시키기
+        return api(originalRequest); //원래 요청 재시도
       } catch (e) {
-        processQueue(e);
+        console.log("### REISSUE FAIL");
+
         useAuthStore.getState().clearAuth();
-        // useNavigate("/login");
-        // window.location.href = "/login";
-        return Promise.reject(e);
+        processQueue(e);
+
+        //auth/me 요청이었다면 그냥 종료하고, 그 외의 요청이면 에러를 띄움
+        if (originalRequest.url.includes("/auth/me")) {
+          return Promise.reject(e);
+        }
+
+        // return Promise.reject(e);
+        return Promise.resolve(error);
       } finally {
         isRefreshing = false;
       }

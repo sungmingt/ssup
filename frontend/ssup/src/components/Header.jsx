@@ -12,19 +12,20 @@ import ssupLogo from "@/assets/ssup_logo.png";
 function Header() {
   // 예: 로그인 상태 (실무에서는 context나 recoil, redux, query로 관리)
 
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, loading } = useAuthStore();
   const { open } = useConfirmStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     open(
       CONFIRM_MESSAGE.LOGOUT(async () => {
-        await authApi.logout();
         logout();
         navigate("/");
       })
     );
   };
+
+  if (loading) return null;
 
   return (
     <header className="sticky-top bg-white shadow-sm">

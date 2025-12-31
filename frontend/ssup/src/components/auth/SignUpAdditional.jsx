@@ -11,8 +11,8 @@ import "./../../css/auth/SignUpAdditional.css";
 function SignUpAdditional() {
   const navigate = useNavigate();
 
-  const { user, loading: authLoading } = useAuthStore();
-  const [pageLoading, setPageLoading] = useState(true);
+  const { user, isAuthenticated, loading } = useAuthStore();
+  const [pageLoading, setPageLoading] = useState(false);
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -25,6 +25,8 @@ function SignUpAdditional() {
   const [interests, setInterests] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
 
+  const [submitting, setSubmitting] = useState(false);
+
   const [form, setForm] = useState({
     age: "",
     gender: "MALE",
@@ -34,15 +36,25 @@ function SignUpAdditional() {
   });
 
   useEffect(() => {
-    if (authLoading) return;
+    if (loading) return;
 
-    if (!user) navigate("/login");
-    else if (user.status !== "PENDING") navigate("/");
-  }, [user, authLoading, navigate]);
+    if (!isAuthenticated || !user) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    if (user.status !== "PENDING") {
+      navigate("/", { replace: true });
+    }
+  }, [loading, isAuthenticated, user, navigate]);
 
   useEffect(() => {
+    if (pageLoading) return;
+
     const load = async () => {
       try {
+        setPageLoading(true);
+
         const [siDoRes, interestRes] = await Promise.all([
           locationApi.getSiDoList(),
           interestApi.getAll(),
@@ -102,6 +114,9 @@ function SignUpAdditional() {
   };
 
   const onSubmit = async (e) => {
+    if (submitting) return;
+    setSubmitting(true);
+
     e.preventDefault();
 
     const dto = {
@@ -125,14 +140,15 @@ function SignUpAdditional() {
 
     try {
       await profileApi.createMyProfile(formData);
-      useAuthStore.initAuth();
       navigate("/profile");
     } catch {
       alert("프로필 저장 실패");
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (authLoading || pageLoading) return null;
+  if (loading || pageLoading) return null;
 
   return (
     <FormLayout>

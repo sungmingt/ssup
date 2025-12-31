@@ -40,7 +40,7 @@ function Login() {
 
       const user = useAuthStore.getState().user;
 
-      if (user.status === "INCOMPLETE") {
+      if (user.status === "PENDING") {
         navigate("/signup/additional");
       } else {
         navigate("/");

@@ -67,6 +67,7 @@ function Profile({ isMyProfile = false }) {
     open(
       CONFIRM_MESSAGE.DELETE_USER(async () => {
         await profileApi.deleteMyProfile();
+        navigate("/");
       })
     );
   };

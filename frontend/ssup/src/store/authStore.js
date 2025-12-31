@@ -8,13 +8,20 @@ export const useAuthStore = create((set) => ({
   isAuthenticated: false,
   loading: true,
 
-  //유저 로그인 상태 체크. (앱 진입, 새로고침 시 실행하도록)
   initAuth: async () => {
     try {
+      set({ loading: true });
       const res = await authApi.me();
-      set({ user: res.data, isAuthenticated: true, loading: false });
+
+      if (res.data) {
+        set({ user: res.data, isAuthenticated: true });
+      } else {
+        set({ user: null, isAuthenticated: false });
+      }
     } catch {
-      set({ user: null, isAuthenticated: false, loading: false });
+      set({ user: null, isAuthenticated: false });
+    } finally {
+      set({ loading: false });
     }
   },
 
@@ -22,7 +29,8 @@ export const useAuthStore = create((set) => ({
   userInit: async () => {
     try {
       const res = await authApi.me();
-      set({ user: res.data, isAuthenticated: true });
+      if (res.data) set({ user: res.data, isAuthenticated: true });
+      else set({ user: null, isAuthenticated: false });
     } catch {
       set({ user: null, isAuthenticated: false });
     }
@@ -37,7 +45,6 @@ export const useAuthStore = create((set) => ({
       await authApi.logout();
     } finally {
       set({ user: null, isAuthenticated: false });
-      window.location.href = "/";
     }
   },
 }));
