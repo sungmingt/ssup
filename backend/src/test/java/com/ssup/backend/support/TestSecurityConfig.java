@@ -3,13 +3,18 @@ package com.ssup.backend.support;
 import com.ssup.backend.infra.security.jwt.JwtAuthenticationFilter;
 import com.ssup.backend.infra.security.jwt.JwtCookieProvider;
 import com.ssup.backend.infra.security.jwt.JwtProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static com.ssup.backend.infra.security.SecurityPaths.*;
+import static com.ssup.backend.infra.security.SecurityPaths.OTHERS;
 
 @TestConfiguration
 @Profile("auth-test")
@@ -20,20 +25,60 @@ public class TestSecurityConfig {
 
     @Bean
     SecurityFilterChain testFilterChain(HttpSecurity http,
-                                        JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+                                        JwtProvider jwtProvider,
+                                        JwtCookieProvider cookieProvider) throws Exception {
+        JwtAuthenticationFilter jwtAuthenticationFilter =
+                new JwtAuthenticationFilter(jwtProvider, cookieProvider);
+
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtProvider jwtProvider,
-                                                           JwtCookieProvider cookieProvider) {
-        return new JwtAuthenticationFilter(jwtProvider, cookieProvider);
+                //permit requests
+                .authorizeHttpRequests(request -> request
+                        //users
+                        .requestMatchers("/api/users/me/**").authenticated()
+
+                        //posts
+                        .requestMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
+
+                        //comments
+                        .requestMatchers(HttpMethod.POST, "/api/posts/*/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/posts/*/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/*/comments/**").authenticated()
+
+                        //hearts
+                        .requestMatchers(HttpMethod.POST, "/api/posts/*/hearts/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/comments/*/hearts/**").authenticated()
+
+
+                        //permitAll
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
+                        .requestMatchers(SWAGGER).permitAll()
+                        .requestMatchers(AUTH).permitAll()
+                        .requestMatchers(OTHERS).permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/reissue/**").permitAll()
+
+
+                        .anyRequest().authenticated()
+                )
+
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((req, res, ex) -> {
+                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED");
+                        })
+                        .accessDeniedHandler((req, res, ex) -> {
+                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED");
+                        })
+                )
+
+                .build();
     }
 }
