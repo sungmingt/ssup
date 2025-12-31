@@ -15,7 +15,7 @@ import static com.ssup.backend.infra.security.jwt.TokenInfo.*;
 @Component
 public class JwtCookieProvider {
 
-    public static String COOKIE_HEADER = "Set-Cookie";
+    public static final String COOKIE_HEADER = "Set-Cookie";
 
     public ResponseCookie createAccessTokenCookie(String token) {
         return ResponseCookie.from(ACCESS_TOKEN, token)
@@ -23,7 +23,7 @@ public class JwtCookieProvider {
                 .secure(true)
                 .sameSite("None")
                 .path("/")
-                .maxAge(Duration.ofMinutes(30))
+                .maxAge(Duration.ofMillis(ACCESS_TOKEN_TTL_MILLISECONDS))
                 .build();
     }
 
@@ -33,7 +33,7 @@ public class JwtCookieProvider {
                 .secure(true)
                 .sameSite("None")
                 .path("/")
-                .maxAge(Duration.ofDays(1))
+                .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS))
                 .build();
     }
 
@@ -43,7 +43,7 @@ public class JwtCookieProvider {
                 .secure(true)
                 .sameSite("None")
                 .path("/")
-                .maxAge(Duration.ofMinutes(30))
+                .maxAge(Duration.ofMillis(ACCESS_TOKEN_TTL_MILLISECONDS))
                 .build();
     }
 

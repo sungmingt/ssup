@@ -36,11 +36,11 @@ public class JwtProvider {
     }
 
     public String createAccessToken(Long userId) {
-        return createToken(userId, ACCESS_TOKEN_VALIDATION_SECOND);
+        return createToken(userId, ACCESS_TOKEN_TTL_MILLISECONDS);
     }
 
     public String createRefreshToken(Long userId) {
-        return createToken(userId, REFRESH_TOKEN_VALIDATION_SECOND);
+        return createToken(userId, REFRESH_TOKEN_TTL_MILLISECONDS);
     }
 
     private String createToken(Long userId, long timeToLive) {

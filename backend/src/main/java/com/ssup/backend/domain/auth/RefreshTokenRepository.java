@@ -1,24 +1,23 @@
 package com.ssup.backend.domain.auth;
 
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.Optional;
 
-import static com.ssup.backend.infra.security.jwt.TokenInfo.REFRESH_TOKEN_VALIDATION_SECOND;
+import static com.ssup.backend.infra.security.jwt.TokenInfo.REFRESH_TOKEN_TTL_MILLISECONDS;
 
 @Repository
+@Slf4j
 public class RefreshTokenRepository {
 
     private static final String KEY_PREFIX = "refreshToken:";
-    private final RedisTemplate<String, String> refreshTokenRedisTemplate;
-    private final ValueOperations<String, String> ops;
+    private final StringRedisTemplate redisTemplate;
 
-    public RefreshTokenRepository(RedisTemplate<String, String> refreshTokenRedisTemplate) {
-        this.refreshTokenRedisTemplate = refreshTokenRedisTemplate;
-        ops = refreshTokenRedisTemplate.opsForValue();
+    public RefreshTokenRepository(StringRedisTemplate refreshTokenRedisTemplate) {
+        this.redisTemplate = refreshTokenRedisTemplate;
     }
 
     private String getKey(Long userId) {
@@ -26,18 +25,20 @@ public class RefreshTokenRepository {
     }
 
     public Optional<String> findByUserId(Long userId) {
-        return Optional.ofNullable(ops.get(getKey(userId)));
+        log.info("### findByUserId called");
+        log.info("### finding userId={}", userId);
+        return Optional.ofNullable(redisTemplate.opsForValue().get(getKey(userId)));
     }
 
     public void save(Long userId, String refreshToken) {
-        ops.set(
+        redisTemplate.opsForValue().set(
                 getKey(userId),
                 refreshToken,
-                Duration.ofMillis(REFRESH_TOKEN_VALIDATION_SECOND)
+                Duration.ofSeconds(REFRESH_TOKEN_TTL_MILLISECONDS)
         );
     }
 
     public void deleteById(Long userId) {
-        refreshTokenRedisTemplate.delete(getKey(userId));
+        redisTemplate.delete(getKey(userId));
     }
 }
