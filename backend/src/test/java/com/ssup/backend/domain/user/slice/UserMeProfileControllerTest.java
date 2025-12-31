@@ -81,7 +81,7 @@ class UserMeProfileControllerTest {
         mockMvc.perform(multipart("/api/users/me/profile")
                         .file(dto)
                         .file(image))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L));
     }
 
