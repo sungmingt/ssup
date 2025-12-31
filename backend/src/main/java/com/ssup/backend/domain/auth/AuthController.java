@@ -22,8 +22,16 @@ public class AuthController {
     private final AppUserProvider appUserProvider;
 
     @GetMapping("/me")
-    public MeResponse me() {
-        return authService.me(appUserProvider.getUserId());
+    public ResponseEntity<MeResponse> me() {
+        //인증이 필요한 API 호출에만 재발급 요청이 가도록, 로그인/비로그인 모두 정상응답.
+        //프론트에서는 인증 여부만 알면 된다 (user or null)
+        try {
+            Long userId = appUserProvider.getUserId();
+            if (userId == null) return ResponseEntity.ok(null);
+            return ResponseEntity.ok(authService.me(userId));
+        } catch (Exception e) {
+            return ResponseEntity.ok(null);
+        }
     }
 
     @PostMapping("/signup")

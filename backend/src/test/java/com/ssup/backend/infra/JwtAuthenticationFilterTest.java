@@ -68,7 +68,7 @@ class JwtAuthenticationFilterTest {
     void invalidToken_thenUnauthorized() throws Exception {
         Cookie cookie = new Cookie("accessToken", "wrong.token");
 
-        mockMvc.perform(get("/api/auth/me").cookie(cookie))
+        mockMvc.perform(get("/api/users/me/profile").cookie(cookie))
                 .andExpect(status().isUnauthorized());
     }
 }
