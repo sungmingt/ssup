@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,13 +20,12 @@ import java.util.List;
 import static com.ssup.backend.infra.security.jwt.TokenInfo.ACCESS_TOKEN;
 
 @Slf4j
-//@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final JwtCookieProvider cookieProvider;
-//    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,13 +33,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
+        log.info("### filter 진입");
         String accessToken = cookieProvider.getTokenFromCookie(request, ACCESS_TOKEN).orElse(null);
-        TokenStatus status = jwtProvider.validateToken(accessToken);
 
-        if (status == TokenStatus.INVALID || status == TokenStatus.EXPIRED) {
-            response.sendError(401);
+        log.info("### ATK={}", accessToken);
+
+        if (accessToken == null){
+            SecurityContextHolder.clearContext();
+            chain.doFilter(request,response);
             return;
         }
+
+        TokenStatus status = jwtProvider.validateToken(accessToken);
+
+        log.info("### ATK status={}", status);
+
+        if (status != TokenStatus.VALID) {
+            SecurityContextHolder.clearContext();
+            chain.doFilter(request, response);
+            return;
+        }
+
+        log.info("### ATK 검증 통과");
 
         Long userId = jwtProvider.getUserIdFromToken(accessToken);
         AppUser appUser = new AppUser(userId);
@@ -57,25 +70,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String accessToken = cookieProvider.getTokenFromCookie(request, ACCESS_TOKEN).orElse(null);
-        return accessToken == null;
+        String uri = request.getRequestURI();
 
-//        String uri = request.getRequestURI();
-//        String method = request.getMethod();
-//
-//        //Swagger, Auth 등 open
-//        if (pathMatcher.match("/swagger-ui/**", uri)
-//                || pathMatcher.match("/v3/api-docs/**", uri)
-//                || pathMatcher.match("/api/auth/**", uri)) {
-//            return true;
-//        }
-//
-//        //PUBLIC GET 만 허용
-//        if (HttpMethod.GET.matches(method)) {
-//            return Arrays.stream(SecurityPaths.PUBLIC_GET)
-//                    .anyMatch(pattern -> pathMatcher.match(pattern, uri));
-//        }
-//
-//        return false;
+        if (pathMatcher.match("/login/oauth2/**", uri)
+                || pathMatcher.match("/oauth2/**", uri)
+                || pathMatcher.match("/api/auth/login", uri)
+                || pathMatcher.match("/api/auth/logout", uri)
+                || pathMatcher.match("/api/auth/reissue", uri)
+                || pathMatcher.match("/swagger-ui/**", uri)
+                || pathMatcher.match("/v3/api-docs/**", uri)) {
+            return true;
+        }
+
+        return false;
     }
 }
