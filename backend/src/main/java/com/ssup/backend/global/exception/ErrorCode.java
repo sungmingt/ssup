@@ -8,7 +8,7 @@ public enum ErrorCode {
     //USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "로그인되지 않은 사용자입니다."),
-    LOGIN_REQUIRED(HttpStatus.FORBIDDEN, "로그인이 필요한 기능입니다."),
+    LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED, "로그인이 필요한 기능입니다."),
     USER_STATUS_PENDING(HttpStatus.FORBIDDEN, "추가 정보를 입력해주세요."),
     DELETED_USER(HttpStatus.FORBIDDEN, "탈퇴한 사용자 계정입니다."),
     USER_ALREADY_AUTHORIZED(HttpStatus.BAD_REQUEST, "이미 로그인 상태입니다."),
