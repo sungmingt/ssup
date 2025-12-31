@@ -25,7 +25,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_social",
+                        columnNames = {"social_type", "social_id"}
+                )
+        })
 public class User extends BaseTimeEntity {
 
     //===== mapping =====
@@ -70,7 +76,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 255)
     private String imageUrl;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 30, nullable = false)
     private String nickname;
 
     @Column(nullable = true, unique = true)
