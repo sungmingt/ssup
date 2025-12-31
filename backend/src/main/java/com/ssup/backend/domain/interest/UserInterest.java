@@ -24,7 +24,7 @@ public class UserInterest {
     @JoinColumn(name = "interest_id")
     private Interest interest;
 
-    private Integer priority; //관심도/순서
+//    private Integer priority; //관심도/순서
 
     public UserInterest(User user, Interest interest) {
         this.user = user;

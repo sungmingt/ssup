@@ -16,17 +16,19 @@ import com.ssup.backend.infra.security.jwt.TokenStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.ssup.backend.global.exception.ErrorCode.*;
-import static com.ssup.backend.infra.security.jwt.JwtCookieProvider.COOKIE_HEADER;
 import static com.ssup.backend.infra.security.jwt.TokenInfo.REFRESH_TOKEN;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -63,10 +65,16 @@ public class AuthService {
     }
 
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
+        log.info("### reissue called in authService");
+
         String refreshToken = cookieProvider.getTokenFromCookie(request, REFRESH_TOKEN)
                 .orElseThrow(() -> new SsupException(REFRESH_TOKEN_NOT_FOUND));
 
+        log.info("### RTK={}", refreshToken);
+
         TokenStatus tokenStatus = jwtProvider.validateToken(refreshToken);
+
+        log.info("### RTK status={}", tokenStatus);
 
         //유효하지 않은 토큰
         if (tokenStatus == TokenStatus.INVALID) {
@@ -96,10 +104,12 @@ public class AuthService {
 
         String newAccessToken = jwtProvider.createAccessToken(userId);
         ResponseCookie accessTokenCookie = cookieProvider.reissueAccessTokenCookie(newAccessToken);
-        response.addHeader(COOKIE_HEADER, accessTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
     }
 
     public void login(LoginRequest request, HttpServletResponse response) {
+        System.out.println("### login service called: ");
+
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new SsupException(EMAIL_NOT_EXISTS));
 
@@ -113,12 +123,17 @@ public class AuthService {
 
         String accessToken = jwtProvider.createAccessToken(user.getId());
         String refreshToken = jwtProvider.createRefreshToken(user.getId());
+
+        System.out.println("### RTK save called in authService, RTK: " + refreshToken);
+        System.out.println("### RTK save called in authService, userId: " + user.getId());
+
+
         refreshTokenRepository.save(user.getId(), refreshToken);
 
         ResponseCookie accessTokenCookie = cookieProvider.createAccessTokenCookie(accessToken);
         ResponseCookie refreshTokenCookie = cookieProvider.createRefreshTokenCookie(refreshToken);
-        response.addHeader(COOKIE_HEADER, accessTokenCookie.toString());
-        response.addHeader(COOKIE_HEADER, refreshTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
     }
 
     public void logout(HttpServletRequest request, HttpServletResponse response) {

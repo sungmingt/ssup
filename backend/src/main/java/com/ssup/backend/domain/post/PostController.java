@@ -39,7 +39,7 @@ public class PostController {
     @Operation(summary = "글 조회", description = "글 상세 정보 조회")
     @GetMapping("/{id}")
     public PostResponse find(@PathVariable("id") Long id) {
-        return postService.find(id, appUserProvider.getUserId());
+        return postService.find(appUserProvider.getUserId(), id);
     }
 
     @Operation(summary = "글 작성", description = "새로운 글 작성")
