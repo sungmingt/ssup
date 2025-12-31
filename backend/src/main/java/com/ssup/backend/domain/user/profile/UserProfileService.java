@@ -1,6 +1,5 @@
 package com.ssup.backend.domain.user.profile;
 
-import com.ssup.backend.domain.auth.AppUser;
 import com.ssup.backend.domain.interest.Interest;
 import com.ssup.backend.domain.interest.InterestRepository;
 import com.ssup.backend.domain.interest.UserInterest;
@@ -22,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.ssup.backend.global.exception.ErrorCode.*;
 
@@ -57,9 +58,9 @@ public class UserProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
-        List<Long> interestIds = request.getInterests().stream()
+        Set<Long> interestIds = request.getInterests().stream()
                 .map(UserInterestRequestItem::getInterestId)
-                .toList();
+                .collect(Collectors.toSet());
 
         if (!interestIds.isEmpty()) {
             List<Interest> interests = interestRepository.findAllById(interestIds);

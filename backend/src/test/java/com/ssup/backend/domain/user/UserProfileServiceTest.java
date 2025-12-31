@@ -21,10 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -85,7 +82,7 @@ class UserProfileServiceTest {
 
         given(locationRepository.findById(99L))
                 .willReturn(Optional.empty());
-        given(interestRepository.findAllById(List.of(1L))).willReturn(List.of(getInterest(1L)));
+        given(interestRepository.findAllById(Set.of(1L))).willReturn(List.of(getInterest(1L)));
 
         MockMultipartFile image = getMockImage();
 
