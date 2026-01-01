@@ -1,5 +1,5 @@
 import mainImage from "./../assets/ssup_logo_2.png";
-import mainImage3 from "./../assets/ssup_main_image_3.png";
+// import mainImage3 from "./../assets/ssup_main_image_3.png";
 import "./../css/MainPage.css";
 import { useNavigate } from "react-router-dom";
 import InfoLayout from "@/layouts/InfoLayout";
