@@ -1,0 +1,77 @@
+.profile-image-edit-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-edit-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-image-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.image-upload-btn {
+  padding: 6px 14px;
+  border-radius: 14px;
+  border: 1px solid #ced4da;
+  font-size: 0.8rem;
+  cursor: pointer;
+  background: #fff;
+}
+
+.image-remove-btn {
+  padding: 6px 14px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  background: #fff;
+}
+
+.language-type-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.lang-type-btn {
+  padding: 6px 14px;
+  border-radius: 14px;
+  border: 1px solid #ced4da;
+  background: #fff;
+  font-size: 0.8rem;
+}
+
+.lang-type-btn.active {
+  background: #6fcf97;
+  color: #fff;
+  border-color: #6fcf97;
+}
+
+.language-modal-overlay {
+  position: fixed !important;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2147483647; /* 최대값 */
+}
+
+.language-modal {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 14px;
+  padding: 24px 20px;
+}
+
+.language-modal .interest-select-box {
+  gap: 10px;
+}

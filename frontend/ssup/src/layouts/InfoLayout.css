@@ -1,0 +1,5 @@
+.info-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #caf3dc, #ffffff);
+  padding: 24px 16px 48px;
+}

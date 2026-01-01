@@ -1,5 +1,6 @@
 package com.ssup.backend.global;
 
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.comment.CommentController;
 import com.ssup.backend.domain.comment.CommentService;
 import com.ssup.backend.global.exception.ErrorCode;
@@ -8,13 +9,14 @@ import com.ssup.backend.global.exception.SsupException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.ssup.backend.global.exception.ErrorCode.COMMENT_NOT_FOUND;
-import static com.ssup.backend.global.exception.ErrorCode.INTERNAL_SERVER_ERROR;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -22,8 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 @WebMvcTest(controllers = CommentController.class)
 @Import(GlobalControllerAdvice.class)
+@AutoConfigureMockMvc(addFilters = false)
 class GlobalErrorResponseTest {
 
     //예외가 Advice에 정상적으로 잡히는지
@@ -35,11 +39,16 @@ class GlobalErrorResponseTest {
     @MockBean
     private CommentService commentService;
 
+    @MockBean
+    private AppUserProvider appUserProvider;
+
     @DisplayName("SsupException은 공통 ErrorResponse 형식으로 변환된다")
     @Test
     void ssupException_isConvertedToErrorResponse() throws Exception {
-        given(commentService.find(anyLong(), anyLong()))
+        //given
+        given(commentService.find(anyLong(), anyLong(), anyLong()))
                 .willThrow(new SsupException(COMMENT_NOT_FOUND));
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         mockMvc.perform(get("/api/posts/1/comments/999"))
                 .andExpect(status().isNotFound())
@@ -50,8 +59,9 @@ class GlobalErrorResponseTest {
     @DisplayName("예상치 못한 RuntimeException은 500으로 변환된다")
     @Test
     void runtimeException_returnsInternalServerError() throws Exception {
-        given(commentService.find(anyLong(), anyLong()))
+        given(commentService.find(anyLong(), anyLong(), anyLong()))
                 .willThrow(new RuntimeException());
+        given(appUserProvider.getUserId()).willReturn(1L);
 
         mockMvc.perform(get("/api/posts/1/comments/999"))
                 .andExpect(status().isInternalServerError())

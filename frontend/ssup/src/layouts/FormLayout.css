@@ -1,0 +1,14 @@
+.form-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #caf3dc, #ffffff);
+  padding: 80px 16px;
+}
+
+.form-card {
+  max-width: 480px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  padding: 32px 28px;
+}

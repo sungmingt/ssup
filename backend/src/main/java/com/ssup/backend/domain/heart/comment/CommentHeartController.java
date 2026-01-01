@@ -1,5 +1,8 @@
 package com.ssup.backend.domain.heart.comment;
 
+import com.ssup.backend.domain.auth.AppUser;
+import com.ssup.backend.domain.auth.AppUserProvider;
+import com.ssup.backend.domain.auth.CurrentUser;
 import com.ssup.backend.domain.heart.dto.HeartResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentHeartController {
 
     private final CommentHeartFacade commentHeartFacade;
+    private final AppUserProvider appUserProvider;
 
     @PostMapping("/{commentId}/hearts")
     public HeartResponse toggleHeart(@PathVariable("commentId") Long commentId) {
-        Long userId = 1L; //todo: to AuthenticationalPrinciple
-        return commentHeartFacade.tryToggleHeart(commentId, userId);
+        return commentHeartFacade.tryToggleHeart(appUserProvider.getUserId(), commentId);
     }
 }

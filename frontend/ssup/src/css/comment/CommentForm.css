@@ -1,12 +1,15 @@
 /* container */
 .comment-input-wrapper {
   position: relative;
+  height: auto;
 }
 
-/* text area */
 .comment-textarea {
-  padding-right: 120px;
-  padding-bottom: 40px; /* 하단 버튼 공간 */
+  height: auto !important;
+  min-height: 120px;
+  padding: 12px 80px 12px 12px; /* 버튼 겹침 방지 */
+  resize: vertical;
+  line-height: 1.6;
 }
 
 /* 카메라 버튼 */

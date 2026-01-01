@@ -18,7 +18,7 @@ public class PostHeartFacade {
     //동시 요청으로 인한 Lost Update 방지를 위해 낙관적 락 retry 필요한데,
     // 같은 service 클래스에서 호출할 경우 self-invocation 으로 인해 트랜잭션이 분리되지 않음.
     // -> 책임 분리
-    public HeartResponse tryToggleHeart(Long postId, Long userId) {
+    public HeartResponse tryToggleHeart(Long userId, Long postId) {
         for (int i = 0; i < 3; i++) {
             try {
                 return postHeartService.toggleHeart(postId, userId);

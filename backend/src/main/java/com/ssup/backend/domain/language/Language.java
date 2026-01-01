@@ -8,11 +8,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "code")
-        }
-)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "code")})
 public class Language {
 
     @Id

@@ -9,7 +9,9 @@ import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.aop.CheckUserStatus;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.ssup.backend.domain.comment.CommentValidator.validateComment;
 import static com.ssup.backend.global.exception.ErrorCode.*;
 
 @Service
@@ -32,8 +36,8 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ImageStorage imageStorage;
-    private final CommentValidator validator;
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public CommentResponse create(Long userId, Long postId, MultipartFile image, CommentCreateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
@@ -55,12 +59,13 @@ public class CommentService {
         return CommentResponse.of(savedComment);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public CommentResponse update(Long userId, Long postId, Long commentId, MultipartFile image, CommentUpdateRequest request) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
         //validate
-        validator.validateComment(comment, postId, userId);
+        validateComment(comment, postId, userId);
 
         //update
         comment.updateContent(request.getContent().trim());
@@ -69,11 +74,12 @@ public class CommentService {
         return CommentResponse.of(comment);
     }
 
+    @CheckUserStatus(UserStatus.ACTIVE)
     public void delete(Long userId, Long postId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(COMMENT_NOT_FOUND));
 
-        validator.validateComment(comment, postId, userId);
+        validateComment(comment, postId, userId);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(POST_NOT_FOUND));
@@ -84,7 +90,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentResponse find(Long postId, Long commentId) {
+    public CommentResponse find(Long userId, Long postId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(COMMENT_NOT_FOUND));
 
@@ -98,7 +104,12 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentListResponse> findList(Long userId, Long postId) {
         List<Comment> comments = commentRepository.findByPostIdAndDeletedFalseOrderByCreatedAtAsc(postId);
-        Set<Long> heartedCommentIds = commentHeartService.findHeartedCommentIds(userId, comments);
+
+        Set<Long> heartedCommentIds = new HashSet<>();
+        if (userId != null) {
+            heartedCommentIds = commentHeartService.findHeartedCommentIds(userId, comments);
+        }
+
         return CommentListResponse.of(comments, heartedCommentIds);
     }
 

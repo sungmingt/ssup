@@ -8,11 +8,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LanguageResponse {
 
+    private Long id;
     private String code;
     private String name;
 
     public static LanguageResponse of(Language language) {
         return new LanguageResponse(
+                language.getId(),
                 language.getCode(),
                 language.getName()
         );

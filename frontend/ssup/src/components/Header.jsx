@@ -1,17 +1,31 @@
-import "./../css/Header.css";
-
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/authStore";
+import { CONFIRM_MESSAGE } from "@/components/common/confirmMessage";
+import { useConfirmStore } from "@/store/confirmStore";
+import { useNavigate } from "react-router-dom";
+import "./../css/Header.css";
+import defaultProfileImage from "@/assets/ssup_user_default_image.png";
+import { authApi } from "@/api";
+import ssupLogo from "@/assets/ssup_logo.png";
 
 function Header() {
   // 예: 로그인 상태 (실무에서는 context나 recoil, redux, query로 관리)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 예: 로그인된 유저 정보
-  const user = {
-    name: "성민",
-    avatar: "https://via.placeholder.com/32?text=U",
+  const { user, isAuthenticated, logout, loading } = useAuthStore();
+  const { open } = useConfirmStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    open(
+      CONFIRM_MESSAGE.LOGOUT(async () => {
+        logout();
+        navigate("/");
+      })
+    );
   };
+
+  if (loading) return null;
 
   return (
     <header className="sticky-top bg-white shadow-sm">
@@ -22,7 +36,8 @@ function Header() {
         <div className="container px-4">
           {/* 브랜드 로고 */}
           <Link className="navbar-brand fw-bold fs-3" to="/">
-            Suup!
+            <img src={ssupLogo} className="ssup-logo" width="32" height="32" />
+            ssup!
           </Link>
 
           {/* 모바일 토글 버튼 */}
@@ -57,7 +72,7 @@ function Header() {
               </li>
 
               {/* 로그인 여부에 따른 UI 분기 */}
-              {!isLoggedIn ? (
+              {!isAuthenticated ? (
                 <li className="nav-item">
                   <Link className="btn btn-outline-primary px-3" to="/login">
                     로그인
@@ -73,13 +88,11 @@ function Header() {
                     style={{ background: "transparent" }}
                   >
                     <img
-                      src={user.avatar}
-                      alt="avatar"
+                      src={user?.imageUrl || defaultProfileImage}
                       className="rounded-circle"
                       width="32"
                       height="32"
                     />
-                    <span className="fw-semibold">{user.name}</span>
                   </button>
 
                   <ul className="dropdown-menu dropdown-menu-end">
@@ -96,7 +109,7 @@ function Header() {
                     <li>
                       <button
                         className="dropdown-item text-danger"
-                        onClick={() => setIsLoggedIn(false)}
+                        onClick={handleLogout}
                       >
                         로그아웃
                       </button>

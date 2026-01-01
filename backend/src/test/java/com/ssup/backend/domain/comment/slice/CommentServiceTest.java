@@ -85,27 +85,6 @@ class CommentServiceTest {
         verify(commentRepository).save(any(Comment.class));
     }
 
-    @DisplayName("댓글 수정 시 검증이 수행된다 - 성공")
-    @Test
-    void updateComment_validationExecution_success() {
-        //given
-        User user = getUser();
-        Post post = getPost(10, user);
-        Comment comment = getComment(post, user, "content1", false);
-        MultipartFile image = mock(MultipartFile.class);
-
-        given(commentRepository.findById(comment.getId()))
-                .willReturn(Optional.of(comment));
-
-        CommentUpdateRequest request = new CommentUpdateRequest("수정 내용", false);
-
-        //when
-        commentService.update(user.getId(), post.getId(), comment.getId(), image, request);
-
-        //then
-        verify(validator).validateComment(comment, post.getId(), user.getId());
-    }
-
     @DisplayName("댓글 삭제 시 soft delete 호출 - 성공")
     @Test
     void deleteComment_softDeleteExecution_success() {
@@ -116,6 +95,12 @@ class CommentServiceTest {
 
         Comment comment = mock(Comment.class);
         Post post = mock(Post.class);
+        User author = mock(User.class);
+
+        given(author.getId()).willReturn(userId);
+        given(post.getId()).willReturn(postId);
+        given(comment.getAuthor()).willReturn(author);
+        given(comment.getPost()).willReturn(post);
 
         given(commentRepository.findById(commentId))
                 .willReturn(Optional.of(comment));

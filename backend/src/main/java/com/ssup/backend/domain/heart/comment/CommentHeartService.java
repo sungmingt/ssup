@@ -6,8 +6,10 @@ import com.ssup.backend.domain.heart.HeartService;
 import com.ssup.backend.domain.heart.dto.HeartResponse;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.aop.CheckUserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -32,8 +34,9 @@ public class CommentHeartService implements HeartService {
      * - 항상 새로운 트랜잭션에서 실행
      * - 낙관적 락(@Version)은 Comment 엔티티에서 동작
      */
+    @CheckUserStatus(UserStatus.ACTIVE)
     @Override
-    public HeartResponse toggleHeart(Long commentId, Long userId) {
+    public HeartResponse toggleHeart(Long userId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SsupException(ErrorCode.COMMENT_NOT_FOUND));
 

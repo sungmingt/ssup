@@ -4,6 +4,7 @@
 
 .post-main-card {
   border: 1px solid #eee;
+  border-radius: 30px !important;
 }
 
 .post-content {

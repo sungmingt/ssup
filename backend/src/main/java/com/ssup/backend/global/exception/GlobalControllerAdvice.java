@@ -8,6 +8,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -59,5 +60,14 @@ public class GlobalControllerAdvice {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public void ignoreWellKnown(NoResourceFoundException e) throws NoResourceFoundException {
+        if (e.getMessage().contains(".well-known/appspecific")) {
+            return; // 로그 무시
+        }
+
+        throw e;
     }
 }

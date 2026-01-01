@@ -44,10 +44,14 @@ public class PostSliceFetcher {
         //초기화용이기 떄문에 삭제
         if (hasNext) posts.remove(size);
 
-        //유저가 좋아요한 글 목록 조회
-        Set<Long> heartedPostIds = findHeartedPostIds(userId, posts);
+        Set<Long> heartedPostIds = new HashSet<>();
 
-        List<PostListResponse> items = PostListResponse.of(posts, userId, heartedPostIds);
+        if (userId != null) {
+            //유저가 좋아요한 글 목록 조회
+            heartedPostIds = findHeartedPostIds(userId, posts);
+        }
+
+        List<PostListResponse> items = PostListResponse.of(posts, heartedPostIds);
 
         //다음 커서 저장
         Cursor nextCursor = Cursor.from(
@@ -70,6 +74,7 @@ public class PostSliceFetcher {
                     postHeartRepository.findHeartedPostIds(userId, postIds)
             );
         }
+
         return heartedPostIds;
     }
 }

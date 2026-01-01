@@ -35,6 +35,14 @@ jobs:
           chmod +x ./gradlew
           ./gradlew test
 
+      - name: Run tests (auth-test profile)
+        working-directory: backend
+        env:
+          SPRING_PROFILES_ACTIVE: auth-test
+        run: |
+          chmod +x ./gradlew
+          ./gradlew test --tests "*Auth*"
+
 
   # =========================
   # CD (main push 시 실행)

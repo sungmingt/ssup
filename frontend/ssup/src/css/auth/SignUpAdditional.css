@@ -1,0 +1,39 @@
+.form-section {
+  margin-bottom: 20px;
+}
+
+.form-label-title {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 6px;
+}
+
+.interest-select-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.interest-chip {
+  padding: 6px 14px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  border: 1px solid #ced4da;
+  cursor: pointer;
+  background: #fff;
+}
+
+.interest-chip.active {
+  background: #6fcf97;
+  color: #fff;
+  border-color: #6fcf97;
+}
+
+.profile-edit-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}

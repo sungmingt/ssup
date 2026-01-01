@@ -3,6 +3,8 @@ package com.ssup.backend.domain.post.slice;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
+import com.ssup.backend.fixture.user.UserJpaFixture;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,8 @@ class PostRepositoryTest {
     private PostRepository postRepository;
 
     @Autowired
-    private TestEntityManager em;
+    private TestEntityManager tem;
+    private EntityManager em;
 
     @DisplayName("최신순 첫 조회(cursor X) - 성공")
     @Test
@@ -119,7 +122,9 @@ class PostRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        User author = initAndGetUser();
+        this.em = tem.getEntityManager();
+
+        User author = UserJpaFixture.createUser(em);
 
         // viewCount 기준 정렬 테스트용
         getPost(1, 300, author);
@@ -144,13 +149,5 @@ class PostRepositoryTest {
 
         em.persist(post);
         return post;
-    }
-
-    private User initAndGetUser() {
-        User user = User.builder()
-                .email("email123@gmail.com")
-                .build();
-
-        return em.persist(user);
     }
 }

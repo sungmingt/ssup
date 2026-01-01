@@ -6,6 +6,9 @@ spring:
       - ssup-security/application.yml
       - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
+      - ssup-security/application-auth.yml
+front:
+  origin: http://localhost:5173
 
 ---
 
@@ -17,3 +20,34 @@ spring:
       - ssup-security/application.yml
       - ssup-security/application-datasource.yml
       - ssup-security/application-cloud.yml
+      - ssup-security/application-auth.yml
+front:
+  origin: https://ssup.site
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+    import:
+      - ssup-security/application.yml
+      - ssup-security/application-datasource.yml
+      - ssup-security/application-cloud.yml
+      - ssup-security/application-auth.yml
+front:
+  origin: http://localhost:5173
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: auth-test
+    import:
+      - ssup-security/application.yml
+      - ssup-security/application-datasource.yml
+      - ssup-security/application-cloud.yml
+      - ssup-security/application-auth.yml
+front:
+  origin: http://localhost:5173

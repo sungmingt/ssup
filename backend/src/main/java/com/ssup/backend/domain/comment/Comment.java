@@ -1,7 +1,6 @@
 package com.ssup.backend.domain.comment;
 
 import com.ssup.backend.domain.heart.comment.CommentHeart;
-import com.ssup.backend.domain.heart.post.PostHeart;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.global.BaseTimeEntity;

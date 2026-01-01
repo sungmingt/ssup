@@ -6,8 +6,10 @@ import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.aop.CheckUserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,9 @@ public class PostHeartService implements HeartService {
      * - 항상 새로운 트랜잭션에서 실행
      * - 낙관적 락(@Version)은 Post 엔티티에서 동작
      */
+    @CheckUserStatus(UserStatus.ACTIVE)
     @Override
-    public HeartResponse toggleHeart(Long postId, Long userId) {
+    public HeartResponse toggleHeart(Long userId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new SsupException(ErrorCode.POST_NOT_FOUND));
 
