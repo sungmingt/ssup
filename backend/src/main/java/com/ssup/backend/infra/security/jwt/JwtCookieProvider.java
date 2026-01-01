@@ -38,6 +38,7 @@ public class JwtCookieProvider {
                 .secure(true)
                 .sameSite("Lax")
                 .path("/")
+                .domain(cookieDomain)
                 .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS))
                 .build();
     }
@@ -48,6 +49,7 @@ public class JwtCookieProvider {
                 .secure(true)
                 .sameSite("Lax")
                 .path("/")
+                .domain(cookieDomain)
                 .maxAge(Duration.ofMillis(ACCESS_TOKEN_TTL_MILLISECONDS))
                 .build();
     }
@@ -62,13 +64,21 @@ public class JwtCookieProvider {
 
     public void deleteAuthCookies(HttpServletResponse response) {
         ResponseCookie access = ResponseCookie.from(ACCESS_TOKEN, "")
-                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Lax")
                 .maxAge(0)
+                .path("/")
+                .domain(cookieDomain)
                 .build();
 
         ResponseCookie refresh = ResponseCookie.from(REFRESH_TOKEN, "")
-                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Lax")
                 .maxAge(0)
+                .path("/")
+                .domain(cookieDomain)
                 .build();
 
         response.addHeader("Set-Cookie", access.toString());
