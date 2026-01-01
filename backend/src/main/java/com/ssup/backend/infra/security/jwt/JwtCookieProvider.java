@@ -3,6 +3,7 @@ package com.ssup.backend.infra.security.jwt;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
@@ -15,14 +16,18 @@ import static com.ssup.backend.infra.security.jwt.TokenInfo.*;
 @Component
 public class JwtCookieProvider {
 
+    @Value("${app.cookie-domain:#{null}}")
+    private String cookieDomain;
+
     public static final String COOKIE_HEADER = "Set-Cookie";
 
     public ResponseCookie createAccessTokenCookie(String token) {
         return ResponseCookie.from(ACCESS_TOKEN, token)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("None")
+                .sameSite("Lax")
                 .path("/")
+                .domain(cookieDomain)
                 .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS)) //만료시 재발급 처리를 위해 쿠키는 유지해야한다.
                 .build();
     }
@@ -31,7 +36,7 @@ public class JwtCookieProvider {
         return ResponseCookie.from(REFRESH_TOKEN, token)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("None")
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS))
                 .build();
@@ -41,7 +46,7 @@ public class JwtCookieProvider {
         return ResponseCookie.from(ACCESS_TOKEN, token)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("None")
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(Duration.ofMillis(ACCESS_TOKEN_TTL_MILLISECONDS))
                 .build();
