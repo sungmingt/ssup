@@ -36,7 +36,7 @@ function Login() {
 
     try {
       await authApi.login({ email, password });
-      await useAuthStore.getState().initAuth();
+      await useAuthStore.getState().userInit();
 
       const user = useAuthStore.getState().user;
 

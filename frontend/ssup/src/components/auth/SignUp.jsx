@@ -22,14 +22,11 @@ function Signup() {
     e.preventDefault();
     try {
       const res = await authApi.signUp(form);
-      await useAuthStore.userInit();
 
-      if (useAuthStore.getState().user.status === "PENDING") {
-        navigate("/signup/additional");
-      } else {
-        navigate("/");
-      }
-    } catch {
+      alert("회원가입이 완료되었습니다. 로그인 해주세요.");
+      navigate("/login");
+    } catch (e) {
+      console.error(e);
       alert("회원가입 실패");
     }
   };
