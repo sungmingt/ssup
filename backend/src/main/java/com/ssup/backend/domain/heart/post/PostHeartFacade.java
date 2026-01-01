@@ -21,7 +21,7 @@ public class PostHeartFacade {
     public HeartResponse tryToggleHeart(Long userId, Long postId) {
         for (int i = 0; i < 3; i++) {
             try {
-                return postHeartService.toggleHeart(postId, userId);
+                return postHeartService.toggleHeart(userId, postId);
             } catch (OptimisticLockException e) {
                 log.debug(
                         "### [좋아요 재시도] postId={}, userId={}, attempt={}",
