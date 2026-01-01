@@ -23,7 +23,7 @@ public class JwtCookieProvider {
                 .secure(true)
                 .sameSite("None")
                 .path("/")
-                .maxAge(Duration.ofMillis(ACCESS_TOKEN_TTL_MILLISECONDS))
+                .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS)) //만료시 재발급 처리를 위해 쿠키는 유지해야한다.
                 .build();
     }
 

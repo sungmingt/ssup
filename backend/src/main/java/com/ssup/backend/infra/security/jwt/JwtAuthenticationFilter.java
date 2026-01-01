@@ -48,7 +48,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.info("### ATK status={}", status);
 
-        if (status != TokenStatus.VALID) {
+        //ATK 만료 시, 무조건 재발급 시도하도록 -> UX 개선
+        if (status == TokenStatus.EXPIRED) {
+            //EntryPoint와 동일
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"code\":\"TOKEN_EXPIRED\", \"message\":\"UNAUTHORIZED\"}");
+            return;
+        }
+
+        if (status == TokenStatus.INVALID) {
             SecurityContextHolder.clearContext();
             chain.doFilter(request, response);
             return;
