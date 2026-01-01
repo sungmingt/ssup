@@ -84,13 +84,14 @@ api.interceptors.response.use(
         useAuthStore.getState().clearAuth();
         processQueue(e);
 
-        //auth/me 요청이었다면 그냥 종료하고, 그 외의 요청이면 에러를 띄움
+        //auth/me 요청이었다면 그냥 종료하고, 그 외의 요청이면 기존 요청을 다시 시도 (재발급에 실패했더라고 기존 요청이 허용 경로일수도 있기때문에 다시 요청해봐야함.)
         if (originalRequest.url.includes("/auth/me")) {
           return Promise.reject(e);
         }
 
-        // return Promise.reject(e);
-        return Promise.resolve(error);
+        console.log("### RETRYING AS GUEST:", originalRequest.url);
+        return api(originalRequest);
+        // return Promise.resolve(error);
       } finally {
         isRefreshing = false;
       }
