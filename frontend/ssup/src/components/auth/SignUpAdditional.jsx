@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { locationApi } from "@/api";
+import { authApi, locationApi } from "@/api";
 import { interestApi } from "@/api";
 import { profileApi } from "@/api";
 import { useAuthStore } from "@/store/authStore";
@@ -140,6 +140,7 @@ function SignUpAdditional() {
 
     try {
       await profileApi.createMyProfile(formData);
+      await useAuthStore.getState().userInit();
       navigate("/profile");
     } catch {
       alert("프로필 저장 실패");
