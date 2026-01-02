@@ -17,9 +17,7 @@ import static org.springframework.http.HttpStatus.*;
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException e
-    ) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
         ErrorResponse response =
                 ErrorResponse.validation(ErrorCode.INVALID_REQUEST, e.getBindingResult());
         return ResponseEntity.status(BAD_REQUEST).body(response);
