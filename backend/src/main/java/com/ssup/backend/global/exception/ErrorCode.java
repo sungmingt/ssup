@@ -45,6 +45,7 @@ public enum ErrorCode {
     //FILE
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "이미지가 존재하지 않습니다."),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일이 존재하지 않습니다."),
+    FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "5MB 이하의 이미지만 업로드할 수 있습니다."),
 
     //MATCH
     BUNGAE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 번개입니다."),

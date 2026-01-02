@@ -1,6 +1,7 @@
 package com.ssup.backend.infra.s3;
 
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.global.util.ImageValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -37,6 +38,8 @@ public class S3ImageStorage implements ImageStorage {
             return null;
         }
 
+        ImageValidator.validateImage(file);
+
         String key = createKey(type, file);
 
         try {
@@ -62,6 +65,8 @@ public class S3ImageStorage implements ImageStorage {
         if (files == null || files.isEmpty()) {
             return urls;
         }
+
+        ImageValidator.validateImages(files);
 
         for(MultipartFile file : files) {
             String key = createKey(type, file);
