@@ -2,6 +2,9 @@ package com.ssup.backend.infra.security.oauth;
 
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
+import com.ssup.backend.global.exception.ErrorCode;
+import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.security.oauth.info.OAuth2UserInfo;
 import com.ssup.backend.infra.security.oauth.info.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +54,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 );
 
         if (socialUser.isPresent()) {
+            if (socialUser.get().getStatus() == UserStatus.DELETED) {
+                throw new SsupException(ErrorCode.DELETED_USER);
+            }
+
             return socialUser.get();
         }
 

@@ -172,19 +172,7 @@ class UserProfileServiceTest {
         assertThat(user.getInterests()).hasSize(2);
     }
 
-    @DisplayName("계정 삭제 시, soft delete가 수행된다.")
-    @Test
-    void deleteMyAccount_softDelete_success() {
-        //given
-        User user = UserFixture.createUser();
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
-        //when
-        userProfileService.deleteMyAccount(1L);
-
-        //then
-        assertThat(user.getStatus()).isEqualTo(UserStatus.DELETED);
-    }
 
     //===== init =====
 

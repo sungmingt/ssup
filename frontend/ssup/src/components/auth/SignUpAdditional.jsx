@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { authApi, locationApi } from "@/api";
 import { interestApi } from "@/api";
 import { profileApi } from "@/api";
+import { languageApi } from "@/api";
 import { useAuthStore } from "@/store/authStore";
 import FormLayout from "./../../layouts/FormLayout";
 import defaultProfile from "@/assets/ssup_user_default_image.png";
@@ -25,7 +26,12 @@ function SignUpAdditional() {
   const [interests, setInterests] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
 
+  const [languages, setLanguages] = useState({ using: [], learning: [] });
+  const [allLanguages, setAllLanguages] = useState([]);
+  const [langModalType, setLangModalType] = useState(null);
+
   const [submitting, setSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const [form, setForm] = useState({
     age: "",
@@ -47,6 +53,28 @@ function SignUpAdditional() {
       navigate("/", { replace: true });
     }
   }, [loading, isAuthenticated, user, navigate]);
+
+  // 초기 로드 (언어 목록 추가)
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setPageLoading(true);
+        const [siDoRes, interestRes, langRes] = await Promise.all([
+          locationApi.getSiDoList(),
+          interestApi.getAll(),
+          languageApi.getLanguageList(), // 언어 목록 추가
+        ]);
+        setSiDoList(siDoRes.data);
+        setInterests(interestRes.data);
+        setAllLanguages(langRes.data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   useEffect(() => {
     if (pageLoading) return;
@@ -71,6 +99,19 @@ function SignUpAdditional() {
 
     load();
   }, []);
+
+  const toggleLanguage = (lang) => {
+    const key = langModalType === "USING" ? "using" : "learning";
+    setLanguages((prev) => {
+      const exists = prev[key].some((l) => l.id === lang.id);
+      return {
+        ...prev,
+        [key]: exists
+          ? prev[key].filter((l) => l.id !== lang.id)
+          : [...prev[key], { ...lang, level: "BEGINNER" }], // 초기 레벨 BEGINNER
+      };
+    });
+  };
 
   const toggleInterest = (id) => {
     setSelectedInterests((prev) =>
@@ -100,6 +141,11 @@ function SignUpAdditional() {
   const onImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    if (file && file.size > 5 * 1024 * 1024) {
+      alert("이미지 크기는 5MB를 초과할 수 없습니다.");
+      return;
+    }
+
     setImage(file);
     setPreview(URL.createObjectURL(file));
   };
@@ -115,21 +161,43 @@ function SignUpAdditional() {
 
   const onSubmit = async (e) => {
     if (submitting) return;
-    setSubmitting(true);
-
     e.preventDefault();
 
+    setSubmitting(true);
+    setFieldErrors({});
+
+    //언어 선택 검증
+    const hasUsing = languages.using.length > 0;
+    const hasLearning = languages.learning.length > 0;
+
+    if (!hasUsing || !hasLearning) {
+      setFieldErrors({
+        languages: "사용 언어와 학습 언어를 각각 최소 1개 선택해주세요.",
+      });
+      setSubmitting(false);
+      return;
+    }
+
     const dto = {
-      age: Number(form.age),
+      age: form.age ? Number(form.age) : null,
       gender: form.gender,
       intro: form.intro,
       contact: form.contact,
-      location: {
-        siGunGuId: Number(form.siGunGuId),
-      },
+      location: { siGunGuId: form.siGunGuId ? Number(form.siGunGuId) : null },
       interests: selectedInterests.map((id) => ({ interestId: id })),
+      languages: [
+        ...languages.using.map((l) => ({
+          languageId: l.id,
+          type: "USING",
+          level: l.level,
+        })),
+        ...languages.learning.map((l) => ({
+          languageId: l.id,
+          type: "LEARNING",
+          level: l.level,
+        })),
+      ],
     };
-
     const formData = new FormData();
     formData.append(
       "dto",
@@ -140,10 +208,39 @@ function SignUpAdditional() {
 
     try {
       await profileApi.createMyProfile(formData);
+      await languageApi.updateMyLanguages({
+        languages: [
+          ...languages.using.map((l) => ({
+            languageId: l.id,
+            type: "USING",
+            level: l.level,
+          })),
+          ...languages.learning.map((l) => ({
+            languageId: l.id,
+            type: "LEARNING",
+            level: l.level,
+          })),
+        ],
+      });
+
       await useAuthStore.getState().userInit();
       navigate("/profile");
-    } catch {
-      alert("프로필 저장 실패");
+    } catch (error) {
+      //서버 에러
+      const { code, errors } = error.response?.data || {};
+
+      if (code === "INVALID_REQUEST") {
+        const errorObj = {};
+
+        errors.forEach((err) => {
+          const fieldName = err.field.includes(".")
+            ? err.field.split(".")[0].split("[")[0] //location.sigunguId 등의 형식 고려
+            : err.field;
+          errorObj[fieldName] = err.reason;
+        });
+
+        setFieldErrors(errorObj);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -169,40 +266,119 @@ function SignUpAdditional() {
             </label>
 
             {preview && (
-              <span className="interest-chip" onClick={removeProfileImage}>
+              <button
+                type="button"
+                className="interest-chip"
+                onClick={removeProfileImage}
+              >
                 이미지 삭제
-              </span>
+              </button>
             )}
           </div>
         </div>
 
-        <span className="form-label-title">나이</span>
+        {/* === 언어 선택=== */}
+        <span className="form-label-title">언어</span>
+        <button
+          type="button"
+          className="form-control text-start mb-2"
+          onClick={() => setLangModalType("USING")}
+        >
+          {languages.using.length
+            ? languages.using.map((l) => l.name).join(", ")
+            : "사용 언어 선택"}
+        </button>
+        <button
+          type="button"
+          className="form-control text-start mb-3"
+          onClick={() => setLangModalType("LEARNING")}
+        >
+          {languages.learning.length
+            ? languages.learning.map((l) => l.name).join(", ")
+            : "학습 언어 선택"}
+        </button>
+        {/* 에러 메시지 표시 */}
+        {fieldErrors.languages && (
+          <div
+            className="invalid-feedback"
+            style={{ display: "block", marginTop: "5px" }}
+          >
+            {fieldErrors.languages}
+          </div>
+        )}
 
+        {/* 언어 선택 모달 */}
+        {langModalType && (
+          <div className="language-modal-overlay">
+            <div className="language-modal">
+              <h5 className="mb-3">
+                {langModalType === "USING" ? "사용 언어" : "학습 언어"} 선택
+              </h5>
+              <div className="interest-select-box mb-4">
+                {allLanguages.map((l) => {
+                  const selected =
+                    langModalType === "USING"
+                      ? languages.using.some((x) => x.id === l.id)
+                      : languages.learning.some((x) => x.id === l.id);
+                  return (
+                    <span
+                      key={l.id}
+                      className={`interest-chip ${selected ? "active" : ""}`}
+                      onClick={() => toggleLanguage(l)}
+                    >
+                      {l.name}
+                    </span>
+                  );
+                })}
+              </div>
+              <div className="text-center">
+                <button
+                  type="button"
+                  className="signup-btn px-4"
+                  onClick={() => setLangModalType(null)}
+                >
+                  완료
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <span className="form-label-title">나이</span>
         <input
           className="form-control mb-3"
           name="age"
           placeholder="ex) 30"
           onChange={onChange}
         />
+        {/* 에러 메시지 표시 */}
+        {fieldErrors.age && (
+          <div className="invalid-feedback" style={{ display: "block" }}>
+            {fieldErrors.age}
+          </div>
+        )}
 
         <span className="form-label-title">성별</span>
-
         <select name="gender" className="form-select mb-3" onChange={onChange}>
           <option value="MALE">남성</option>
           <option value="FEMALE">여성</option>
         </select>
 
         <span className="form-label-title">연락처</span>
-
         <input
           className="form-control mb-3"
           name="contact"
           placeholder="ex) instagram: ssup_insta"
           onChange={onChange}
         />
+        {/* 에러 메시지 표시 */}
+        {fieldErrors.contact && (
+          <div className="invalid-feedback" style={{ display: "block" }}>
+            {fieldErrors.contact}
+          </div>
+        )}
 
         <span className="form-label-title">자기소개</span>
-
         <textarea
           className="form-control mb-3"
           name="intro"
@@ -211,7 +387,6 @@ function SignUpAdditional() {
         />
 
         <span className="form-label-title">관심사</span>
-
         <div className="interest-select-box mb-4">
           {interests.map((i) => (
             <span
@@ -256,6 +431,12 @@ function SignUpAdditional() {
             </option>
           ))}
         </select>
+        {fieldErrors.location && (
+          <div className="invalid-feedback" style={{ display: "block" }}>
+            {fieldErrors.location}
+          </div>
+        )}
+
         <button className="signup-btn btn w-100">완료</button>
       </form>
     </FormLayout>

@@ -9,7 +9,6 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
-//@Profile("!test") //test 시 s3 호출 차단
 @Configuration
 @Profile({"local", "prod"})
 public class S3Config {

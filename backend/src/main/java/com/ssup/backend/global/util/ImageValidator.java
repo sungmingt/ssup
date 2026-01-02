@@ -1,5 +1,7 @@
 package com.ssup.backend.global.util;
 
+import com.ssup.backend.global.exception.ErrorCode;
+import com.ssup.backend.global.exception.SsupException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -9,15 +11,18 @@ public class ImageValidator {
     private static final List<String> ALLOWED_TYPES =
             List.of("image/jpeg", "image/png", "image/webp");
 
-    private static final long MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    private static final long MAX_SIZE = 5 * 1024 * 1024; //5MB
 
-    private void validateImage(MultipartFile file) {
-        if (!ALLOWED_TYPES.contains(file.getContentType())) {
-            throw new IllegalArgumentException("이미지 파일만 업로드 가능합니다.");//todo: custom error
-        }
+    public static void validateImage(MultipartFile file) {
         if (file.getSize() > MAX_SIZE) {
-            throw new IllegalArgumentException("파일 크기는 5MB 이하만 허용됩니다."); //todo: custom error
-        }
+            throw new SsupException(ErrorCode.FILE_SIZE_EXCEEDED);        }
     }
 
+    public static void validateImages(List<MultipartFile> images) {
+        for (MultipartFile image : images) {
+            if (image.getSize() > MAX_SIZE) {
+                throw new SsupException(ErrorCode.FILE_SIZE_EXCEEDED);
+            }
+        }
+    }
 }

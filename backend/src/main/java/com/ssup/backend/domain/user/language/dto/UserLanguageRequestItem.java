@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserLanguageRequestItem {
 
-    @NotNull
+    @NotNull(message = "사용/학습 언어를 입력 입력해주세요.")
     private Long languageId;
 
     @NotNull
     private LanguageType type;
 
-    @NotNull
+//    @NotNull
     private LanguageLevel level;
 }

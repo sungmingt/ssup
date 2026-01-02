@@ -16,6 +16,9 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
 
+  const [loading, setLoading] = useState("false");
+  const [fieldErrors, setFieldErrors] = useState({});
+
   const handleGoogleLogin = () => {
     window.location.href = `${API_BASE}/oauth2/authorization/google`;
   };
@@ -33,6 +36,7 @@ function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       await authApi.login({ email, password });
@@ -46,7 +50,17 @@ function Login() {
         navigate("/");
       }
     } catch (e) {
-      alert("로그인 실패");
+      const { code, errors } = e.response?.data || {};
+      if (code === "INVALID_REQUEST") {
+        // { nickname: "닉네임은 필수입니다", age: "10세 이상만..." } 형태로 변환
+        const errorObj = {};
+        errors.forEach((err) => {
+          errorObj[err.field] = err.reason;
+        });
+        setFieldErrors(errorObj); // 상태 업데이트 -> UI에 빨간 글씨 노출
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,6 +81,12 @@ function Login() {
                 placeholder="example@email.com"
                 onChange={handleEmail}
               />
+              {/* 에러 메시지 표시 */}
+              {fieldErrors.email && (
+                <div className="invalid-feedback" style={{ display: "block" }}>
+                  {fieldErrors.email}
+                </div>
+              )}
             </div>
 
             {/* Password */}
@@ -78,6 +98,12 @@ function Login() {
                 placeholder="비밀번호"
                 onChange={handlePassword}
               />
+              {/* 에러 메시지 표시 */}
+              {fieldErrors.password && (
+                <div className="invalid-feedback" style={{ display: "block" }}>
+                  {fieldErrors.password}
+                </div>
+              )}
             </div>
 
             <button

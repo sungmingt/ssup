@@ -5,6 +5,7 @@ import com.ssup.backend.domain.user.language.dto.UserLanguageResponse;
 import com.ssup.backend.domain.user.language.dto.UserLanguageUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +24,15 @@ public class UserLanguageController {
         return userLanguageService.findUserLanguages(userId);
     }
 
+    @Operation(summary = "유저의 사용언어/학습언어 조회", description = "유저의 사용언어/학습언어 조회")
+    @GetMapping("/me/languages")
+    public UserLanguageResponse findMyLanguage() {
+        return userLanguageService.findUserLanguages(appUserProvider.getUserId());
+    }
+
     @Operation(summary = "유저의 사용언어/학습언어 생성 및 수정", description = "유저의 사용언어/학습언어 생성 및 수정")
     @PutMapping("/me/languages")
-    public void updateUserLanguage(@RequestBody UserLanguageUpdateRequest request) {
+    public void updateUserLanguage(@Valid @RequestBody UserLanguageUpdateRequest request) {
         userLanguageService.updateUserLanguages(appUserProvider.getUserId(), request);
     }
 }

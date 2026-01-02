@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -112,7 +113,12 @@ class PostControllerTest {
     @DisplayName("게시글 작성 api - 성공")
     void createPost_success() throws Exception {
         PostCreateResponse response = getPostCreateResponse();
-        PostCreateRequest request = PostCreateRequest.builder().title("title1").build();
+        PostCreateRequest request = PostCreateRequest.builder()
+                .title("title1")
+                .content("content")
+                .usingLanguage("한국어")
+                .learningLanguage("English")
+                .build();
 
         //given
         given(postService.create(anyLong(), anyList(), any()))
@@ -126,7 +132,8 @@ class PostControllerTest {
                         multipart("/api/posts")
                                 .file(images)
                                 .file(dto)
-                                .param("userId", "1")
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated());
     }
@@ -200,16 +207,16 @@ class PostControllerTest {
         return new MockMultipartFile(
                 "dto",
                 "",
-                "application/json",
+                MediaType.APPLICATION_JSON_VALUE,
                 objectMapper.writeValueAsBytes(dto)
         );
     }
 
-    private MockMultipartFile getImagePart() throws Exception {
+    private MockMultipartFile getImagePart() {
         return new MockMultipartFile(
                 "images",
                 "test.png",
-                "image/png",
+                MediaType.IMAGE_JPEG_VALUE,
                 "data".getBytes()
         );
     }

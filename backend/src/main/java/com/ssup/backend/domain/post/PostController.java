@@ -7,6 +7,7 @@ import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSortType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class PostController {
     @PostMapping
     @ResponseStatus(CREATED)
     public PostCreateResponse create(@RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                     @RequestPart(name = "dto") @Validated PostCreateRequest request) {
+                                     @Valid @RequestPart(name = "dto") PostCreateRequest request) {
         return postService.create(appUserProvider.getUserId(), images, request);
     }
 
@@ -54,7 +55,7 @@ public class PostController {
     @PutMapping("/{id}")
     public PostUpdateResponse update(@PathVariable("id") Long id,
                                      @RequestPart(name = "images", required = false) List<MultipartFile> images,
-                                     @RequestPart(name = "dto") @Validated PostUpdateRequest request) {
+                                     @Valid @RequestPart(name = "dto") PostUpdateRequest request) {
         return postService.update(appUserProvider.getUserId(), id, images, request);
     }
 

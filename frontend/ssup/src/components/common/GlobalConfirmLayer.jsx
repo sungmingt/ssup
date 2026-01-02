@@ -25,8 +25,11 @@ const GlobalConfirmLayer = () => {
   };
 
   return (
-    <div className="confirm-overlay">
-      <div className="confirm-modal shadow">
+    <div className="confirm-overlay" onClick={close}>
+      <div
+        className="confirm-modal shadow"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h5>{confirm.title}</h5>
         <p>{confirm.message}</p>
         <div className="btn-group">

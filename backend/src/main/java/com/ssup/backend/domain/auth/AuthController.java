@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public SignUpResponse signUp(@RequestBody SignUpRequest request) {
+    public SignUpResponse signUp(@Valid @RequestBody SignUpRequest request) {
         return authService.signUp(request);
     }
 
@@ -47,7 +48,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         authService.login(loginRequest, response);
         return ResponseEntity.ok().build();
     }
@@ -55,6 +56,12 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/quit")
+    public ResponseEntity<Void> quit(HttpServletRequest request, HttpServletResponse response) {
+        authService.quit(appUserProvider.getUserId(), request, response);
         return ResponseEntity.noContent().build();
     }
 }

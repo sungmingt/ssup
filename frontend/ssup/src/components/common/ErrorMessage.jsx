@@ -39,7 +39,22 @@ export const ERROR_MESSAGE = {
   //user
   EMAIL_ALREADY_EXISTS: {
     title: "이미 사용 중인 이메일입니다",
-    message: "다른 이메일을 입력해주세요.",
+    message: "다른 이메일을 사용해주세요.",
+  },
+
+  EMAIL_NOT_EXISTS: {
+    title: "존재하지 않는 이메일입니다",
+    message: "이메일을 다시 확인해주세요.",
+  },
+
+  PASSWORD_NOT_MATCH: {
+    title: "비밀번호가 일치하지 않습니다.",
+    message: "비밀번호를 다시 확인해주세요.",
+  },
+
+  NICKNAME_ALREADY_EXISTS: {
+    title: "이미 사용중인 닉네임입니다",
+    message: "다른 닉네임을 사용해주세요.",
   },
 
   USER_NOT_FOUND: {
@@ -50,13 +65,24 @@ export const ERROR_MESSAGE = {
   LOGIN_REQUIRED: {
     title: "로그인이 필요한 기능입니다",
     message: "로그인 후 이용해주세요.",
-    redirect: "/login",
   },
 
   USER_STATUS_PENDING: {
     title: "프로필 미완성 상태입니다",
     message: "프로필 정보 입력을 완료해주세요.",
     redirect: "/signup/additional",
+  },
+
+  DELETED_USER: {
+    title: "탈퇴한 계정입니다",
+    message:
+      "탈퇴한 계정의 이메일 또는 정보가 포함되어있습니다. 다른 계정을 이용해주세요",
+  },
+
+  //image
+  FILE_SIZE_EXCEEDED: {
+    title: "이미지 크기 제한 초과",
+    message: "5MB 이하의 이미지만 업로드할 수 있습니다.",
   },
 
   //global

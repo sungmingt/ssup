@@ -4,6 +4,8 @@ import com.ssup.backend.domain.auth.dto.SignUpRequest;
 import com.ssup.backend.domain.auth.dto.SignUpResponse;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.domain.user.UserStatus;
+import com.ssup.backend.fixture.user.UserFixture;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -96,5 +102,4 @@ class AuthServiceTest {
 
         verify(userRepository, never()).save(any());
     }
-
 }
