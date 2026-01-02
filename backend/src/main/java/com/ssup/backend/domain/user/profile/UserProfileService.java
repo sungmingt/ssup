@@ -98,18 +98,6 @@ public class UserProfileService {
         return UserMeProfileResponse.of(user);
     }
 
-    public void deleteMyAccount(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
-
-        if (user.getImageUrl() != null) {
-            imageStorage.deleteByUrl(user.getImageUrl());
-            user.updateImageUrl(null);
-        }
-
-        user.delete();
-    }
-
     //===== business methods =====
 
     private void updateMyProfileImage(MultipartFile image, boolean removeImage, User user) {

@@ -10,6 +10,7 @@ import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.domain.user.UserStatus;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
+import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.security.jwt.JwtCookieProvider;
 import com.ssup.backend.infra.security.jwt.JwtProvider;
 import com.ssup.backend.infra.security.jwt.TokenStatus;
@@ -35,6 +36,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
     private final JwtCookieProvider cookieProvider;
+    private final ImageStorage imageStorage;
 
     public SignUpResponse signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -146,5 +148,19 @@ public class AuthService {
         }
 
         cookieProvider.deleteAuthCookies(response);
+    }
+
+    public void delete(Long userId, HttpServletRequest request, HttpServletResponse response) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
+
+        logout(request, response);
+
+        if (user.getImageUrl() != null) {
+            imageStorage.deleteByUrl(user.getImageUrl());
+            user.updateImageUrl(null);
+        }
+
+        user.delete();
     }
 }
