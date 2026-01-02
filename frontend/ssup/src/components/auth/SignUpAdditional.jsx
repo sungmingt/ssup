@@ -31,6 +31,7 @@ function SignUpAdditional() {
   const [langModalType, setLangModalType] = useState(null);
 
   const [submitting, setSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const [form, setForm] = useState({
     age: "",
@@ -140,6 +141,11 @@ function SignUpAdditional() {
   const onImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    if (file && file.size > 5 * 1024 * 1024) {
+      alert("이미지 크기는 5MB를 초과할 수 없습니다.");
+      return;
+    }
+
     setImage(file);
     setPreview(URL.createObjectURL(file));
   };
@@ -155,16 +161,29 @@ function SignUpAdditional() {
 
   const onSubmit = async (e) => {
     if (submitting) return;
-    setSubmitting(true);
-
     e.preventDefault();
 
+    setSubmitting(true);
+    setFieldErrors({});
+
+    //언어 선택 검증
+    const hasUsing = languages.using.length > 0;
+    const hasLearning = languages.learning.length > 0;
+
+    if (!hasUsing || !hasLearning) {
+      setFieldErrors({
+        languages: "사용 언어와 학습 언어를 각각 최소 1개 선택해주세요.",
+      });
+      setSubmitting(false);
+      return;
+    }
+
     const dto = {
-      age: Number(form.age),
+      age: form.age ? Number(form.age) : null,
       gender: form.gender,
       intro: form.intro,
       contact: form.contact,
-      location: { siGunGuId: Number(form.siGunGuId) },
+      location: { siGunGuId: form.siGunGuId ? Number(form.siGunGuId) : null },
       interests: selectedInterests.map((id) => ({ interestId: id })),
       languages: [
         ...languages.using.map((l) => ({
@@ -206,8 +225,22 @@ function SignUpAdditional() {
 
       await useAuthStore.getState().userInit();
       navigate("/profile");
-    } catch {
-      alert("프로필 저장 실패");
+    } catch (error) {
+      //서버 에러
+      const { code, errors } = error.response?.data || {};
+
+      if (code === "INVALID_REQUEST") {
+        const errorObj = {};
+
+        errors.forEach((err) => {
+          const fieldName = err.field.includes(".")
+            ? err.field.split(".")[0].split("[")[0] //location.sigunguId 등의 형식 고려
+            : err.field;
+          errorObj[fieldName] = err.reason;
+        });
+
+        setFieldErrors(errorObj);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -233,14 +266,18 @@ function SignUpAdditional() {
             </label>
 
             {preview && (
-              <span className="interest-chip" onClick={removeProfileImage}>
+              <button
+                type="button"
+                className="interest-chip"
+                onClick={removeProfileImage}
+              >
                 이미지 삭제
-              </span>
+              </button>
             )}
           </div>
         </div>
 
-        {/* === 언어 선택 추가 (ProfileEdit 방식) === */}
+        {/* === 언어 선택=== */}
         <span className="form-label-title">언어</span>
         <button
           type="button"
@@ -260,6 +297,15 @@ function SignUpAdditional() {
             ? languages.learning.map((l) => l.name).join(", ")
             : "학습 언어 선택"}
         </button>
+        {/* 에러 메시지 표시 */}
+        {fieldErrors.languages && (
+          <div
+            className="invalid-feedback"
+            style={{ display: "block", marginTop: "5px" }}
+          >
+            {fieldErrors.languages}
+          </div>
+        )}
 
         {/* 언어 선택 모달 */}
         {langModalType && (
@@ -299,32 +345,40 @@ function SignUpAdditional() {
         )}
 
         <span className="form-label-title">나이</span>
-
         <input
           className="form-control mb-3"
           name="age"
           placeholder="ex) 30"
           onChange={onChange}
         />
+        {/* 에러 메시지 표시 */}
+        {fieldErrors.age && (
+          <div className="invalid-feedback" style={{ display: "block" }}>
+            {fieldErrors.age}
+          </div>
+        )}
 
         <span className="form-label-title">성별</span>
-
         <select name="gender" className="form-select mb-3" onChange={onChange}>
           <option value="MALE">남성</option>
           <option value="FEMALE">여성</option>
         </select>
 
         <span className="form-label-title">연락처</span>
-
         <input
           className="form-control mb-3"
           name="contact"
           placeholder="ex) instagram: ssup_insta"
           onChange={onChange}
         />
+        {/* 에러 메시지 표시 */}
+        {fieldErrors.contact && (
+          <div className="invalid-feedback" style={{ display: "block" }}>
+            {fieldErrors.contact}
+          </div>
+        )}
 
         <span className="form-label-title">자기소개</span>
-
         <textarea
           className="form-control mb-3"
           name="intro"
@@ -333,7 +387,6 @@ function SignUpAdditional() {
         />
 
         <span className="form-label-title">관심사</span>
-
         <div className="interest-select-box mb-4">
           {interests.map((i) => (
             <span
@@ -378,6 +431,12 @@ function SignUpAdditional() {
             </option>
           ))}
         </select>
+        {fieldErrors.location && (
+          <div className="invalid-feedback" style={{ display: "block" }}>
+            {fieldErrors.location}
+          </div>
+        )}
+
         <button className="signup-btn btn w-100">완료</button>
       </form>
     </FormLayout>
