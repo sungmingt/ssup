@@ -44,12 +44,14 @@ public class InterestInitializer implements CommandLineRunner {
     }
 
     private void saveCategory(String code, String name) {
-        categoryRepository.save(
-                InterestCategory.builder()
-                        .code(code)
-                        .name(name)
-                        .build()
-        );
+        if(!categoryRepository.existsByCode(code)){
+            categoryRepository.save(
+                    InterestCategory.builder()
+                            .code(code)
+                            .name(name)
+                            .build()
+            );
+        }
     }
 
     private InterestCategory getCategory(String code) {
@@ -140,12 +142,15 @@ public class InterestInitializer implements CommandLineRunner {
     }
 
     private void saveInterest(String code, String name, InterestCategory category) {
-        interestRepository.save(
-                Interest.builder()
-                        .code(code)
-                        .name(name)
-                        .category(category)
-                        .build()
-        );
+        if(!interestRepository.existsByCode(code)){
+            interestRepository.save(
+                    Interest.builder()
+                            .code(code)
+                            .name(name)
+                            .category(category)
+                            .build()
+            );
+        }
+
     }
 }

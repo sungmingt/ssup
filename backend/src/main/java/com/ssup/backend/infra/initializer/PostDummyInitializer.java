@@ -24,8 +24,8 @@ import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
-@Profile("!test")
-//@Profile("local")
+//@Profile("!test")
+@Profile("local")
 @Order(4)
 public class PostDummyInitializer implements CommandLineRunner {
 
@@ -37,7 +37,6 @@ public class PostDummyInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-
         Interest interest = interestRepository.findById(1L).get();
         Location location = locationRepository.findByLevel(2).get(0);
         Language usingLanguage = languageRepository.findById(1L).get();
