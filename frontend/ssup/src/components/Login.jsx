@@ -81,7 +81,7 @@ function Login() {
                 placeholder="example@email.com"
                 onChange={handleEmail}
               />
-              {/* ✅ 에러 메시지 표시 */}
+              {/* 에러 메시지 표시 */}
               {fieldErrors.email && (
                 <div className="invalid-feedback" style={{ display: "block" }}>
                   {fieldErrors.email}
@@ -98,7 +98,7 @@ function Login() {
                 placeholder="비밀번호"
                 onChange={handlePassword}
               />
-              {/* ✅ 에러 메시지 표시 */}
+              {/* 에러 메시지 표시 */}
               {fieldErrors.password && (
                 <div className="invalid-feedback" style={{ display: "block" }}>
                   {fieldErrors.password}
