@@ -47,6 +47,10 @@ function ProfileEdit() {
     profileApi.getMyProfile().then((res) => {
       const p = res.data;
       setProfile(p);
+
+      setSiDoId(p.location.siDoId);
+      setSelectedSiDo(true);
+
       setForm({
         nickname: p.nickname,
         age: p.age || "",
@@ -75,6 +79,14 @@ function ProfileEdit() {
       });
     });
   }, [profile]);
+
+  useEffect(() => {
+    if (siDoId) {
+      locationApi.getSiGunGuList(siDoId).then((res) => {
+        setSiGunGuList(res.data);
+      });
+    }
+  }, [siDoId]);
 
   const openLangModal = (type) => {
     setLangModalType(type);
