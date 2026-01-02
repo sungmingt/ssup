@@ -61,7 +61,7 @@ public class AuthController {
 
     @PostMapping("/quit")
     public ResponseEntity<Void> quit(HttpServletRequest request, HttpServletResponse response) {
-        authService.delete(appUserProvider.getUserId(), request, response);
+        authService.quit(appUserProvider.getUserId(), request, response);
         return ResponseEntity.noContent().build();
     }
 }

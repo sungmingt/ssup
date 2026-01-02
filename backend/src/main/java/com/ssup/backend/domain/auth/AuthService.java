@@ -150,7 +150,7 @@ public class AuthService {
         cookieProvider.deleteAuthCookies(response);
     }
 
-    public void delete(Long userId, HttpServletRequest request, HttpServletResponse response) {
+    public void quit(Long userId, HttpServletRequest request, HttpServletResponse response) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
