@@ -79,6 +79,12 @@ export const ERROR_MESSAGE = {
       "탈퇴한 계정의 이메일 또는 정보가 포함되어있습니다. 다른 계정을 이용해주세요",
   },
 
+  //image
+  FILE_SIZE_EXCEEDED: {
+    title: "이미지 크기 제한 초과",
+    message: "5MB 이하의 이미지만 업로드할 수 있습니다.",
+  },
+
   //global
   INTERNAL_SERVER_ERROR: {
     title: "서버에서 오류가 발생했습니다.",
