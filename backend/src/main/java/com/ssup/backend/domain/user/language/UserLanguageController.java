@@ -23,6 +23,12 @@ public class UserLanguageController {
         return userLanguageService.findUserLanguages(userId);
     }
 
+    @Operation(summary = "유저의 사용언어/학습언어 조회", description = "유저의 사용언어/학습언어 조회")
+    @GetMapping("/me/languages")
+    public UserLanguageResponse findMyLanguage() {
+        return userLanguageService.findUserLanguages(appUserProvider.getUserId());
+    }
+
     @Operation(summary = "유저의 사용언어/학습언어 생성 및 수정", description = "유저의 사용언어/학습언어 생성 및 수정")
     @PutMapping("/me/languages")
     public void updateUserLanguage(@RequestBody UserLanguageUpdateRequest request) {
