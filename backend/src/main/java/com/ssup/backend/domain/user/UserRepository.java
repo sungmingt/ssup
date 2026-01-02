@@ -38,7 +38,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         left join fetch u.location l
         left join fetch l.parent
         where u.id = :id
-        and u.status = 'ACTIVE'
     """)
     Optional<User> findMeProfileById(@Param("id") Long id);
 
@@ -60,8 +59,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //N+1 제거
     @Query("""
     select u from User u
-    join fetch u.languages ul
-    join fetch ul.language
+    left join fetch u.languages ul
+    left join fetch ul.language
     where u.id = :id
     and u.status = 'ACTIVE'
     """)
