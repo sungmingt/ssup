@@ -48,13 +48,14 @@ public enum ErrorCode {
     FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "5MB 이하의 이미지만 업로드할 수 있습니다."),
 
     //MATCH
-    BUNGAE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 번개입니다."),
-    NO_BUNGAEJOIN_HISTORY(HttpStatus.NOT_FOUND, "해당 유저의 번개 참여 이력이 존재하지 않습니다."),
+    INVALID_MATCH_REQUEST(HttpStatus.BAD_REQUEST, "올바른 매치 요청 형식이 아닙니다."),
+    MATCH_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 매칭 이력이 있습니다."),
+    MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 매치입니다."),
+    MATCH_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, "이미 종료된 매치입니다."),
 
     //COMMENT
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
     NOT_COMMENT_OWNER(HttpStatus.FORBIDDEN, "댓글 작성자가 아닙니다."),
-    COMMENT_CONTENT_INVALID(HttpStatus.BAD_REQUEST, "댓글 내용은 비어 있을 수 없습니다."),
 
     //INTEREST
     INTEREST_NOT_FOUND(HttpStatus.BAD_REQUEST, "사용할 수 없는 관심사 항목입니다."),
