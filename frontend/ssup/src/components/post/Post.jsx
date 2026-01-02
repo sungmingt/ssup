@@ -79,13 +79,7 @@ const Post = () => {
   };
 
   const onMatchRequest = async () => {
-    if (!post || !user) {
-      alert("로그인이 필요한 서비스입니다.");
-      return;
-    }
-
     const dto = {
-      postId: post.id,
       receiverId: post.authorId,
       requesterId: user.id,
     };
