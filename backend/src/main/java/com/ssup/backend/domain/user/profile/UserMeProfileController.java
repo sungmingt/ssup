@@ -35,7 +35,7 @@ public class UserMeProfileController {
     @PutMapping("/profile")
     public UserMeProfileResponse updateMyProfile(
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart("dto") UserProfileUpdateRequest request
+            @Valid @RequestPart("dto") UserProfileUpdateRequest request
     ) {
         return userProfileService.updateMyProfile(appUserProvider.getUserId(), image, request);
     }
