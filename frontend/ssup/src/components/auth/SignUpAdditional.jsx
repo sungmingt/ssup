@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { authApi, locationApi } from "@/api";
 import { interestApi } from "@/api";
 import { profileApi } from "@/api";
+import { languageApi } from "@/api";
 import { useAuthStore } from "@/store/authStore";
 import FormLayout from "./../../layouts/FormLayout";
 import defaultProfile from "@/assets/ssup_user_default_image.png";
@@ -24,6 +25,10 @@ function SignUpAdditional() {
 
   const [interests, setInterests] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
+
+  const [languages, setLanguages] = useState({ using: [], learning: [] });
+  const [allLanguages, setAllLanguages] = useState([]);
+  const [langModalType, setLangModalType] = useState(null);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -48,6 +53,28 @@ function SignUpAdditional() {
     }
   }, [loading, isAuthenticated, user, navigate]);
 
+  // 초기 로드 (언어 목록 추가)
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setPageLoading(true);
+        const [siDoRes, interestRes, langRes] = await Promise.all([
+          locationApi.getSiDoList(),
+          interestApi.getAll(),
+          languageApi.getLanguageList(), // 언어 목록 추가
+        ]);
+        setSiDoList(siDoRes.data);
+        setInterests(interestRes.data);
+        setAllLanguages(langRes.data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    load();
+  }, []);
+
   useEffect(() => {
     if (pageLoading) return;
 
@@ -71,6 +98,19 @@ function SignUpAdditional() {
 
     load();
   }, []);
+
+  const toggleLanguage = (lang) => {
+    const key = langModalType === "USING" ? "using" : "learning";
+    setLanguages((prev) => {
+      const exists = prev[key].some((l) => l.id === lang.id);
+      return {
+        ...prev,
+        [key]: exists
+          ? prev[key].filter((l) => l.id !== lang.id)
+          : [...prev[key], { ...lang, level: "BEGINNER" }], // 초기 레벨 BEGINNER
+      };
+    });
+  };
 
   const toggleInterest = (id) => {
     setSelectedInterests((prev) =>
@@ -124,12 +164,21 @@ function SignUpAdditional() {
       gender: form.gender,
       intro: form.intro,
       contact: form.contact,
-      location: {
-        siGunGuId: Number(form.siGunGuId),
-      },
+      location: { siGunGuId: Number(form.siGunGuId) },
       interests: selectedInterests.map((id) => ({ interestId: id })),
+      languages: [
+        ...languages.using.map((l) => ({
+          languageId: l.id,
+          type: "USING",
+          level: l.level,
+        })),
+        ...languages.learning.map((l) => ({
+          languageId: l.id,
+          type: "LEARNING",
+          level: l.level,
+        })),
+      ],
     };
-
     const formData = new FormData();
     formData.append(
       "dto",
@@ -140,6 +189,21 @@ function SignUpAdditional() {
 
     try {
       await profileApi.createMyProfile(formData);
+      await languageApi.updateMyLanguages({
+        languages: [
+          ...languages.using.map((l) => ({
+            languageId: l.id,
+            type: "USING",
+            level: l.level,
+          })),
+          ...languages.learning.map((l) => ({
+            languageId: l.id,
+            type: "LEARNING",
+            level: l.level,
+          })),
+        ],
+      });
+
       await useAuthStore.getState().userInit();
       navigate("/profile");
     } catch {
@@ -175,6 +239,64 @@ function SignUpAdditional() {
             )}
           </div>
         </div>
+
+        {/* === 언어 선택 추가 (ProfileEdit 방식) === */}
+        <span className="form-label-title">언어</span>
+        <button
+          type="button"
+          className="form-control text-start mb-2"
+          onClick={() => setLangModalType("USING")}
+        >
+          {languages.using.length
+            ? languages.using.map((l) => l.name).join(", ")
+            : "사용 언어 선택"}
+        </button>
+        <button
+          type="button"
+          className="form-control text-start mb-3"
+          onClick={() => setLangModalType("LEARNING")}
+        >
+          {languages.learning.length
+            ? languages.learning.map((l) => l.name).join(", ")
+            : "학습 언어 선택"}
+        </button>
+
+        {/* 언어 선택 모달 */}
+        {langModalType && (
+          <div className="language-modal-overlay">
+            <div className="language-modal">
+              <h5 className="mb-3">
+                {langModalType === "USING" ? "사용 언어" : "학습 언어"} 선택
+              </h5>
+              <div className="interest-select-box mb-4">
+                {allLanguages.map((l) => {
+                  const selected =
+                    langModalType === "USING"
+                      ? languages.using.some((x) => x.id === l.id)
+                      : languages.learning.some((x) => x.id === l.id);
+                  return (
+                    <span
+                      key={l.id}
+                      className={`interest-chip ${selected ? "active" : ""}`}
+                      onClick={() => toggleLanguage(l)}
+                    >
+                      {l.name}
+                    </span>
+                  );
+                })}
+              </div>
+              <div className="text-center">
+                <button
+                  type="button"
+                  className="signup-btn px-4"
+                  onClick={() => setLangModalType(null)}
+                >
+                  완료
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <span className="form-label-title">나이</span>
 
