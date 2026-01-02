@@ -44,6 +44,9 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config; //error.config = “이 에러를 일으킨 원래 요청 정보” (URL, method, headers 등)
+    const errorStore = useErrorStore.getState();
+    const status = error.response?.status;
+    const code = error.response?.data?.code;
 
     if (originalRequest?.url?.includes("/auth/me")) {
       return Promise.resolve(error.response);
@@ -56,6 +59,26 @@ api.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url.includes("/auth/me")
     ) {
+      //로그인이 안 된 상태(토큰 없음)라면 재발급 시도 없이 바로 로그인 필요 팝업
+      if (code === "LOGIN_REQUIRED") {
+        errorStore.open(ERROR_MESSAGE.LOGIN_REQUIRED);
+        return Promise.reject(error);
+      }
+
+      //권한 부족(403) -> 권한 없음 팝업
+      if (code === "FORBIDDEN") {
+        errorStore.open({
+          title: "권한 없음",
+          message: "접근 권한이 없습니다.",
+          redirect: "/",
+        });
+        return Promise.reject(error);
+      }
+
+      if (code === "INVALID_REQUEST") {
+        return Promise.reject(error);
+      }
+
       console.log("### REISSUE TRIGGERED BY:", originalRequest.url);
 
       //refresh가 이미 진행 중이면 큐에 넣고 기다림
@@ -73,7 +96,6 @@ api.interceptors.response.use(
         await reissueApi.post("/auth/reissue");
         console.log("### REISSUE SUCCESS");
 
-        //////////
         await useAuthStore.getState().initAuth();
 
         processQueue(); //대기 중인 요청들 진행시키기
@@ -84,56 +106,58 @@ api.interceptors.response.use(
         useAuthStore.getState().clearAuth();
         processQueue(e);
 
-        //auth/me 요청이었다면 그냥 종료하고, 그 외의 요청이면 기존 요청을 다시 시도 (재발급에 실패했더라고 기존 요청이 허용 경로일수도 있기때문에 다시 요청해봐야함.)
-        if (originalRequest.url.includes("/auth/me")) {
+        //1. 인증이 반드시 필요한 요청이었는지 체크 (예: /me, /update 등)
+        //2. 만약 인증 필수 경로라면 팝업 띄우고 종료
+        if (
+          originalRequest.url.includes("/me") ||
+          originalRequest.method !== "GET"
+        ) {
+          errorStore.open(ERROR_MESSAGE.REFRESH_TOKEN_EXPIRED);
           return Promise.reject(e);
         }
 
+        //3. 그 외 경로라면 한 번 더 시도해보고, 거기서도 에러나면 그때 팝업
         console.log("### RETRYING AS GUEST:", originalRequest.url);
         return api(originalRequest);
-        // return Promise.resolve(error);
       } finally {
         isRefreshing = false;
       }
     }
 
-    // --- 공통 에러 처리 ---
-    const status = error.response?.status;
-    const code = error.response?.data?.code;
-    const errorStore = useErrorStore.getState();
+    // ===== 공통 에러 처리 =====
 
     //정의 에러가 있으면, 커스텀 에러 반환
-    if (code && ERROR_MESSAGE[code]) {
-      errorStore.open(ERROR_MESSAGE[code]);
-    } else {
-      switch (status) {
-        case 403:
-          errorStore.open({
-            title: "권한이 없습니다",
-            message: "해당 기능을 사용할 수 없습니다.",
-            redirect: "/",
-          });
-          break;
-
-        case 404:
-          errorStore.open({
-            title: "페이지를 찾을 수 없습니다",
-            message: "존재하지 않는 페이지입니다.",
-            redirect: -1,
-          });
-          break;
-
-        case 500:
-          errorStore.open({
-            title: "서버 오류",
-            message: "잠시 후 다시 시도해주세요.",
-            redirect: -1,
-          });
-          break;
+    if (!isRefreshing) {
+      if (code && ERROR_MESSAGE[code]) {
+        errorStore.open(ERROR_MESSAGE[code]);
+      } else {
+        //HTTP 상태 코드 기반 팝업
+        handleHttpStatusError(status, errorStore);
       }
     }
 
-    //이외의 에러는 그냥 에러 전파
     return Promise.reject(error);
   }
 );
+
+const handleHttpStatusError = (status, errorStore) => {
+  switch (status) {
+    case 403:
+      errorStore.open({
+        title: "권한이 없습니다",
+        message: "해당 기능을 사용할 수 없습니다.",
+        redirect: "/",
+      });
+      break;
+    case 404:
+      errorStore.open({
+        title: "페이지를 찾을 수 없습니다",
+        message: "존재하지 않거나 삭제된 페이지입니다.",
+        redirect: -1,
+      });
+      break;
+    case 500:
+      errorStore.open(ERROR_MESSAGE.INTERNAL_SERVER_ERROR);
+      break;
+  }
+};
