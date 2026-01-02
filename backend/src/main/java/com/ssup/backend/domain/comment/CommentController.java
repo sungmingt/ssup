@@ -7,6 +7,7 @@ import com.ssup.backend.domain.comment.dto.CommentResponse;
 import com.ssup.backend.domain.comment.dto.CommentUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class CommentController {
     @PostMapping
     public CommentResponse create(@PathVariable("postId") Long postId,
                                   @RequestPart(name = "image", required = false) MultipartFile image,
-                                  @RequestPart(name = "dto") CommentCreateRequest request) {
+                                  @Valid @RequestPart(name = "dto") CommentCreateRequest request) {
         return commentService.create(appUserProvider.getUserId(), postId, image, request);
     }
 
@@ -36,7 +37,7 @@ public class CommentController {
     public CommentResponse update(@PathVariable("postId") Long postId,
                                   @PathVariable("id") Long id,
                                   @RequestPart(name = "image", required = false) MultipartFile image,
-                                  @RequestPart(name = "dto") CommentUpdateRequest request) {
+                                  @Valid @RequestPart(name = "dto") CommentUpdateRequest request) {
         return commentService.update(appUserProvider.getUserId(), postId, id, image, request);
     }
 

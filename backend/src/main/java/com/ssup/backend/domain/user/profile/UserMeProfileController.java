@@ -5,6 +5,7 @@ import com.ssup.backend.domain.user.profile.dto.UserMeProfileCreateRequest;
 import com.ssup.backend.domain.user.profile.dto.UserMeProfileResponse;
 import com.ssup.backend.domain.user.profile.dto.UserProfileUpdateRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +27,7 @@ public class UserMeProfileController {
     @PostMapping("/profile")
     public UserMeProfileResponse createMyProfile(
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart("dto") UserMeProfileCreateRequest request
+            @Valid @RequestPart("dto") UserMeProfileCreateRequest request
     ) {
         return userProfileService.createMyProfile(appUserProvider.getUserId(), image, request);
     }
