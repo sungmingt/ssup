@@ -24,7 +24,6 @@ public class LocationInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-
         if (locationRepository.count() > 0) return;
 
         // =================== 1단계 : 시/도 ===================
@@ -112,22 +111,27 @@ public class LocationInitializer implements CommandLineRunner {
     }
 
     private void saveSiDo(Map<Long, Location> map, Long id, String name) {
-        Location location = Location.builder()
-                .id(id)
-                .name(name)
-                .level(1)
-                .build();
-        locationRepository.save(location);
-        map.put(id, location);
+        if (!locationRepository.existsById(id)) {
+            Location location = Location.builder()
+                    .id(id)
+                    .name(name)
+                    .level(1)
+                    .build();
+
+            locationRepository.save(location);
+            map.put(id, location);
+        }
     }
 
     private void saveSiGunGu(Long id, String name, Location parent) {
-        Location location = Location.builder()
-                .id(id)
-                .name(name)
-                .level(2)
-                .parent(parent)
-                .build();
-        locationRepository.save(location);
+        if (!locationRepository.existsById(id)) {
+            Location location = Location.builder()
+                    .id(id)
+                    .name(name)
+                    .level(2)
+                    .parent(parent)
+                    .build();
+            locationRepository.save(location);
+        }
     }
 }

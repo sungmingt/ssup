@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface InterestCategoryRepository extends JpaRepository<InterestCategory, Long> {
     Optional<InterestCategory> findByCode(String code);
+
+    boolean existsByCode(String code);
 }

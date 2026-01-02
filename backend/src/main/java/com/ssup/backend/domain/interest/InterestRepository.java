@@ -8,4 +8,6 @@ public interface InterestRepository extends JpaRepository<Interest, Long> {
 
     //N+1 방지
     List<Interest> findAllById(Iterable<Long> ids);
+
+    boolean existsByCode(String code);
 }
