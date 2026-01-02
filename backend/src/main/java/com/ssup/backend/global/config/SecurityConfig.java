@@ -96,16 +96,19 @@ public class SecurityConfig {
 
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint((request, response, authException) -> {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.setContentType("application/json;charset=UTF-8");
-                        response.getWriter().write("{\"message\":\"UNAUTHORIZED\"}");
+                            //토큰이 없을때 (미인증 상태)
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json;charset=UTF-8");
+                            //LOGIN_REQUIRED code가 있어야 인터셉터에서 처리 분기 가능
+                            response.getWriter().write("{\"code\":\"LOGIN_REQUIRED\", \"message\":\"UNAUTHORIZED\"}");
                         })
                         .accessDeniedHandler((req, res, ex) -> {
-                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            res.getWriter().write("{\"message\":\"UNAUTHORIZED\"}");
+                            //로그인은 했으나 권한이 없을때
+                            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            res.setContentType("application/json;charset=UTF-8");
+                            res.getWriter().write("{\"code\":\"FORBIDDEN\", \"message\":\"ACCESS_DENIED\"}");
                             res.getWriter().flush();
                         })
-
                 );
 
         return http.build();
