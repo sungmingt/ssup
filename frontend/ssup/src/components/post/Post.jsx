@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { postApi } from "@/api";
+import { matchApi } from "@/api/match.api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../../css/post/Post.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
@@ -30,6 +31,14 @@ const Post = () => {
   const isMyPost =
     isAuthenticated && user?.id && post?.authorId && user.id === post.authorId;
 
+  useEffect(() => {
+    if (post && user) {
+      console.log("### 작성자 체크 ###");
+      console.log("로그인 유저 ID:", user.id, typeof user.id);
+      console.log("게시글 작성자 ID:", post.authorId, typeof post.authorId);
+      console.log("일치 여부:", user.id === post.authorId);
+    }
+  }, [post, user]);
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -70,17 +79,24 @@ const Post = () => {
   };
 
   const onMatchRequest = async () => {
-    if (!post) return;
+    if (!post || !user) {
+      alert("로그인이 필요한 서비스입니다.");
+      return;
+    }
+
+    const dto = {
+      postId: post.id,
+      receiverId: post.authorId,
+      requesterId: user.id,
+    };
 
     try {
-      await axios.post(`${API_BASE_URL}/api/matchRequest`, {
-        postId: post.id,
-        targetUserId: post.authorId, // 추후 내려오게 되면 교체
-        requesterId: 1, // 로그인 유저
-      });
+      await matchApi.sendRequest(dto);
       alert("친구 신청을 보냈습니다.");
-    } catch {
-      alert("친구 신청에 실패했습니다.");
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.message || "친구 신청에 실패했습니다.";
+      alert(errorMsg);
     }
   };
 
@@ -156,7 +172,13 @@ const Post = () => {
 
             {/* 작성자 + 친구 신청 */}
             <div className="d-flex align-items-center mb-4 gap-3">
-              <div className="d-flex align-items-center">
+              <div
+                className="d-flex align-items-center"
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/users/${post.authorId}/profile`)}
+              >
+                {" "}
+                {/* 프로필 이동 추가 */}
                 <img
                   src={post.authorImageUrl || defaultProfile}
                   alt="author"
@@ -166,13 +188,15 @@ const Post = () => {
                 <div className="fw-semibold ms-1">{post.authorName}</div>
               </div>
 
-              <button
-                className="btn btn-sm"
-                style={{ backgroundColor: "#cff3cda5" }}
-                onClick={onMatchRequest}
-              >
-                친구 신청
-              </button>
+              {!isMyPost && (
+                <button
+                  className="btn btn-sm"
+                  style={{ backgroundColor: "#cff3cda5" }}
+                  onClick={onMatchRequest}
+                >
+                  친구 요청
+                </button>
+              )}
             </div>
 
             {/* 이미지 */}

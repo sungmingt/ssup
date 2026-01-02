@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { authApi, profileApi } from "@/api";
 import { languageApi } from "@/api";
+import { matchApi } from "@/api/match.api";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import "./../../css/Profile.css";
 import InfoLayout from "./../../layouts/InfoLayout";
@@ -11,6 +12,7 @@ import { useConfirmStore } from "@/store/confirmStore";
 
 function Profile({ isMyProfile = false }) {
   const { open } = useConfirmStore();
+  const { user: me } = useAuthStore();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -63,6 +65,22 @@ function Profile({ isMyProfile = false }) {
       fetchUserLanguages();
     }
   }, [id, isMyProfile]);
+
+  const onMatchRequest = async () => {
+    if (!me) return alert("로그인 후 이용해주세요.");
+
+    const dto = {
+      receiverId: profile.id,
+      requesterId: me.id,
+    };
+
+    try {
+      await matchApi.sendRequest(dto);
+      alert("친구 요청을 보냈습니다.");
+    } catch (e) {
+      alert("요청에 실패했습니다.");
+    }
+  };
 
   {
     /* 계정 삭제 */
@@ -120,9 +138,17 @@ function Profile({ isMyProfile = false }) {
                   프로필 수정
                 </button>
               ) : (
-                <button className="btn btn-success btn-sm profile-action-btn">
-                  친구 요청
-                </button>
+                !profile.isMatched && (
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={onMatchRequest}
+                  >
+                    친구 요청
+                  </button>
+                )
+                // <button className="btn btn-success btn-sm profile-action-btn">
+                //   친구 요청
+                // </button>
               )}
             </div>
 
@@ -148,10 +174,15 @@ function Profile({ isMyProfile = false }) {
         </div>
 
         {/* 연락처 (내 프로필 or 매치된 경우만) */}
-        {profile.contact && (
+        {(isMyProfile || profile.isMatched) && profile.contact && (
           <div className="profile-section card contact-card">
             <h5>연락처</h5>
-            <p>{profile.contact}</p>
+            <p className="contact-text">{profile.contact}</p>
+            {!isMyProfile && (
+              <small className="text-muted">
+                친구 수락으로 공개된 연락처입니다.
+              </small>
+            )}
           </div>
         )}
 
