@@ -1,6 +1,6 @@
 package com.ssup.backend.domain.user.language.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +14,6 @@ import java.util.List;
 @Builder
 public class UserLanguageUpdateRequest {
 
-    @NotEmpty
+    @NotBlank(message = "사용/학습 언어를 입력 입력해주세요.")
     private List<UserLanguageRequestItem> languages;
 }

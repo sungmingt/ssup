@@ -27,7 +27,7 @@ public class UserMeProfileCreateRequest {
     @NotBlank(message = "매칭 시 연락할 수 있는 연락처를 입력해주세요.")
     private String contact;
 
-    @NotEmpty
+    @NotBlank(message = "활동 지역을 입력해주세요.")
     private UserLocationUpdateRequest location;
 
     private List<UserInterestRequestItem> interests;
