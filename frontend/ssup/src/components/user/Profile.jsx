@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { profileApi } from "@/api";
+import { authApi, profileApi } from "@/api";
 import { languageApi } from "@/api";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import "./../../css/Profile.css";
@@ -48,17 +48,21 @@ function Profile({ isMyProfile = false }) {
   useEffect(() => {
     const fetchUserLanguages = async () => {
       try {
-        if (!id) return;
+        const res = isMyProfile
+          ? await languageApi.getMyLanguages()
+          : await languageApi.getUserLanguages(id);
 
-        const res = await languageApi.getUserLanguages(id);
         setUserLanguages(res.data);
       } catch (e) {
         console.error("유저 언어 조회 실패", e);
       }
     };
 
-    fetchUserLanguages();
-  }, [id]);
+    // isMyProfile이거나 id가 있을 때 실행
+    if (isMyProfile || id) {
+      fetchUserLanguages();
+    }
+  }, [id, isMyProfile]);
 
   {
     /* 계정 삭제 */
@@ -66,7 +70,8 @@ function Profile({ isMyProfile = false }) {
   const onDeleteAccount = async () => {
     open(
       CONFIRM_MESSAGE.DELETE_USER(async () => {
-        await profileApi.deleteMyProfile();
+        await authApi.quit();
+        await useAuthStore.getState().clearAuth();
         navigate("/");
       })
     );
