@@ -24,14 +24,12 @@ public class MatchController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //매치 요청 수락 (수락 시 상대방의 연락처 응답)
     @PostMapping("/{id}/accept")
     public ResponseEntity<MatchAcceptResponse> acceptMatchRequest(@PathVariable("id") Long id) {
         MatchAcceptResponse response = matchService.acceptRequest(appUserProvider.getUserId(), id);
         return ResponseEntity.ok(response);
     }
 
-    //매치 요청 거절
     @PostMapping("/{id}/reject")
     public ResponseEntity<Void> rejectMatchRequest(@PathVariable("id") Long id) {
         matchService.rejectRequest(appUserProvider.getUserId(), id);

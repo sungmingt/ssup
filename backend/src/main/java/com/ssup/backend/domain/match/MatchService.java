@@ -86,7 +86,7 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
-    public List<MatchListResponse> getMatchList(Long userId) {
+    public List<MatchListResponse> findUserMatchHistory(Long userId) {
         List<Match> matches = matchRepository.findAllByUserId(userId);
         return MatchListResponse.of(matches, userId);
     }

@@ -48,8 +48,7 @@ class MatchRepositoryTest {
         //when (B가 A에게 신청)
         boolean exists = matchRepository.existsActiveMatch(
                 userB.getId(),
-                userA.getId(),
-                List.of(MatchStatus.PENDING, MatchStatus.ACCEPTED)
+                userA.getId()
         );
 
         //then

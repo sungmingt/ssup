@@ -28,14 +28,15 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
             select count(m) > 0 from Match m
             where ((m.requester.id = :requesterId AND m.receiver.id = :receiverId)
             or (m.requester.id = :receiverId AND m.receiver.id = :requesterId))
-            and m.status IN :statuses
+            and m.status IN ('PENDING', 'ACCEPTED', 'REJECTED')
             """)
-    boolean existsActiveMatch(@Param("requesterId") Long requesterId, @Param("receiverId") Long receiverId, @Param("statuses") List<MatchStatus> statuses);
+    boolean existsActiveMatch(@Param("requesterId") Long requesterId, @Param("receiverId") Long receiverId);
 
     //나의 모든 매칭 내역 조회 (최신순)
     @Query("""
             select m from Match m
             where m.requester.id = :userId or m.receiver.id = :userId
+            and m.status IN ('PENDING', 'ACCEPTED', 'REJECTED')
             order by m.createdAt desc
             """)
     List<Match> findAllByUserId(@Param("userId") Long userId);

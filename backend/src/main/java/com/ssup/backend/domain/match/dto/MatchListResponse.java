@@ -29,8 +29,8 @@ public class MatchListResponse {
     public static List<MatchListResponse> of(List<Match> matches, Long currentUserId) {
         return matches.stream()
                 .map(match -> {
-                    boolean isSent = match.getRequester().getId().equals(currentUserId);
-                    User partner = isSent ? match.getReceiver() : match.getRequester();
+                    boolean amIRequester = match.getRequester().getId().equals(currentUserId);
+                    User partner = amIRequester ? match.getReceiver() : match.getRequester();
 
                     return new MatchListResponse(
                             match.getId(),
@@ -38,7 +38,7 @@ public class MatchListResponse {
                             partner.getNickname(),
                             partner.getImageUrl(),
                             match.getStatus(),
-                            isSent ? MatchType.REQUESTED : MatchType.RECEIVED,
+                            amIRequester ? MatchType.REQUESTED : MatchType.RECEIVED,
                             match.getCreatedAt());
                 })
                 .toList();
