@@ -66,6 +66,44 @@ function Profile({ isMyProfile = false }) {
     }
   }, [id, isMyProfile]);
 
+  const renderMatchButton = () => {
+    if (isMyProfile) return null;
+
+    // 백엔드에서 내려주는 관계 상태에 따른 분기 (예시: profile.matchStatus)
+    switch (profile.matchStatus) {
+      case "MATCHED":
+        return (
+          <button className="btn btn-secondary btn-sm" disabled>
+            매치됨
+          </button>
+        );
+
+      case "REQUESTED":
+        return (
+          <button className="btn btn-warning btn-sm" disabled>
+            매치 요청 대기 중
+          </button>
+        );
+
+      case "RECEIVED":
+        return (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => navigate("/me/matches")} // 매칭 관리 페이지로 이동
+          >
+            받은 요청 확인
+          </button>
+        );
+
+      default:
+        return (
+          <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+            친구 요청
+          </button>
+        );
+    }
+  };
+
   const onMatchRequest = async () => {
     if (!me) return alert("로그인 후 이용해주세요.");
 
@@ -77,8 +115,10 @@ function Profile({ isMyProfile = false }) {
     try {
       await matchApi.sendRequest(dto);
       alert("친구 요청을 보냈습니다.");
-    } catch (e) {
-      alert("요청에 실패했습니다.");
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.message || "친구 신청에 실패했습니다.";
+      alert(errorMsg);
     }
   };
 
@@ -138,14 +178,14 @@ function Profile({ isMyProfile = false }) {
                   프로필 수정
                 </button>
               ) : (
-                !profile.isMatched && (
-                  <button
-                    className="btn btn-success btn-sm"
-                    onClick={onMatchRequest}
-                  >
-                    친구 요청
-                  </button>
-                )
+                !profile.isMatched &&
+                renderMatchButton
+                // <button
+                //   className="btn btn-success btn-sm"
+                //   onClick={onMatchRequest}
+                // >
+                //   친구 요청
+                // </button>
                 // <button className="btn btn-success btn-sm profile-action-btn">
                 //   친구 요청
                 // </button>
