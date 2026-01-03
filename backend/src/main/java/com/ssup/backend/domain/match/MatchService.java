@@ -37,8 +37,10 @@ public class MatchService {
             throw new SsupException(ErrorCode.MATCH_ALREADY_EXISTS);
         }
 
-        User requester = userRepository.findById(requesterId).orElseThrow();
-        User receiver = userRepository.findById(request.getReceiverId()).orElseThrow();
+        User requester = userRepository.findById(requesterId)
+                .orElseThrow(() -> new SsupException(ErrorCode.USER_NOT_FOUND));
+        User receiver = userRepository.findById(request.getReceiverId())
+                .orElseThrow(() -> new SsupException(ErrorCode.USER_NOT_FOUND));
 
         Match matchRequest = Match.builder()
                 .requester(requester)
@@ -68,7 +70,6 @@ public class MatchService {
         return MatchAcceptResponse.of(matchRequest.getId(), contact);
     }
 
-    // 거절 로직
     public void rejectRequest(Long currentUserId, Long requestId) {
         Match matchRequest = matchRepository.findById(requestId)
                 .orElseThrow(() -> new SsupException(ErrorCode.MATCH_NOT_FOUND));
@@ -84,7 +85,6 @@ public class MatchService {
         matchRequest.reject();
     }
 
-    //목록 조회 로직
     @Transactional(readOnly = true)
     public List<MatchListResponse> getMatchList(Long userId) {
         List<Match> matches = matchRepository.findAllByUserId(userId);
