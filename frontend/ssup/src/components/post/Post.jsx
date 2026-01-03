@@ -153,6 +153,14 @@ const Post = () => {
     try {
       await matchApi.sendRequest(dto);
       alert("친구 신청을 보냈습니다.");
+
+      setPost((prev) => ({
+        ...prev,
+        matchInfoResponse: {
+          matchStatus: "PENDING",
+          amIRequester: true,
+        },
+      }));
     } catch (err) {
       const errorMsg =
         err.response?.data?.message || "친구 신청에 실패했습니다.";
@@ -238,7 +246,7 @@ const Post = () => {
                 onClick={() => navigate(`/users/${post.authorId}/profile`)}
               >
                 {" "}
-                {/* 프로필 이동 추가 */}
+                {/* 프로필 이동 */}
                 <img
                   src={post.authorImageUrl || defaultProfile}
                   alt="author"
@@ -248,15 +256,7 @@ const Post = () => {
                 <div className="fw-semibold ms-1">{post.authorName}</div>
               </div>
 
-              {!isMyPost && (
-                <button
-                  className="btn btn-sm"
-                  style={{ backgroundColor: "#cff3cda5" }}
-                  onClick={onMatchRequest}
-                >
-                  친구 요청
-                </button>
-              )}
+              {renderMatchButton()}
             </div>
 
             {/* 이미지 */}
