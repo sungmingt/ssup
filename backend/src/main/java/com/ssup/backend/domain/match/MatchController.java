@@ -31,10 +31,10 @@ public class MatchController {
         return ResponseEntity.ok(response);
     }
 
-//    //매치 요청 거절
-//    @PostMapping("/{id}/reject")
-//    public ResponseEntity<Void> rejectMatchRequest(@PathVariable("id") Long id) {
-//        matchService.reject(appUserProvider.getUserId(), id);
-//        return ResponseEntity.ok().build();
-//    }
+    //매치 요청 거절
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<Void> rejectMatchRequest(@PathVariable("id") Long id) {
+        matchService.rejectRequest(appUserProvider.getUserId(), id);
+        return ResponseEntity.ok().build();
+    }
 }
