@@ -81,7 +81,6 @@ const Post = () => {
   const onMatchRequest = async () => {
     const dto = {
       receiverId: post.authorId,
-      requesterId: user.id,
     };
 
     try {
