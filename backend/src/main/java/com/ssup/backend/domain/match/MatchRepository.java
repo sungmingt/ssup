@@ -13,11 +13,11 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     //특정 유저끼리 이미 진행 중인 매치가 있는지
     @Query("""
             select count(m) > 0 from Match m
-            where m.requester.id = :rId AND m.receiver.id = :vId
-            or m.requester.id = :vId AND m.receiver.id = :rId
+            where ((m.requester.id = :requesterId AND m.receiver.id = :receiverId)
+            or (m.requester.id = :receiverId AND m.receiver.id = :requesterId))
             and m.status IN :statuses
             """)
-    boolean existsActiveMatch(@Param("rId") Long requesterId, @Param("vId") Long receiverId, @Param("statuses") List<MatchStatus> statuses);
+    boolean existsActiveMatch(@Param("requesterId") Long requesterId, @Param("receiverId") Long receiverId, @Param("statuses") List<MatchStatus> statuses);
 
     //나의 모든 매칭 내역 조회 (최신순)
     @Query("""
