@@ -160,3 +160,8 @@
 .account-delete-btn:hover {
   background: rgba(255, 107, 107, 0.08);
 }
+
+.accept-btn {
+  background-color: "#cff3cda5";
+  border: "none";
+}
