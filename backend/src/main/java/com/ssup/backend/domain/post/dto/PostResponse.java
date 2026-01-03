@@ -25,6 +25,8 @@ public class PostResponse {
 
     private String learningLanguage;
 
+    private Long authorId;
+
     private String authorName;
 
     private String authorImageUrl;
@@ -46,8 +48,8 @@ public class PostResponse {
     private LocalDateTime updatedAt;
 
     public static PostResponse of(User author, Post post, boolean heartedByMe) {
-        return new PostResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(), post.getLearningLanguage(), author.getNickname(),
-                author.getImageUrl(), post.getTitle(), post.getContent(),
+        return new PostResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(),
+                post.getLearningLanguage(), author.getId(), author.getNickname(), author.getImageUrl(), post.getTitle(), post.getContent(),
                 0, post.getHeartCount(), post.getViewCount(), heartedByMe, post.getCreatedAt(), post.getUpdatedAt());
     }
 }
