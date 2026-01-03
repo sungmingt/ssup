@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.user.profile;
 
+import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.user.profile.dto.UserProfileResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
+    private final AppUserProvider appUserProvider;
 
     @GetMapping("/{userId}/profile")
     public UserProfileResponse getUserProfile(@PathVariable("userId") Long userId) {
-        return userProfileService.findUserProfile(userId);
+        return userProfileService.findUserProfile(appUserProvider.getUserId(), userId);
     }
 }

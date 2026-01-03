@@ -5,6 +5,10 @@ import com.ssup.backend.domain.interest.InterestRepository;
 import com.ssup.backend.domain.interest.UserInterest;
 import com.ssup.backend.domain.location.Location;
 import com.ssup.backend.domain.location.LocationRepository;
+import com.ssup.backend.domain.match.Match;
+import com.ssup.backend.domain.match.MatchRepository;
+import com.ssup.backend.domain.match.MatchStatus;
+import com.ssup.backend.domain.match.dto.MatchInfoResponse;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.domain.user.UserStatus;
@@ -21,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,13 +41,25 @@ public class UserProfileService {
     private final LocationRepository locationRepository;
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
+    private final MatchRepository matchRepository;
 
     @Transactional(readOnly = true)
-    public UserProfileResponse findUserProfile(Long userId) {
+    public UserProfileResponse findUserProfile(Long currentUserId, Long userId) {
         User user = userRepository.findUserProfileById(userId)
                 .orElseThrow(() -> new SsupException(USER_NOT_FOUND));
 
-        return UserProfileResponse.of(user);
+        MatchInfoResponse matchInfoResponse = new MatchInfoResponse(MatchStatus.NONE, false);
+
+        if (currentUserId != null) {
+            //나와의 매치 기록 조회
+            Optional<Match> matchOp = matchRepository.findActiveMatchBetweenUsers(currentUserId, userId);
+            if (matchOp.isPresent()) {
+                Match match = matchOp.get();
+                matchInfoResponse = new MatchInfoResponse(match.getStatus(), currentUserId.equals(match.getRequester().getId()));
+            }
+        }
+
+        return UserProfileResponse.of(user, matchInfoResponse);
     }
 
     @CheckUserStatus(UserStatus.ACTIVE)
