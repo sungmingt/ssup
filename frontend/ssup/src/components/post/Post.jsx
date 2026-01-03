@@ -32,14 +32,6 @@ const Post = () => {
     isAuthenticated && user?.id && post?.authorId && user.id === post.authorId;
 
   useEffect(() => {
-    if (post && user) {
-      console.log("### 작성자 체크 ###");
-      console.log("로그인 유저 ID:", user.id, typeof user.id);
-      console.log("게시글 작성자 ID:", post.authorId, typeof post.authorId);
-      console.log("일치 여부:", user.id === post.authorId);
-    }
-  }, [post, user]);
-  useEffect(() => {
     const fetchPost = async () => {
       try {
         const res = await postApi.getPost(id);
@@ -75,6 +67,81 @@ const Post = () => {
     } catch {
       setHearted(prevHearted);
       setHeartCount(prevCount);
+    }
+  };
+
+  //매치 버튼 렌더링
+  const renderMatchButton = () => {
+    if (isMyPost || !isAuthenticated || !user) return null;
+
+    const matchInfo = post.matchInfoResponse;
+
+    //매치 기록이 없는 경우
+    if (
+      !matchInfo ||
+      !matchInfo.matchStatus ||
+      matchInfo.matchStatus === "NONE"
+    ) {
+      return (
+        <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+          친구 요청
+        </button>
+      );
+    }
+
+    const { matchStatus, amIRequester } = matchInfo;
+
+    switch (matchStatus) {
+      case "ACCEPTED":
+        return (
+          <button className="btn btn-secondary btn-sm" disabled>
+            ✔️ 매치됨
+          </button>
+        );
+
+      case "PENDING":
+        if (amIRequester) {
+          //내가 보낸 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //상대가 보낸 경우
+          return (
+            <button
+              className="btn btn-sm fw-bold accept-btn"
+              onClick={() => navigate("/me/matches")}
+            >
+              매치 요청 수락하기
+            </button>
+          );
+        }
+
+      case "REJECTED":
+        if (amIRequester) {
+          //상대가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //내가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 거절함
+            </button>
+          );
+        }
+
+      default:
+        return (
+          <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+            친구 요청
+          </button>
+        );
     }
   };
 

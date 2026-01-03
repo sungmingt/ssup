@@ -66,34 +66,71 @@ function Profile({ isMyProfile = false }) {
     }
   }, [id, isMyProfile]);
 
+  //매치 버튼 렌더링
   const renderMatchButton = () => {
     if (isMyProfile) return null;
 
-    // 백엔드에서 내려주는 관계 상태에 따른 분기 (예시: profile.matchStatus)
-    switch (profile.matchStatus) {
-      case "MATCHED":
+    const matchInfo = profile.matchInfoResponse;
+
+    //매치 기록이 없는 경우
+    if (
+      !matchInfo ||
+      !matchInfo.matchStatus ||
+      matchInfo.matchStatus === "NONE"
+    ) {
+      return (
+        <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+          친구 요청
+        </button>
+      );
+    }
+
+    const { matchStatus, amIRequester } = matchInfo;
+
+    switch (matchStatus) {
+      case "ACCEPTED":
         return (
           <button className="btn btn-secondary btn-sm" disabled>
-            매치됨
+            ✔️ 매치됨
           </button>
         );
 
-      case "REQUESTED":
-        return (
-          <button className="btn btn-warning btn-sm" disabled>
-            매치 요청 대기 중
-          </button>
-        );
+      case "PENDING":
+        if (amIRequester) {
+          //내가 보낸 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //상대가 보낸 경우
+          return (
+            <button
+              className="btn btn-sm fw-bold accept-btn"
+              onClick={() => navigate("/me/matches")}
+            >
+              매치 요청 수락하기
+            </button>
+          );
+        }
 
-      case "RECEIVED":
-        return (
-          <button
-            className="btn btn-primary btn-sm"
-            onClick={() => navigate("/me/matches")} // 매칭 관리 페이지로 이동
-          >
-            받은 요청 확인
-          </button>
-        );
+      case "REJECTED":
+        if (amIRequester) {
+          //상대가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //내가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 거절함
+            </button>
+          );
+        }
 
       default:
         return (
@@ -109,11 +146,19 @@ function Profile({ isMyProfile = false }) {
 
     const dto = {
       receiverId: profile.id,
-      requesterId: me.id,
     };
 
     try {
       await matchApi.sendRequest(dto);
+
+      setProfile((prev) => ({
+        ...prev,
+        matchInfoResponse: {
+          matchStatus: "PENDING",
+          amIRequester: true,
+        },
+      }));
+
       alert("친구 요청을 보냈습니다.");
     } catch (err) {
       const errorMsg =
@@ -178,8 +223,7 @@ function Profile({ isMyProfile = false }) {
                   프로필 수정
                 </button>
               ) : (
-                !profile.isMatched &&
-                renderMatchButton
+                renderMatchButton()
                 // <button
                 //   className="btn btn-success btn-sm"
                 //   onClick={onMatchRequest}
