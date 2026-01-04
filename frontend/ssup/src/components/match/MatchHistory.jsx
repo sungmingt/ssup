@@ -6,11 +6,15 @@ import { useNavigate } from "react-router-dom";
 import "@/css/match/MatchHistory.css";
 
 const MatchHistory = () => {
+  const navigate = useNavigate();
+
   const [matches, setMatches] = useState([]);
   const [activeTab, setActiveTab] = useState("RECEIVED");
 
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [matchedPartner, setMatchedPartner] = useState(null);
+
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMatches();
@@ -24,6 +28,35 @@ const MatchHistory = () => {
       console.error("매치 내역 조회 실패", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAction = async (matchId, action) => {
+    const isAccept = action === "ACCEPTED";
+    const actionText = isAccept ? "수락" : "거절";
+
+    try {
+      if (isAccept) {
+        await matchApi.acceptRequest(matchId);
+        const targetMatch = matches.find((m) => m.id === matchId);
+        setMatchedPartner(targetMatch);
+
+        //성공 효과
+        setShowSuccess(true);
+
+        //2초 뒤 프로필로 이동
+        setTimeout(() => {
+          navigate(`/users/${targetMatch.partnerId}/profile`);
+        }, 2500);
+      } else {
+        await matchApi.rejectRequest(matchId);
+        alert(`요청을 ${actionText}했습니다.`);
+        fetchMatches();
+      }
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.message || "처리 중 오류가 발생했습니다.";
+      alert(errorMsg);
     }
   };
 
@@ -93,10 +126,16 @@ const MatchHistory = () => {
                   {match.matchStatus === "PENDING" ? (
                     match.matchType === "RECEIVED" ? (
                       <div className="d-flex gap-2">
-                        <button className="btn btn-sm btn-outline-danger px-3">
+                        <button
+                          className="btn btn-sm btn-outline-danger px-3"
+                          onClick={() => handleAction(match.id, "REJECTED")}
+                        >
                           거절
                         </button>
-                        <button className="btn btn-sm btn-match-accept px-3">
+                        <button
+                          className="btn btn-sm btn-match-accept px-3"
+                          onClick={() => handleAction(match.id, "ACCEPTED")}
+                        >
                           수락
                         </button>
                       </div>
@@ -119,6 +158,22 @@ const MatchHistory = () => {
             ))
           )}
         </div>
+
+        {/* 성공 팝업 */}
+        {showSuccess && matchedPartner && (
+          <div className="success-overlay">
+            <div className="success-content shadow-lg">
+              <span className="success-icon">🎉</span>
+              <h2 className="fw-bold mb-3">매치 성공!</h2>
+              <p className="text-muted">
+                <strong>{matchedPartner.partnerName}</strong>님과
+                매치되었습니다!
+                <br />
+                매치 상대의 프로필로 이동합니다...
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </InfoLayout>
   );
