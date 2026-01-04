@@ -14,6 +14,10 @@ const MainPage = () => {
           지금 ssup! 에서 새로운 친구를 만나보세요 ✈️
         </h1>
 
+        <button className="community-btn" onClick={() => navigate("/posts")}>
+          커뮤니티 바로가기
+        </button>
+
         <img src={mainImage} alt="메인 이미지" className="main-image" />
 
         {/* <h2 className="main-subtitle"> */}
@@ -21,10 +25,6 @@ const MainPage = () => {
         {/* </h2> */}
 
         {/* <img src={mainImage3} alt="메인 이미지3" className="main-image-3" /> */}
-
-        <button className="community-btn" onClick={() => navigate("/posts")}>
-          커뮤니티 바로가기
-        </button>
       </div>
     </>
   );
