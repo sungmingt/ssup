@@ -10,14 +10,18 @@ import { useAuthStore } from "@/store/authStore";
 import { CONFIRM_MESSAGE } from "../common/confirmMessage";
 import { useConfirmStore } from "@/store/confirmStore";
 
-function Profile({ isMyProfile = false }) {
+function Profile({ isMyProfile: isMyProfileProp = false }) {
   const { open } = useConfirmStore();
   const { user: me } = useAuthStore();
+  const { id: urlId } = useParams();
 
   const { id } = useParams();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [userLanguages, setUserLanguages] = useState(null);
+
+  const isMyProfile =
+    isMyProfileProp || (me && String(me.id) === String(urlId));
 
   {
     /* 유저의 프로필 조회 */
@@ -223,13 +227,14 @@ function Profile({ isMyProfile = false }) {
                   프로필 수정
                 </button>
               )}
-
-              {!isMyProfile && me && renderMatchButton()}
+              {!isMyProfile && me && (
+                <div className="profile-action-area">{renderMatchButton()}</div>
+              )}
             </div>
 
             {/* 지역 */}
             <span className="profile-location">
-              {profile.location.siDoName} · {profile.location.siGunGuName}
+              🏠 {profile.location.siDoName} · {profile.location.siGunGuName}
             </span>
 
             <p className="profile-intro">{profile.intro}</p>
@@ -238,7 +243,7 @@ function Profile({ isMyProfile = false }) {
 
         {/* 관심사 */}
         <div className="profile-section card">
-          <h5>관심사</h5>
+          <h5>✨ 관심사</h5>
           <div className="interest-list">
             {profile.interests.map((i) => (
               <span key={i.id} className="interest-chip">
@@ -249,17 +254,19 @@ function Profile({ isMyProfile = false }) {
         </div>
 
         {/* 연락처 (내 프로필 or 매치된 경우만) */}
-        {(isMyProfile || profile.isMatched) && profile.contact && (
-          <div className="profile-section card contact-card">
-            <h5>연락처</h5>
-            <p className="contact-text">{profile.contact}</p>
-            {!isMyProfile && (
-              <small className="text-muted">
-                친구 수락으로 공개된 연락처입니다.
-              </small>
-            )}
-          </div>
-        )}
+        {(isMyProfile ||
+          profile.matchInfoResponse.matchStatus === "ACCEPTED") &&
+          profile.contact && (
+            <div className="profile-section card contact-card">
+              <h5>💌 연락처</h5>
+              <p className="contact-text">{profile.contact}</p>
+              {!isMyProfile && (
+                <small className="text-muted">
+                  친구 수락으로 공개된 연락처입니다.
+                </small>
+              )}
+            </div>
+          )}
 
         {isMyProfile && (
           <div className="mt-3 text-end">
