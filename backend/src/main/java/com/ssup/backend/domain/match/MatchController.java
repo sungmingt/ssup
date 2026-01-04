@@ -24,13 +24,13 @@ public class MatchController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/{id}/accept")
+    @PutMapping("/{id}/accept")
     public ResponseEntity<MatchAcceptResponse> acceptMatchRequest(@PathVariable("id") Long id) {
         MatchAcceptResponse response = matchService.acceptRequest(appUserProvider.getUserId(), id);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{id}/reject")
+    @PutMapping("/{id}/reject")
     public ResponseEntity<Void> rejectMatchRequest(@PathVariable("id") Long id) {
         matchService.rejectRequest(appUserProvider.getUserId(), id);
         return ResponseEntity.ok().build();
