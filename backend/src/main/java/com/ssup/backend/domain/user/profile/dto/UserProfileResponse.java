@@ -2,6 +2,8 @@ package com.ssup.backend.domain.user.profile.dto;
 
 import com.ssup.backend.domain.interest.dto.UserInterestViewResponse;
 import com.ssup.backend.domain.location.Location;
+import com.ssup.backend.domain.match.MatchStatus;
+import com.ssup.backend.domain.match.dto.MatchInfoResponse;
 import com.ssup.backend.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +39,9 @@ public class UserProfileResponse {
 
     private List<UserInterestViewResponse> interests;
 
-    public static UserProfileResponse of(User user) {
+    private MatchInfoResponse matchInfoResponse;
+
+    public static UserProfileResponse of(User user, MatchInfoResponse matchInfoResponse) {
         Location siGunGu = user.getLocation();
         Location siDo = siGunGu.getParent();
         UserLocationResponse location = UserLocationResponse.builder()
@@ -59,9 +63,10 @@ public class UserProfileResponse {
                 .imageUrl(user.getImageUrl())
                 .intro(user.getIntro())
                 .age(user.getAge())
-                .contact(user.getContact()) //todo: 매치된 사용자에게만 표시.
+                .contact(user.getContact())
                 .location(location)
                 .interests(interests)
+                .matchInfoResponse(matchInfoResponse)
                 .build();
     }
 }

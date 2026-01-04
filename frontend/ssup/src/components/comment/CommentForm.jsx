@@ -58,7 +58,7 @@ const CommentForm = ({
       }
       onSuccess();
     } catch {
-      alert(isEdit ? "댓글 수정에 실패했습니다." : "댓글 작성에 실패했습니다.");
+      //
     } finally {
       setSubmitting(false);
     }

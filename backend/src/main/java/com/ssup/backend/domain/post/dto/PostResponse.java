@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.post.dto;
 
+import com.ssup.backend.domain.match.dto.MatchInfoResponse;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,8 @@ public class PostResponse {
 
     private String learningLanguage;
 
+    private Long authorId;
+
     private String authorName;
 
     private String authorImageUrl;
@@ -33,7 +36,7 @@ public class PostResponse {
 
     private String content;
 
-    private int commentCount;
+    private long commentCount;
 
     private long heartCount;
 
@@ -45,9 +48,11 @@ public class PostResponse {
 
     private LocalDateTime updatedAt;
 
-    public static PostResponse of(User author, Post post, boolean heartedByMe) {
-        return new PostResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(), post.getLearningLanguage(), author.getNickname(),
-                author.getImageUrl(), post.getTitle(), post.getContent(),
-                0, post.getHeartCount(), post.getViewCount(), heartedByMe, post.getCreatedAt(), post.getUpdatedAt());
+    private MatchInfoResponse matchInfoResponse;
+
+    public static PostResponse of(User author, Post post, boolean heartedByMe, MatchInfoResponse matchInfoResponse) {
+        return new PostResponse(post.getId(), new ArrayList<>(post.getImageUrls()), post.getUsingLanguage(),
+                post.getLearningLanguage(), author.getId(), author.getNickname(), author.getImageUrl(), post.getTitle(), post.getContent(),
+                post.getCommentCount(), post.getHeartCount(), post.getViewCount(), heartedByMe, post.getCreatedAt(), post.getUpdatedAt(), matchInfoResponse);
     }
 }

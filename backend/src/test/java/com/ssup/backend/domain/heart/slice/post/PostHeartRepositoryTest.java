@@ -48,7 +48,7 @@ class PostHeartRepositoryTest {
 
         author = UserJpaFixture.createUser(em);
 
-        // viewCount 기준 정렬 테스트용
+        //viewCount 기준 정렬 테스트용
         getPost(1, 300, author);
         getPost(2, 300, author);
         getPost(3, 250, author);

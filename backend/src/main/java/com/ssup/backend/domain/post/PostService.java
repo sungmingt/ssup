@@ -1,13 +1,16 @@
 package com.ssup.backend.domain.post;
 
 import com.ssup.backend.domain.heart.post.PostHeartRepository;
+import com.ssup.backend.domain.match.Match;
+import com.ssup.backend.domain.match.MatchRepository;
+import com.ssup.backend.domain.match.MatchStatus;
+import com.ssup.backend.domain.match.dto.MatchInfoResponse;
 import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSliceFetcher;
 import com.ssup.backend.domain.post.sort.PostSortType;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.domain.user.UserStatus;
-import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.aop.CheckUserStatus;
 import com.ssup.backend.infra.s3.ImageStorage;
@@ -36,6 +39,7 @@ public class PostService {
     private final PostHeartRepository postHeartRepository;
     private final UserRepository userRepository;
     private final ImageStorage imageStorage;
+    private final MatchRepository matchRepository;
 
     @CheckUserStatus(UserStatus.ACTIVE)
     public PostCreateResponse create(Long userId, List<MultipartFile> images, PostCreateRequest request) {
@@ -83,11 +87,20 @@ public class PostService {
 
         boolean heartedByMe = false;
 
+        MatchInfoResponse matchInfoResponse = new MatchInfoResponse(MatchStatus.NONE, false);
+
         if (userId != null) {
             heartedByMe = postHeartRepository.existsByPostIdAndUserId(id, userId);
+
+            //나와의 매치 기록 조회
+            Optional<Match> matchOp = matchRepository.findActiveMatchBetweenUsers(userId, author.getId());
+            if (matchOp.isPresent()) {
+                Match match = matchOp.get();
+                matchInfoResponse = new MatchInfoResponse(match.getStatus(), userId.equals(match.getRequester().getId()));
+            }
         }
 
-        return PostResponse.of(author, post, heartedByMe);
+        return PostResponse.of(author, post, heartedByMe, matchInfoResponse);
     }
 
     @CheckUserStatus(UserStatus.ACTIVE)

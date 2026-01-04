@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { postApi } from "@/api";
+import { matchApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../../css/post/Post.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
@@ -69,18 +70,101 @@ const Post = () => {
     }
   };
 
+  //매치 버튼 렌더링
+  const renderMatchButton = () => {
+    if (isMyPost || !isAuthenticated || !user) return null;
+
+    const matchInfo = post.matchInfoResponse;
+
+    //매치 기록이 없는 경우
+    if (
+      !matchInfo ||
+      !matchInfo.matchStatus ||
+      matchInfo.matchStatus === "NONE"
+    ) {
+      return (
+        <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+          친구 요청
+        </button>
+      );
+    }
+
+    const { matchStatus, amIRequester } = matchInfo;
+
+    switch (matchStatus) {
+      case "ACCEPTED":
+        return (
+          <button className="btn btn-secondary btn-sm" disabled>
+            ✔️ 매치됨
+          </button>
+        );
+
+      case "PENDING":
+        if (amIRequester) {
+          //내가 보낸 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //상대가 보낸 경우
+          return (
+            <button
+              className="btn btn-sm fw-bold accept-btn"
+              onClick={() => navigate("/me/matches")}
+            >
+              매치 요청 수락하기
+            </button>
+          );
+        }
+
+      case "REJECTED":
+        if (amIRequester) {
+          //상대가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //내가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 거절함
+            </button>
+          );
+        }
+
+      default:
+        return (
+          <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+            친구 요청
+          </button>
+        );
+    }
+  };
+
   const onMatchRequest = async () => {
-    if (!post) return;
+    const dto = {
+      receiverId: post.authorId,
+    };
 
     try {
-      await axios.post(`${API_BASE_URL}/api/matchRequest`, {
-        postId: post.id,
-        targetUserId: post.authorId, // 추후 내려오게 되면 교체
-        requesterId: 1, // 로그인 유저
-      });
+      await matchApi.sendRequest(dto);
       alert("친구 신청을 보냈습니다.");
-    } catch {
-      alert("친구 신청에 실패했습니다.");
+
+      setPost((prev) => ({
+        ...prev,
+        matchInfoResponse: {
+          matchStatus: "PENDING",
+          amIRequester: true,
+        },
+      }));
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.message || "친구 신청에 실패했습니다.";
+      alert(errorMsg);
     }
   };
 
@@ -156,7 +240,13 @@ const Post = () => {
 
             {/* 작성자 + 친구 신청 */}
             <div className="d-flex align-items-center mb-4 gap-3">
-              <div className="d-flex align-items-center">
+              <div
+                className="d-flex align-items-center"
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/users/${post.authorId}/profile`)}
+              >
+                {" "}
+                {/* 프로필 이동 */}
                 <img
                   src={post.authorImageUrl || defaultProfile}
                   alt="author"
@@ -166,13 +256,7 @@ const Post = () => {
                 <div className="fw-semibold ms-1">{post.authorName}</div>
               </div>
 
-              <button
-                className="btn btn-sm"
-                style={{ backgroundColor: "#cff3cda5" }}
-                onClick={onMatchRequest}
-              >
-                친구 신청
-              </button>
+              {renderMatchButton()}
             </div>
 
             {/* 이미지 */}

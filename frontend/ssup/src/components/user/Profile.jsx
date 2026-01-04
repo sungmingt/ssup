@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { authApi, profileApi } from "@/api";
 import { languageApi } from "@/api";
+import { matchApi } from "@/api/match.api";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
 import "./../../css/Profile.css";
 import InfoLayout from "./../../layouts/InfoLayout";
@@ -9,13 +10,18 @@ import { useAuthStore } from "@/store/authStore";
 import { CONFIRM_MESSAGE } from "../common/confirmMessage";
 import { useConfirmStore } from "@/store/confirmStore";
 
-function Profile({ isMyProfile = false }) {
+function Profile({ isMyProfile: isMyProfileProp = false }) {
   const { open } = useConfirmStore();
+  const { user: me } = useAuthStore();
+  const { id: urlId } = useParams();
 
   const { id } = useParams();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [userLanguages, setUserLanguages] = useState(null);
+
+  const isMyProfile =
+    isMyProfileProp || (me && String(me.id) === String(urlId));
 
   {
     /* 유저의 프로필 조회 */
@@ -63,6 +69,107 @@ function Profile({ isMyProfile = false }) {
       fetchUserLanguages();
     }
   }, [id, isMyProfile]);
+
+  //매치 버튼 렌더링
+  const renderMatchButton = () => {
+    if (isMyProfile) return null;
+
+    const matchInfo = profile.matchInfoResponse;
+
+    //매치 기록이 없는 경우
+    if (
+      !matchInfo ||
+      !matchInfo.matchStatus ||
+      matchInfo.matchStatus === "NONE"
+    ) {
+      return (
+        <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+          친구 요청
+        </button>
+      );
+    }
+
+    const { matchStatus, amIRequester } = matchInfo;
+
+    switch (matchStatus) {
+      case "ACCEPTED":
+        return (
+          <button className="btn btn-secondary btn-sm" disabled>
+            ✔️ 매치됨
+          </button>
+        );
+
+      case "PENDING":
+        if (amIRequester) {
+          //내가 보낸 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //상대가 보낸 경우
+          return (
+            <button
+              className="btn btn-sm fw-bold accept-btn"
+              onClick={() => navigate("/me/matches")}
+            >
+              매치 요청 수락하기
+            </button>
+          );
+        }
+
+      case "REJECTED":
+        if (amIRequester) {
+          //상대가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 요청 대기 중
+            </button>
+          );
+        } else {
+          //내가 거절한 경우
+          return (
+            <button className="btn btn-light btn-sm text-muted" disabled>
+              매치 거절함
+            </button>
+          );
+        }
+
+      default:
+        return (
+          <button className="btn btn-success btn-sm" onClick={onMatchRequest}>
+            친구 요청
+          </button>
+        );
+    }
+  };
+
+  const onMatchRequest = async () => {
+    if (!me) return alert("로그인 후 이용해주세요.");
+
+    const dto = {
+      receiverId: profile.id,
+    };
+
+    try {
+      await matchApi.sendRequest(dto);
+
+      setProfile((prev) => ({
+        ...prev,
+        matchInfoResponse: {
+          matchStatus: "PENDING",
+          amIRequester: true,
+        },
+      }));
+
+      alert("친구 요청을 보냈습니다.");
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.message || "친구 신청에 실패했습니다.";
+      alert(errorMsg);
+    }
+  };
 
   {
     /* 계정 삭제 */
@@ -112,23 +219,22 @@ function Profile({ isMyProfile = false }) {
               </div>
 
               {/* 친구 요청 / 수정 버튼 */}
-              {isMyProfile ? (
+              {isMyProfile && (
                 <button
                   className="btn btn-outline-secondary btn-sm profile-action-btn"
                   onClick={() => navigate("/me/profile/edit")}
                 >
                   프로필 수정
                 </button>
-              ) : (
-                <button className="btn btn-success btn-sm profile-action-btn">
-                  친구 요청
-                </button>
+              )}
+              {!isMyProfile && me && (
+                <div className="profile-action-area">{renderMatchButton()}</div>
               )}
             </div>
 
             {/* 지역 */}
             <span className="profile-location">
-              {profile.location.siDoName} · {profile.location.siGunGuName}
+              🏠 {profile.location.siDoName} · {profile.location.siGunGuName}
             </span>
 
             <p className="profile-intro">{profile.intro}</p>
@@ -137,7 +243,7 @@ function Profile({ isMyProfile = false }) {
 
         {/* 관심사 */}
         <div className="profile-section card">
-          <h5>관심사</h5>
+          <h5>✨ 관심사</h5>
           <div className="interest-list">
             {profile.interests.map((i) => (
               <span key={i.id} className="interest-chip">
@@ -148,12 +254,19 @@ function Profile({ isMyProfile = false }) {
         </div>
 
         {/* 연락처 (내 프로필 or 매치된 경우만) */}
-        {profile.contact && (
-          <div className="profile-section card contact-card">
-            <h5>연락처</h5>
-            <p>{profile.contact}</p>
-          </div>
-        )}
+        {(isMyProfile ||
+          profile.matchInfoResponse.matchStatus === "ACCEPTED") &&
+          profile.contact && (
+            <div className="profile-section card contact-card">
+              <h5>💌 연락처</h5>
+              <p className="contact-text">{profile.contact}</p>
+              {!isMyProfile && (
+                <small className="text-muted">
+                  친구 수락으로 공개된 연락처입니다.
+                </small>
+              )}
+            </div>
+          )}
 
         {isMyProfile && (
           <div className="mt-3 text-end">
