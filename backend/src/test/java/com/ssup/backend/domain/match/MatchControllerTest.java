@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,7 +69,7 @@ class MatchControllerTest {
         given(matchService.acceptRequest(any(), eq(matchId))).willReturn(response);
 
         //when, then
-        mockMvc.perform(post("/api/matches/{id}/accept", matchId))
+        mockMvc.perform(put("/api/matches/{id}/accept", matchId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.partnerContact").value("010-1234-5678"))
                 .andExpect(jsonPath("$.id").value(matchId));
@@ -82,7 +83,7 @@ class MatchControllerTest {
         given(appUserProvider.getUserId()).willReturn(1L);
 
         //when, then
-        mockMvc.perform(post("/api/matches/{id}/reject", matchId))
+        mockMvc.perform(put("/api/matches/{id}/reject", matchId))
                 .andExpect(status().isOk());
 
         verify(matchService).rejectRequest(any(), eq(matchId));
