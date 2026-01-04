@@ -8,6 +8,7 @@ import defaultProfile from "./../../assets/ssup_user_default_image.png";
 
 const CommentItem = ({ comment, onRefresh, onEdit }) => {
   const { open } = useConfirmStore();
+  const navigate = useNavigate();
 
   const isMine = true; //TODO: 로그인 유저 ID 비교
   const [deleting, setDeleting] = useState(false);
@@ -52,6 +53,7 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
             alt="author"
             className="rounded-circle"
             style={{ width: 40, height: 40, objectFit: "cover" }}
+            onClick={navigate(`/users/${comment.authorId}/profile`)}
           />
         </div>
 
