@@ -102,6 +102,11 @@ function Header() {
                       </Link>
                     </li>
                     <li>
+                      <Link className="dropdown-item" to="/me/matches">
+                        매치 내역
+                      </Link>
+                    </li>
+                    <li>
                       <Link className="dropdown-item" to="/settings">
                         설정
                       </Link>
