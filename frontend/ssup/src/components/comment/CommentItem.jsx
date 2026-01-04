@@ -4,9 +4,10 @@ import { commentApi } from "@/api";
 import { CONFIRM_MESSAGE } from "../common/confirmMessage";
 import { useConfirmStore } from "@/store/confirmStore";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@/css/comment/CommentItem.css";
 import defaultProfile from "./../../assets/ssup_user_default_image.png";
 
-const CommentItem = ({ comment, onRefresh, onEdit }) => {
+const CommentItem = ({ comment, onRefresh, onEdit, authorId }) => {
   const { open } = useConfirmStore();
   const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
   const [heartCount, setHeartCount] = useState(comment.heartCount);
   const [heartLoading, setHeartLoading] = useState(false);
 
+  console.log(authorId);
   const onDelete = () => {
     open(
       CONFIRM_MESSAGE.DELETE_COMMENT(async () => {
@@ -51,9 +53,9 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
           <img
             src={comment.authorImageUrl || defaultProfile}
             alt="author"
-            className="rounded-circle"
+            className="rounded-circle author-btn"
             style={{ width: 40, height: 40, objectFit: "cover" }}
-            onClick={navigate(`/users/${comment.authorId}/profile`)}
+            onClick={() => navigate(`/users/${authorId}/profile`)}
           />
         </div>
 
@@ -61,7 +63,12 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
         <div className="flex-grow-1">
           {/* 상단: 이름 + 수정/삭제 */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <span className="fw-semibold">{comment.authorName}</span>
+            <span
+              className="fw-semibold author-btn"
+              onClick={() => navigate(`/users/${authorId}/profile`)}
+            >
+              {comment.authorName}
+            </span>
 
             {isMine && (
               <div className="d-flex gap-2">
