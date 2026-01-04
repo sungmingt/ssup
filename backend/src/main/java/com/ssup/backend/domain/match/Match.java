@@ -10,7 +10,11 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "matches")
+@Table(name = "matches", indexes = {
+        @Index(name = "idx_match_req_status", columnList = "requester_id, status"),
+        @Index(name = "idx_match_res_status", columnList = "receiver_id, status"),
+        @Index(name = "idx_match_pair", columnList = "requester_id, receiver_id, status")
+})
 public class Match extends BaseTimeEntity  {
 
     @Id
