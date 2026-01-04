@@ -215,25 +215,16 @@ function Profile({ isMyProfile = false }) {
               </div>
 
               {/* 친구 요청 / 수정 버튼 */}
-              {isMyProfile ? (
+              {isMyProfile && (
                 <button
                   className="btn btn-outline-secondary btn-sm profile-action-btn"
                   onClick={() => navigate("/me/profile/edit")}
                 >
                   프로필 수정
                 </button>
-              ) : (
-                renderMatchButton()
-                // <button
-                //   className="btn btn-success btn-sm"
-                //   onClick={onMatchRequest}
-                // >
-                //   친구 요청
-                // </button>
-                // <button className="btn btn-success btn-sm profile-action-btn">
-                //   친구 요청
-                // </button>
               )}
+
+              {!isMyProfile && me && renderMatchButton()}
             </div>
 
             {/* 지역 */}

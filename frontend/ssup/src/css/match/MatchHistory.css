@@ -1,0 +1,94 @@
+/* MatchHistory.css */
+
+.match-history-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 상단 탭 버튼 스타일 */
+.match-tab-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.match-tab-btn {
+  font-size: 0.85rem;
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: none;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.match-tab-btn.active {
+  background-color: #cff3cda5;
+  color: #000;
+  font-weight: bold;
+}
+
+/* 매치 카드 아이템 */
+.match-card {
+  background-color: #ffffff;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* shadow-sm */
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+}
+
+.match-partner-info {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.match-partner-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.match-partner-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 2px;
+}
+
+.match-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* 액션 버튼들 */
+.btn-match-accept {
+  background-color: #cff3cda5;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 5px 15px;
+}
+
+.btn-match-accept:hover {
+  background-color: #b8e2b5;
+}
+
+.match-status-badge {
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  border-radius: 50px;
+  background-color: #eeeeee;
+  color: #888;
+  cursor: default;
+}
+
+.match-status-badge.accepted {
+  background-color: #cff3cda5;
+  color: #000;
+  font-weight: bold;
+}

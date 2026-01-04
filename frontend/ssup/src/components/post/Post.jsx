@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { postApi } from "@/api";
-import { matchApi } from "@/api/match.api";
+import { matchApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../../css/post/Post.css";
 import defaultProfile from "../../assets/ssup_user_default_image.png";
