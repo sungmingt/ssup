@@ -275,7 +275,9 @@ const Post = () => {
             )}
 
             {/* 본문 */}
-            <p className="post-content">{post.content || "내용이 없습니다."}</p>
+            <p className="post-detail-content">
+              {post.content || "내용이 없습니다."}
+            </p>
 
             {/* 메타 정보 */}
             <div className="d-flex justify-content-between align-items-center mt-4 text-muted small">

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginForm from "./components/LoginForm";
 import PostList from "./components/postList/PostList";
 import Login from "./components/Login";
 import Profile from "./components/user/Profile";

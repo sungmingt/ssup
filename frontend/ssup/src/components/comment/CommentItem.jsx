@@ -3,19 +3,30 @@ import { useParams, useNavigate } from "react-router-dom";
 import { commentApi } from "@/api";
 import { CONFIRM_MESSAGE } from "../common/confirmMessage";
 import { useConfirmStore } from "@/store/confirmStore";
+import { useAuthStore } from "@/store/authStore";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@/css/comment/CommentItem.css";
 import defaultProfile from "./../../assets/ssup_user_default_image.png";
 
-const CommentItem = ({ comment, onRefresh, onEdit }) => {
+const CommentItem = ({ comment, onRefresh, onEdit, authorId }) => {
   const { open } = useConfirmStore();
+  const navigate = useNavigate();
 
-  const isMine = true; //TODO: 로그인 유저 ID 비교
+  const { user } = useAuthStore();
+  const [isMine, setIsMine] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const [hearted, setHearted] = useState(comment.hearted);
   const [heartCount, setHeartCount] = useState(comment.heartCount);
   const [heartLoading, setHeartLoading] = useState(false);
 
+  useEffect(() => {
+    if (user && user.id === authorId) {
+      setIsMine(true);
+    }
+  }, [user, authorId]);
+
+  console.log(authorId);
   const onDelete = () => {
     open(
       CONFIRM_MESSAGE.DELETE_COMMENT(async () => {
@@ -50,8 +61,9 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
           <img
             src={comment.authorImageUrl || defaultProfile}
             alt="author"
-            className="rounded-circle"
+            className="rounded-circle author-btn"
             style={{ width: 40, height: 40, objectFit: "cover" }}
+            onClick={() => navigate(`/users/${authorId}/profile`)}
           />
         </div>
 
@@ -59,7 +71,12 @@ const CommentItem = ({ comment, onRefresh, onEdit }) => {
         <div className="flex-grow-1">
           {/* 상단: 이름 + 수정/삭제 */}
           <div className="d-flex justify-content-between align-items-center mb-1">
-            <span className="fw-semibold">{comment.authorName}</span>
+            <span
+              className="fw-semibold author-btn"
+              onClick={() => navigate(`/users/${authorId}/profile`)}
+            >
+              {comment.authorName}
+            </span>
 
             {isMine && (
               <div className="d-flex gap-2">
