@@ -13,7 +13,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     //특정 유저간의 매치 기록 가져오기
     @Query("""
-    select m from Match m
+    select m from Matches m
     where ((m.requester.id = :user1Id and m.receiver.id = :user2Id)
        or (m.requester.id = :user2Id and m.receiver.id = :user1Id))
     and m.status IN ('PENDING', 'ACCEPTED', 'REJECTED')
