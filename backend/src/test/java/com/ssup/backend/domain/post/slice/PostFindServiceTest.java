@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.post.slice;
 
 import com.ssup.backend.domain.heart.post.PostHeartRepository;
+import com.ssup.backend.domain.match.MatchRepository;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.post.PostService;
@@ -38,6 +39,8 @@ class PostFindServiceTest {
     private UserRepository userRepository;
     @Mock
     private ImageStorage imageStorage;
+    @Mock
+    private MatchRepository matchRepository;
     @InjectMocks
     private PostService postService;
 
@@ -57,8 +60,8 @@ class PostFindServiceTest {
 
         //then
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("안녕하세요 반가워요");
-        assertThat(response.getAuthorName()).isEqualTo("민우");
+        assertThat(response.getTitle()).isEqualTo(post.getTitle());
+        assertThat(response.getAuthorName()).isEqualTo(post.getAuthor().getNickname());
 
         then(postRepository)
                 .should(times(1))

@@ -35,7 +35,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     //나의 모든 매칭 내역 조회 (최신순)
     @Query("""
             select m from Match m
-            where m.requester.id = :userId or m.receiver.id = :userId
+            where (m.requester.id = :userId or m.receiver.id = :userId)
             and m.status IN ('PENDING', 'ACCEPTED', 'REJECTED')
             order by m.createdAt desc
             """)

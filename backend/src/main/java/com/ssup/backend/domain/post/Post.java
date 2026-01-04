@@ -53,7 +53,7 @@ public class Post extends BaseTimeEntity {
     @Column(length = 100, nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     private String usingLanguage;

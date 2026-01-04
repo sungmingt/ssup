@@ -33,7 +33,7 @@ jobs:
           SPRING_PROFILES_ACTIVE: test
         run: |
           chmod +x ./gradlew
-          ./gradlew test
+          ./gradlew test --tests "*" --tests "!*Auth*"
 
       - name: Run tests (auth-test profile)
         working-directory: backend
