@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { commentApi } from "@/api";
 import { CONFIRM_MESSAGE } from "../common/confirmMessage";
 import { useConfirmStore } from "@/store/confirmStore";
+import { useAuthStore } from "@/store/authStore";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@/css/comment/CommentItem.css";
 import defaultProfile from "./../../assets/ssup_user_default_image.png";
@@ -11,12 +12,19 @@ const CommentItem = ({ comment, onRefresh, onEdit, authorId }) => {
   const { open } = useConfirmStore();
   const navigate = useNavigate();
 
-  const isMine = true; //TODO: 로그인 유저 ID 비교
+  const { user } = useAuthStore();
+  const [isMine, setIsMine] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const [hearted, setHearted] = useState(comment.hearted);
   const [heartCount, setHeartCount] = useState(comment.heartCount);
   const [heartLoading, setHeartLoading] = useState(false);
+
+  useEffect(() => {
+    if (user && user.id === authorId) {
+      setIsMine(true);
+    }
+  }, [user, authorId]);
 
   console.log(authorId);
   const onDelete = () => {
