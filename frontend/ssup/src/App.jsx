@@ -18,6 +18,7 @@ import { useAuthStore } from "./store/authStore";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import GlobalErrorLayer from "@/components/common/GlobalErrorLayer";
 import GlobalConfirmLayer from "@/components/common/GlobalConfirmLayer";
+import MatchHistory from "./components/match/MatchHistory";
 
 function App() {
   const initAuth = useAuthStore((s) => s.initAuth);
@@ -66,6 +67,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/me/matches" element={<MatchHistory />} />
 
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup/additional" element={<SignUpAdditional />} />
