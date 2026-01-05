@@ -19,7 +19,7 @@ public class LocationController {
 
     private final LocationService locationService;
 
-    @Operation(summary = "지역 조회", description = "시/도 or 군/구 조회")
+    @Operation(summary = "전체 지역 목록 조회", description = "시/도(parentId:null), 군/구(parentId:{num}) 조회")
     @GetMapping
     public List<LocationResponse> findLocations(@RequestParam(required = false, value = "parentId") Long parentId) {
 

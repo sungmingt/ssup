@@ -18,7 +18,7 @@ public class LanguageController {
 
     private final LanguageService languageService;
 
-    @Operation(summary = "언어 목록 조회", description = "전체 언어 목록 조회")
+    @Operation(summary = "전체 언어 목록 조회", description = "ssup 서비스에서 등록한 언어 목록 조회")
     @GetMapping
     public List<LanguageResponse> findList() {
 
