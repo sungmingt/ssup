@@ -4,6 +4,7 @@
 
 ## ERD
 https://dbdiagram.io/d/ssup-6930e8afd6676488ba811397
+<img width="1210" height="809" alt="스크린샷 2026-01-05 오전 10 06 25" src="https://github.com/user-attachments/assets/039218c2-e503-4a5a-a2c6-76e93371978a" />
 
 
 <br>
