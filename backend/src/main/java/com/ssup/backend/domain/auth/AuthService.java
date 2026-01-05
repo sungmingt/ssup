@@ -50,7 +50,7 @@ public class AuthService {
         User user = User.builder()
                 .nickname(request.getNickname())
                 .email(request.getEmail())
-                .password((request.getPassword())) //todo: 암호화
+                .password(PasswordEncryptor.encode(request.getPassword()))
                 .status(UserStatus.PENDING)
                 .socialType(SocialType.NONE)
                 .build();
@@ -110,8 +110,6 @@ public class AuthService {
     }
 
     public void login(LoginRequest request, HttpServletResponse response) {
-        System.out.println("### login service called: ");
-
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new SsupException(EMAIL_NOT_EXISTS));
 
@@ -119,16 +117,12 @@ public class AuthService {
             throw new SsupException(DELETED_USER);
         }
 
-        if (!request.getPassword().equals(user.getPassword())) {
+        if (!PasswordEncryptor.matches(request.getPassword(), user.getPassword())) {
             throw new SsupException(PASSWORD_NOT_MATCH);
         }
 
         String accessToken = jwtProvider.createAccessToken(user.getId());
         String refreshToken = jwtProvider.createRefreshToken(user.getId());
-
-        System.out.println("### RTK save called in authService, RTK: " + refreshToken);
-        System.out.println("### RTK save called in authService, userId: " + user.getId());
-
 
         refreshTokenRepository.save(user.getId(), refreshToken);
 

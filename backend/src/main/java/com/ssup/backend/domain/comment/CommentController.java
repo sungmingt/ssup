@@ -50,7 +50,7 @@ public class CommentController {
         return HttpStatus.NO_CONTENT;
     }
 
-    @Operation(summary = "댓글 조회", description = "댓글 조회")
+    @Operation(summary = "댓글 조회", description = "댓글 단건 조회")
     @GetMapping("/{id}")
     public CommentResponse find(@PathVariable("postId") Long postId,
                                 @PathVariable("id") Long id

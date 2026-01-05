@@ -18,13 +18,13 @@ public class UserLanguageController {
     private final UserLanguageService userLanguageService;
     private final AppUserProvider appUserProvider;
 
-    @Operation(summary = "유저의 사용언어/학습언어 조회", description = "유저의 사용언어/학습언어 조회")
+    @Operation(summary = "다른 유저의 사용언어/학습언어 조회", description = "다른 유저의 사용언어/학습언어 조회")
     @GetMapping("/{userId}/languages")
     public UserLanguageResponse findUserLanguage(@PathVariable("userId") Long userId) {
         return userLanguageService.findUserLanguages(userId);
     }
 
-    @Operation(summary = "유저의 사용언어/학습언어 조회", description = "유저의 사용언어/학습언어 조회")
+    @Operation(summary = "나의 사용언어/학습언어 조회", description = "나의 사용언어/학습언어 조회")
     @GetMapping("/me/languages")
     public UserLanguageResponse findMyLanguage() {
         return userLanguageService.findUserLanguages(appUserProvider.getUserId());
