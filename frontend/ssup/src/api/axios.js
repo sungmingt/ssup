@@ -43,6 +43,8 @@ api.interceptors.response.use(
     return res;
   },
   async (error) => {
+    // console.log("RAW DATA FROM SERVER:", error.response?.data);
+
     const originalRequest = error.config; //error.config = “이 에러를 일으킨 원래 요청 정보” (URL, method, headers 등)
     const errorStore = useErrorStore.getState();
     const status = error.response?.status;
