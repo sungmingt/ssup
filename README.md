@@ -1,4 +1,4 @@
-# 목차
+## 목차
 1. 서비스 소개 및 바로가기
 2. 사용 기술
 3. ERD
@@ -14,8 +14,6 @@
 ssup은 한국에 거주하는 외국인과, 외국어에 관심이 있거나 공부하고 있는 한국인을 연결시켜주는 소셜 앱입니다.
 
 기존에 존재하는 유료 화상영어/오프라인 모임과 달리, 비용을 들이지 않고 가까이 있는 언어 교류 친구를 만들 수 있는 서비스를 제공합니다.
-
-![2026-01-0512 32 37-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/526b81a7-5271-4c9d-b2e5-fb984411daac)
 
 
 <br>
@@ -58,14 +56,32 @@ https://api.ssup.site/swagger-ui/index.html
 
 <br>
 
+## 5. 서버 아키텍처(Server Architecture) 및 CI/CD Pipeline
+
+### 서버 아키텍처
+<img width="1561" height="653" alt="ssup_infra_image" src="https://github.com/user-attachments/assets/ea652a53-005d-4d03-912f-e13e18693e5a" />
+
+### CI/CD 구조
+<img width="1289" height="554" alt="ssup_ci:cd-image" src="https://github.com/user-attachments/assets/6f7a5acc-ff2a-47bf-938a-1f49f6fda344" />
+
+<br>
+
+## 6. 주요 기능 (Main Function)
+
+
+![2026-01-0512 32 37-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/526b81a7-5271-4c9d-b2e5-fb984411daac)
+
+<br>
+
 ## 7. 고민한 부분들
-[매칭 시스템 도메인 설계 및 조회]
+
+### [매칭 시스템 도메인 설계 및 조회]
 
 **문제**
  - 매치 시스템에서, 유저(User)는 '신청자' 또는 '수신자'이다.
  - 유저의 매치 기록이 요구사항에 포함되어 있었기 때문에 양방향 관계(user.getMatches()를 통해 조회)를 고려.
  - 하지만 User-Match-User의 관계는 순환참조, 도메인 간 복잡한 결합이 생길 위험이 있다.
- - User 조회 시, 유저의 매치 내역까지 영속성 컨텍스트에 불필요하게 로드되기 때문에, LazyInitializationException와 N+1 리스크가 생김.
+ - User 조회 시, 유저의 매치 내역까지 영속성 컨텍스트에 불필요하게 로드되기 때문에, LazyInitializationException와 N+1 리스크가 존재.
 
 **해결**
   - Match와 User 엔티티를 단방향 관계로 구현.
@@ -73,3 +89,25 @@ https://api.ssup.site/swagger-ui/index.html
 
 **결과**
   - 복잡한 양방향 매핑을 지양하고, 도메인 간 결합을 낮추면서도 요구사항을 충족
+
+<br>
+
+### [DB Index 생성을 통한 Full Table Scan 방지 및 5배 성능 개선]
+
+**문제**
+ - 매치 이력 조회 시, 여러개의 OR 조건이 포함된 쿼리가 존재
+ - 이 경우, 복잡한 조건을 처리하기 위해 인덱스를 여러번 갈아타야 하는데, 이때 DB Optimizer가 Full Table Scan의 비용이 더 낮다고 판단할때가 많음. (실제 DB에서 `type: ALL` 확인)
+ - 따라서 복합 인덱스가 필요.
+ 
+**해결**
+  - 조회에 필요한 필드들을 포함한 복합 인덱스를 구성
+  - ```sql
+    CREATE INDEX idx_match_requester_status_receiver ON matches (requester_id, status, receiver_id);
+    CREATE INDEX idx_match_receiver_status_requester ON matches (receiver_id, status, requester_id);
+    ```
+  - index 외에도 `union all` 사용, 두 개의 조회 쿼리로 분리 등 다양한 대안에 대해 학습
+
+**결과**
+  - dummy data 10만건으로 테스트하여, 조회 성능 5배 개선을 확인
+  - 기존 104999개의 row를 탐색 -> 개선 후 6개의 row만 탐색
+
