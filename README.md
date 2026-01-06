@@ -3,9 +3,9 @@
 2. 사용 기술
 3. ERD
 4. API Docs
-5. InfraStructure
-6. Main Function
-7. 기술적인 고민과 개선 내용
+5. 서버 아키텍처
+6. 기술적인 고민과 개선 내용
+7. 주요 기능
 
 <br>
 
@@ -66,14 +66,8 @@ https://api.ssup.site/swagger-ui/index.html
 
 <br>
 
-## 6. 주요 기능 (Main Function)
 
-
-![2026-01-0512 32 37-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/526b81a7-5271-4c9d-b2e5-fb984411daac)
-
-<br>
-
-## 7. 고민한 부분들
+## 6. 고민한 부분들
 
 ### [매칭 시스템 도메인 설계 및 조회]
 
@@ -110,4 +104,10 @@ https://api.ssup.site/swagger-ui/index.html
 **결과**
   - dummy data 10만건으로 테스트하여, 조회 성능 5배 개선을 확인
   - 기존 104999개의 row를 탐색 -> 개선 후 6개의 row만 탐색
+
+<br>
+
+## 7. 주요 기능 (Main Function)
+
+![2026-01-0512 32 37-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/526b81a7-5271-4c9d-b2e5-fb984411daac)
 
