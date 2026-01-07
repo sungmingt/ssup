@@ -59,7 +59,8 @@ https://api.ssup.site/swagger-ui/index.html
 ## 5. 서버 아키텍처(Server Architecture) 및 CI/CD Pipeline
 
 ### 서버 아키텍처
-<img width="1561" height="653" alt="ssup_infra_image" src="https://github.com/user-attachments/assets/ea652a53-005d-4d03-912f-e13e18693e5a" />
+<img width="1222" height="736" alt="ssup_infra_image_2" src="https://github.com/user-attachments/assets/6f28852b-9a72-4ec4-83d6-3f3db2d0f671" />
+
 
 ### CI/CD 구조
 <img width="1289" height="554" alt="ssup_ci:cd-image" src="https://github.com/user-attachments/assets/6f7a5acc-ff2a-47bf-938a-1f49f6fda344" />
