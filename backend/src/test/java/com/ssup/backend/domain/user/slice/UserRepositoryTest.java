@@ -78,9 +78,7 @@ class UserRepositoryTest {
     @Test
     void findWithLanguages_fetchJoin_success() {
         //given
-//        Language language = tem.persist(Language.builder().code("KO").name("Korean").build());
         User user = UserJpaFixture.createUser(tem.getEntityManager());
-//        tem.persist(new UserLanguage(user, language, LanguageLevel.BEGINNER, LanguageType.LEARNING));
 
         //when
         User findUser = userRepository.findWithLanguages(user.getId()).get();
