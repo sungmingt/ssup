@@ -74,7 +74,7 @@ function Header() {
               {/* 로그인 여부에 따른 UI 분기 */}
               {!isAuthenticated ? (
                 <li className="nav-item">
-                  <Link className="btn btn-outline-primary px-3" to="/login">
+                  <Link className="btn login-header-btn px-3" to="/login">
                     로그인
                   </Link>
                 </li>
