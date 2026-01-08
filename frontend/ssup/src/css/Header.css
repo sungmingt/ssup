@@ -15,3 +15,39 @@
   border-color: #65d595;
   color: rgb(105, 205, 159);
 }
+.header-wrapper {
+  position: relative;
+}
+
+.pending-alert-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #f6d2d8;
+  border: 1px solid #b6efd5;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  z-index: 5;
+}
+
+.pending-alert-btn {
+  width: 60px;
+  height: 28px;
+  font-size: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #3fa26b;
+  color: #3fa26b;
+  background: #fff;
+  padding: 0;
+}

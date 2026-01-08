@@ -28,12 +28,12 @@ function Header() {
   if (loading) return null;
 
   return (
-    <header className="sticky-top bg-white shadow-sm">
+    <header className="sticky-top bg-white shadow-sm header-wrapper">
       <nav
         className="navbar navbar-expand-lg navbar-light bg-white py-3"
         aria-label="Main navigation"
       >
-        <div className="container px-4">
+        <div className="container px-4 position-relative">
           {/* 브랜드 로고 */}
           <Link className="navbar-brand fw-bold fs-3" to="/">
             <img src={ssupLogo} className="ssup-logo" width="32" height="32" />
@@ -52,6 +52,18 @@ function Header() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
+
+          {isAuthenticated && user.status === "PENDING" && (
+            <div className="pending-alert-center">
+              <span>프로필 미완성 상태입니다. 프로필을 완성해주세요!</span>
+              <button
+                className="btn pending-alert-btn"
+                onClick={() => navigate("/signup/additional")}
+              >
+                완성하기
+              </button>
+            </div>
+          )}
 
           {/* 메뉴 */}
           <div
