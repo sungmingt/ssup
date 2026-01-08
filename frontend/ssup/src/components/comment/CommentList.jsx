@@ -26,6 +26,7 @@ const CommentList = ({ comments, onRefresh, postId }) => {
             key={comment.id}
             comment={comment}
             onRefresh={onRefresh}
+            authorId={comment.authorId}
             onEdit={() => setEditingId(comment.id)}
           />
         )

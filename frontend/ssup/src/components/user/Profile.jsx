@@ -227,6 +227,7 @@ function Profile({ isMyProfile: isMyProfileProp = false }) {
                   프로필 수정
                 </button>
               )}
+
               {!isMyProfile && me && (
                 <div className="profile-action-area">{renderMatchButton()}</div>
               )}
@@ -254,19 +255,21 @@ function Profile({ isMyProfile: isMyProfileProp = false }) {
         </div>
 
         {/* 연락처 (내 프로필 or 매치된 경우만) */}
-        {(isMyProfile ||
-          profile.matchInfoResponse.matchStatus === "ACCEPTED") &&
+        {isMyProfile || profile.matchInfoResponse.matchStatus === "ACCEPTED" ? (
           profile.contact && (
             <div className="profile-section card contact-card">
               <h5>💌 연락처</h5>
               <p className="contact-text">{profile.contact}</p>
-              {!isMyProfile && (
-                <small className="text-muted">
-                  친구 수락으로 공개된 연락처입니다.
-                </small>
-              )}
             </div>
-          )}
+          )
+        ) : (
+          <div className="profile-section card contact-card">
+            <h5>💌 연락처</h5>
+            <small className="text-muted">
+              매치되면 연락처를 볼 수 있습니다.
+            </small>
+          </div>
+        )}
 
         {isMyProfile && (
           <div className="mt-3 text-end">
