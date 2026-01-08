@@ -37,3 +37,8 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+.required-alert-text {
+  font-size: 13px;
+  margin-bottom: 23px;
+}
