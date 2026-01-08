@@ -1,13 +1,8 @@
-package com.ssup.backend.domain.comment.slice;
+package com.ssup.backend.domain.comment;
 
-import com.ssup.backend.domain.comment.Comment;
-import com.ssup.backend.domain.comment.CommentRepository;
-import com.ssup.backend.domain.comment.CommentService;
-import com.ssup.backend.domain.comment.CommentValidator;
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
 import com.ssup.backend.domain.comment.dto.CommentListResponse;
 import com.ssup.backend.domain.comment.dto.CommentResponse;
-import com.ssup.backend.domain.comment.dto.CommentUpdateRequest;
 import com.ssup.backend.domain.heart.comment.CommentHeartService;
 import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
@@ -30,7 +25,6 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.mock;
