@@ -108,6 +108,20 @@ https://api.ssup.site/swagger-ui/index.html
 
 <br>
 
+### [TDD 기반 백엔드 개발 및 테스트 커버리지 80% 유지]
+
+**계기**
+ - 코드 안정성과 시스템 신뢰도를 위해 TDD 기반 백엔드 개발 진행
+ - PR 단계에 CI를 적용함으로써 branch/배포환경 안정성 보장
+ - 따라서 복합 인덱스가 필요.
+
+**결과**
+  - 테스트 커버리지 80% 유지 (Jacoco 기반 테스트)
+  - 운영 환경에서의 예측 불가능한 오류 방지
+
+<br>
+
+
 ## 7. 주요 기능 (Main Function)
 
 ![2026-01-0512 32 37-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/526b81a7-5271-4c9d-b2e5-fb984411daac)
