@@ -95,7 +95,7 @@ public class CommentService {
                 .orElseThrow(() -> new SsupException(COMMENT_NOT_FOUND));
 
         if (!comment.getPost().getId().equals(postId) || comment.isDeleted()) {
-            throw new SsupException(USER_NOT_FOUND);
+            throw new SsupException(COMMENT_NOT_FOUND);
         }
 
         return CommentResponse.of(comment);
