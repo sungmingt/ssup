@@ -55,7 +55,7 @@ function Header() {
 
           {isAuthenticated && user.status === "PENDING" && (
             <div className="pending-alert-center">
-              <span>프로필 미완성 상태입니다. 프로필을 완성해주세요!</span>
+              <span>❗️ 프로필 미완성 상태입니다. 프로필을 완성해주세요!</span>
               <button
                 className="btn pending-alert-btn"
                 onClick={() => navigate("/signup/additional")}
