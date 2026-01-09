@@ -277,8 +277,12 @@ function SignUpAdditional() {
           </div>
         </div>
 
+        <div className="required-alert-text">
+          📌 표시는 필수 입력 항목입니다.
+        </div>
+
         {/* === 언어 선택=== */}
-        <span className="form-label-title">언어</span>
+        <span className="form-label-title">언어 📌</span>
         <button
           type="button"
           className="form-control text-start mb-2"
@@ -344,7 +348,7 @@ function SignUpAdditional() {
           </div>
         )}
 
-        <span className="form-label-title">나이</span>
+        <span className="form-label-title">나이 📌</span>
         <input
           className="form-control mb-3"
           name="age"
@@ -364,7 +368,7 @@ function SignUpAdditional() {
           <option value="FEMALE">여성</option>
         </select>
 
-        <span className="form-label-title">연락처</span>
+        <span className="form-label-title">연락처 📌</span>
         <input
           className="form-control mb-3"
           name="contact"
@@ -401,7 +405,7 @@ function SignUpAdditional() {
           ))}
         </div>
 
-        <span className="form-label-title">시/도</span>
+        <span className="form-label-title">시/도 📌</span>
         <select
           className="form-select mb-3"
           value={siDoId}
@@ -416,7 +420,7 @@ function SignUpAdditional() {
           ))}
         </select>
 
-        <span className="form-label-title">군/구</span>
+        <span className="form-label-title">군/구 📌</span>
         <select
           className="form-select mb-4"
           value={form.siGunGuId}

@@ -39,6 +39,12 @@ const CommentItem = ({ comment, onRefresh, onEdit, authorId }) => {
   const onToggleHeart = async () => {
     if (heartLoading) return;
 
+    const previousHearted = hearted;
+    const previousCount = heartCount;
+
+    setHearted(!hearted);
+    setHeartCount((prev) => (hearted ? prev - 1 : prev + 1));
+
     setHeartLoading(true);
 
     try {
@@ -47,7 +53,9 @@ const CommentItem = ({ comment, onRefresh, onEdit, authorId }) => {
       setHearted(res.data.hearted);
       setHeartCount(res.data.heartCount);
     } catch {
-      alert("댓글 좋아요 처리 실패");
+      setHearted(previousHearted);
+      setHeartCount(previousCount);
+      alert("요청이 너무 많아 처리에 실패했습니다.");
     } finally {
       setHeartLoading(false);
     }
