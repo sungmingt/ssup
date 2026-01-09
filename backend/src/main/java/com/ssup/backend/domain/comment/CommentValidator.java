@@ -3,6 +3,7 @@ package com.ssup.backend.domain.comment;
 import com.ssup.backend.global.exception.SsupException;
 import org.springframework.stereotype.Component;
 
+import static com.ssup.backend.global.exception.ErrorCode.COMMENT_NOT_FOUND;
 import static com.ssup.backend.global.exception.ErrorCode.NOT_COMMENT_OWNER;
 
 @Component
@@ -18,7 +19,7 @@ public class CommentValidator {
 
     public static void validateResource(Comment comment, Long postId) {
         if (comment.isDeleted() || !comment.getPost().getId().equals(postId)) {
-            throw new SsupException(NOT_COMMENT_OWNER);
+            throw new SsupException(COMMENT_NOT_FOUND);
         }
     }
 

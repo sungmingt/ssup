@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'com.ssup'
@@ -58,6 +59,56 @@ dependencies {
 	implementation 'software.amazon.awssdk:s3:2.25.65'
 }
 
+jacocoTestReport {
+	reports {
+		html.required = true // 사람이 보기 편한 HTML 리포트 생성
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"**/dto/**",
+					"**/*Request*",
+					"**/*Response*",
+
+					"**/s3/**",
+					"**/infra/**",
+					"**/security/**",
+
+					"**/config/**",
+					"**/resolver/**",
+					"**/oauth2/**",
+					"**/*Application*"
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+//				minimum = 0.80 // 80% 커버리지 제한 예시
+			}
+			excludes = [
+					"**/dto/**",
+					"**/*Request*",
+					"**/*Response*",
+
+					"**/s3/**",
+					"**/infra/**",
+					"**/security/**",
+
+					"**/config/**",
+					"**/resolver/**",
+					"**/oauth2/**",
+					"**/*Application*"
+			]
+		}
+	}
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }

@@ -1,4 +1,4 @@
-package com.ssup.backend.domain.comment.slice;
+package com.ssup.backend.domain.heart.slice.comment;
 
 import com.ssup.backend.domain.comment.Comment;
 import com.ssup.backend.domain.heart.comment.CommentHeart;

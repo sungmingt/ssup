@@ -1,9 +1,5 @@
-package com.ssup.backend.domain.comment.slice;
+package com.ssup.backend.domain.comment;
 
-import com.ssup.backend.domain.comment.Comment;
-import com.ssup.backend.domain.comment.CommentRepository;
-import com.ssup.backend.domain.comment.CommentService;
-import com.ssup.backend.domain.comment.CommentValidator;
 import com.ssup.backend.domain.comment.dto.CommentCreateRequest;
 import com.ssup.backend.domain.comment.dto.CommentListResponse;
 import com.ssup.backend.domain.comment.dto.CommentResponse;
@@ -13,6 +9,7 @@ import com.ssup.backend.domain.post.Post;
 import com.ssup.backend.domain.post.PostRepository;
 import com.ssup.backend.domain.user.User;
 import com.ssup.backend.domain.user.UserRepository;
+import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.s3.ImageStorage;
 import com.ssup.backend.infra.s3.ImageType;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +25,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.mock;
@@ -83,6 +80,59 @@ class CommentServiceTest {
         assertThat(response.getContent()).isEqualTo("댓글 내용");
         assertThat(response.getImageUrl()).isEqualTo("image-url");
         verify(commentRepository).save(any(Comment.class));
+    }
+
+    @DisplayName("이미지를 포함하지 않은 댓글 작성 - 성공")
+    @Test
+    void create_withoutImage_success() {
+        //given
+        given(postRepository.findById(1L)).willReturn(Optional.of(getPost(1,getUser())));
+        given(userRepository.findById(1L)).willReturn(Optional.of(getUser()));
+        given(commentRepository.save(any())).willAnswer(i -> i.getArgument(0));
+
+        //when
+        CommentResponse res = commentService.create(1L,1L,null,new CommentCreateRequest("hi"));
+
+        //then
+        assertThat(res.getImageUrl()).isNull();
+    }
+
+    @DisplayName("이미지를 포함한 댓글 수정 시 이미지가 교체된다.")
+    @Test
+    void update_replaceImage_success() {
+        //given
+        Comment comment = mock(Comment.class);
+        given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
+        given(comment.getPost()).willReturn(mock(Post.class));
+        given(comment.getPost().getId()).willReturn(1L);
+        given(comment.getAuthor()).willReturn(getUser());
+        given(comment.getImageUrl()).willReturn("old-url");
+
+        MultipartFile image = mock(MultipartFile.class);
+        given(image.isEmpty()).willReturn(false);
+        given(imageStorage.upload(any(), any())).willReturn("new-url");
+
+        //when
+        commentService.update(1L, 1L, 1L, image, new CommentUpdateRequest("hi", false));
+
+        //then
+        verify(imageStorage).deleteByUrl("old-url");
+        verify(comment).updateImageUrl("new-url");
+    }
+
+    @DisplayName("댓글 조회 시 삭제된 댓글은 조회되지 않는다.")
+    @Test
+    void find_deletedComment_throw() {
+        //given
+        Comment comment = mock(Comment.class);
+        given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
+        given(comment.isDeleted()).willReturn(true);
+        given(comment.getPost()).willReturn(mock(Post.class));
+        given(comment.getPost().getId()).willReturn(1L);
+
+        //when, then
+        assertThatThrownBy(() -> commentService.find(1L,1L,1L))
+                .isInstanceOf(SsupException.class);
     }
 
     @DisplayName("댓글 삭제 시 soft delete 호출 - 성공")

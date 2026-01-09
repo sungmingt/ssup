@@ -34,7 +34,7 @@ public class RefreshTokenRepository {
         redisTemplate.opsForValue().set(
                 getKey(userId),
                 refreshToken,
-                Duration.ofSeconds(REFRESH_TOKEN_TTL_MILLISECONDS)
+                Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS)
         );
     }
 

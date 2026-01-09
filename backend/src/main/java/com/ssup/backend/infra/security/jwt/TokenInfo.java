@@ -8,5 +8,5 @@ public class TokenInfo {
     public static final String REFRESH_TOKEN = "refreshToken";
 
     public static final long ACCESS_TOKEN_TTL_MILLISECONDS = 1000L * 60 * 30;
-    public static final long REFRESH_TOKEN_TTL_MILLISECONDS = 1000L * 60 * 60 * 24;
+    public static final long REFRESH_TOKEN_TTL_MILLISECONDS = 1000L * 60 * 60 * 24 * 7;
 }

@@ -64,11 +64,13 @@ function Profile({ isMyProfile: isMyProfileProp = false }) {
       }
     };
 
+    if (!profile) return;
+
     // isMyProfile이거나 id가 있을 때 실행
     if (isMyProfile || id) {
       fetchUserLanguages();
     }
-  }, [id, isMyProfile]);
+  }, [id, isMyProfile, profile]);
 
   //매치 버튼 렌더링
   const renderMatchButton = () => {

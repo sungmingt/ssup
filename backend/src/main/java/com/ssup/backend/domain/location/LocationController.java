@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/locations")
-@Tag(name = "Location", description = "지역정보 API")
+@Tag(name = "Location", description = "지역 정보 API")
 public class LocationController {
 
     private final LocationService locationService;
