@@ -5,7 +5,7 @@
 4. API Docs
 5. 서버 아키텍처
 6. 기술적인 고민과 개선 내용
-7. 주요 기능
+7. 주요 기능 시연 영상
 
 <br>
 
@@ -124,5 +124,19 @@ https://api.ssup.site/swagger-ui/index.html
 
 ## 7. 주요 기능 (Main Function)
 
-![2026-01-0512 32 37-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/526b81a7-5271-4c9d-b2e5-fb984411daac)
+### 이메일 로그인
+![ssup_로그인_gif](https://github.com/user-attachments/assets/aaaea172-3187-48a9-8755-991231ff3b78)
+
+### 댓글 작성
+![ssup_댓글작성_gif](https://github.com/user-attachments/assets/13f1cecc-2e43-47f2-8dd4-3c077dae5a11)
+
+### 매치 요청
+![ssup_매치요청_gif](https://github.com/user-attachments/assets/8a62e9c6-999d-425d-ba60-6676a5698057)
+
+### 매치 수락
+![ssup_매치수락_gif](https://github.com/user-attachments/assets/889635de-f36c-4249-97fb-bd824208cda3)
+
+
+
+
 
