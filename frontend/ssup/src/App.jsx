@@ -1,23 +1,24 @@
 import { useState, useEffect } from "react";
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PostList from "./components/postList/PostList";
-import Login from "./components/Login";
-import Profile from "./components/user/Profile";
-import ProfileEdit from "./components/user/ProfileEdit";
-import PostCreateForm from "./components/post/PostCreateForm";
-import PostUpdateForm from "./components/post/PostUpdateForm";
-import Post from "./components/post/Post";
-import Header from "./components/Header";
-import SignUp from "./components/auth/SignUp";
-import SignUpAdditional from "./components/auth/SignUpAdditional";
-import MainPage from "./components/MainPage";
-import "./App.css";
-import { useAuthStore } from "./store/authStore";
+import "@/App.css";
+
+import React from "react";
+import PostList from "@/components/postList/PostList";
+import Login from "@/components/auth/Login";
+import Profile from "@/components/user/Profile";
+import ProfileEdit from "@/components/user/ProfileEdit";
+import PostCreateForm from "@/components/post/PostCreateForm";
+import PostUpdateForm from "@/components/post/PostUpdateForm";
+import Post from "@/components/post/Post";
+import Header from "@/components/Header";
+import SignUp from "@/components/auth/SignUp";
+import SignUpAdditional from "@/components/auth/SignUpAdditional";
+import MainPage from "@/components/MainPage";
+import { useAuthStore } from "@/store/authStore";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import GlobalErrorLayer from "@/components/common/GlobalErrorLayer";
 import GlobalConfirmLayer from "@/components/common/GlobalConfirmLayer";
-import MatchHistory from "./components/match/MatchHistory";
+import MatchHistory from "@/components/match/MatchHistory";
 
 function App() {
   const initAuth = useAuthStore((s) => s.initAuth);
@@ -74,15 +75,6 @@ function App() {
 
           <Route path="/login" element={<Login />} />
         </Routes>
-        {/* <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/posts" element={<PostList />} />
-          <Route path="/posts/create" element={<PostCreateForm />} />
-          <Route path="/posts/:id" element={<Post />} />
-        </Routes> */}
       </div>
     </Router>
   );
