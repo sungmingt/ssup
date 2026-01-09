@@ -12,6 +12,12 @@ const PostList = () => {
   const [sortType, setSortType] = useState("LATEST");
   const [loading, setLoading] = useState(false);
 
+  const [filters, setFilters] = useState({
+    location: "",
+    language: "",
+    interest: "",
+  });
+
   //ref
   const pageRef = useRef({
     cursorKey: null,
@@ -119,7 +125,12 @@ const PostList = () => {
   return (
     <>
       <div className="container py-5">
-        <PostTopBar sortType={sortType} setSortType={setSortType} />
+        <PostTopBar
+          sortType={sortType}
+          setSortType={setSortType}
+          filters={filters}
+          setFilters={setFilters}
+        />
 
         <div className="row">
           {posts.map((post) => (
@@ -145,40 +156,3 @@ const PostList = () => {
 };
 
 export default PostList;
-
-// import { useState, useEffect } from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import PostCard from "./postList/PostCard.jsx";
-// import PostTopBar from "./postList/PostTopBar.jsx";
-// import SearchModal from "./postList/SearchModal.jsx";
-// import { fetchPosts } from "./postList/PostApi.jsx";
-
-// const PostList = () => {
-//   const [posts, setPosts] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [sortType, setSortType] = useState("LATEST");
-
-//   useEffect(() => {
-//     fetchPosts()
-//       .then((res) => setPosts(res.data))
-//       .catch((err) => console.error("게시글 불러오기 실패", err))
-//       .finally(() => setLoading(false));
-//   }, []);
-
-//   return (
-//     <>
-//       <div className="container py-5">
-//         <PostTopBar sortType={sortType} setSortType={setSortType} />
-
-//         {/* row는 여기 하나만 */}
-//         <div className="row">
-//           <PostCard loading={loading} posts={posts} />
-//         </div>
-
-//         <SearchModal />
-//       </div>
-//     </>
-//   );
-// };
-
-// export default PostList;
