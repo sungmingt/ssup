@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.location.dto;
 
+import com.ssup.backend.domain.location.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,4 +20,8 @@ public class LocationResponse {
 
     @Schema(description = "위치 레벨", example = "1")
     private int level;
+
+    public static LocationResponse of(Location location) {
+        return new LocationResponse(location.getId(), location.getName(), location.getLevel());
+    }
 }
