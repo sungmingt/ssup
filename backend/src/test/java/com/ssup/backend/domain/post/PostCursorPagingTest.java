@@ -1,8 +1,5 @@
-package com.ssup.backend.domain.post.slice;
+package com.ssup.backend.domain.post;
 
-import com.ssup.backend.domain.post.Post;
-import com.ssup.backend.domain.post.PostRepository;
-import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.PostListResponse;
 import com.ssup.backend.domain.post.dto.PostSliceResponse;
 import com.ssup.backend.domain.post.sort.PostSortType;
@@ -21,7 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 @ActiveProfiles("test")
 @SpringBootTest
 @Transactional
-class PostServiceSortTest {
+class PostCursorPagingTest {
 
     @Autowired
     private PostService postService;
@@ -51,7 +48,7 @@ class PostServiceSortTest {
     @Test
     void firstSearch_latest_success() {
         //given
-        PostSliceResponse response = postService.findList(user.getId(), PostSortType.LATEST, null, null, 3);
+        PostSliceResponse response = postService.findList(user.getId(), PostFilterCondition.empty(), PostSortType.LATEST, null, null, 3);
 
         assertThat(response.getItems()).hasSize(3);
         assertThat(response.isHasNext()).isTrue();
@@ -65,6 +62,7 @@ class PostServiceSortTest {
         PostSliceResponse result =
                 postService.findList(
                         user.getId(),
+                        PostFilterCondition.empty(),
                         PostSortType.VIEWS,
                         null,
                         null,
@@ -86,6 +84,7 @@ class PostServiceSortTest {
         PostSliceResponse first =
                 postService.findList(
                         user.getId(),
+                        PostFilterCondition.empty(),
                         PostSortType.VIEWS,
                         null,
                         null,
@@ -96,6 +95,7 @@ class PostServiceSortTest {
         PostSliceResponse second =
                 postService.findList(
                         user.getId(),
+                        PostFilterCondition.empty(),
                         PostSortType.VIEWS,
                         first.getNextCursorKey(),
                         first.getNextCursorId(),
@@ -122,6 +122,7 @@ class PostServiceSortTest {
         PostSliceResponse first =
                 postService.findList(
                         user.getId(),
+                        PostFilterCondition.empty(),
                         PostSortType.LATEST,
                         null,
                         null,
@@ -131,6 +132,7 @@ class PostServiceSortTest {
         PostSliceResponse second =
                 postService.findList(
                         user.getId(),
+                        PostFilterCondition.empty(),
                         PostSortType.LATEST,
                         null,
                         first.getNextCursorId(),
@@ -161,6 +163,4 @@ class PostServiceSortTest {
 
         return postRepository.save(post);
     }
-
-
 }

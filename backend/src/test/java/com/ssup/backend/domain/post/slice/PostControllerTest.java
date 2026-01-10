@@ -3,6 +3,7 @@ package com.ssup.backend.domain.post.slice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssup.backend.domain.auth.AppUserProvider;
 import com.ssup.backend.domain.post.PostController;
+import com.ssup.backend.domain.post.PostFilterCondition;
 import com.ssup.backend.domain.post.PostService;
 import com.ssup.backend.domain.post.dto.*;
 import com.ssup.backend.domain.post.sort.PostSortType;
@@ -50,6 +51,7 @@ class PostControllerTest {
         //given
         given(postService.findList(
                 eq(1L),
+                eq(PostFilterCondition.empty()),
                 eq(PostSortType.LATEST),
                 isNull(),
                 isNull(),
@@ -71,6 +73,7 @@ class PostControllerTest {
         //given
         given(postService.findList(
                 eq(1L),
+                eq(PostFilterCondition.empty()),
                 eq(PostSortType.VIEWS),
                 eq(250L),
                 eq(10L),
