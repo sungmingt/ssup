@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { usePostFilterStore } from "@/store/postFilterStore.js";
 import PostCard from "./PostCard.jsx";
 import PostTopBar from "./PostTopBar.jsx";
-import SearchModal from "./SearchModal.jsx";
+import FilterModal from "./FilterModal.jsx";
 import { postApi } from "@/api";
 
 const PAGE_SIZE = 9;
@@ -27,7 +28,7 @@ const PostList = () => {
     loading: false,
   });
 
-  const isReadyRef = useRef(false); // 초기 1페이지 로딩 완료 여부
+  const isReadyRef = useRef(false); //초기 1페이지 로딩 완료 여부
   const observerRef = useRef(null);
 
   //data loading
@@ -35,7 +36,7 @@ const PostList = () => {
     async (isFirst = false) => {
       const page = pageRef.current;
 
-      // 🔒 중복 / 불필요 호출 차단
+      //중복 / 불필요 호출 차단
       if (page.loading) return;
       if (!page.hasNext && !isFirst) return;
 
@@ -44,6 +45,7 @@ const PostList = () => {
 
       try {
         const res = await postApi.getPostList({
+          ...filters,
           sortType,
           cursorKey: isFirst ? null : page.cursorKey,
           cursorId: isFirst ? null : page.cursorId,
@@ -60,12 +62,12 @@ const PostList = () => {
           return isFirst ? newItems : [...prev, ...newItems];
         });
 
-        // 🔄 커서 갱신
+        //커서 갱신
         page.cursorKey = data.nextCursorKey;
         page.cursorId = data.nextCursorId;
         page.hasNext = data.hasNext;
 
-        // ✅ 첫 페이지 로딩 완료 신호
+        //첫 페이지 로딩 완료 신호
         if (isFirst) {
           isReadyRef.current = true;
         }
@@ -76,7 +78,7 @@ const PostList = () => {
         setLoading(false);
       }
     },
-    [sortType]
+    [sortType, filters]
   );
 
   /** =========================
@@ -94,7 +96,7 @@ const PostList = () => {
     };
 
     loadPosts(true);
-  }, [sortType, loadPosts]);
+  }, [sortType, filters, loadPosts]);
 
   /** =========================
    *  IntersectionObserver
@@ -107,7 +109,7 @@ const PostList = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        // if (!isReadyRef.current) return; // 🔥 초기 로딩 중 차단
+        // if (!isReadyRef.current) return; //초기 로딩 중 차단
 
         loadPosts();
       },
@@ -126,31 +128,27 @@ const PostList = () => {
   return (
     <>
       <div className="container py-5">
-        <PostTopBar
-          sortType={sortType}
-          setSortType={setSortType}
-          filters={filters}
-          setFilters={setFilters}
-        />
+        <PostTopBar sortType={sortType} setSortType={setSortType} />
 
         <div className="row">
           {posts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
-
         {loading && (
           <p className="text-center mt-3 text-muted">게시글 불러오는 중...</p>
         )}
-
         {!loading && posts.length === 0 && (
           <p className="text-center mt-3">게시글이 없습니다.</p>
         )}
 
-        <SearchModal />
+        <FilterModal
+          filters={filters}
+          onFilter={(newFilters) => setFilters(newFilters)}
+        />
       </div>
 
-      {/* 🔥 반드시 container 밖 */}
+      {/* 반드시 container 밖 */}
       <div ref={observerRef} style={{ height: "200px" }} />
     </>
   );
