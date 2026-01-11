@@ -13,9 +13,10 @@ const PostList = () => {
   const [loading, setLoading] = useState(false);
 
   const [filters, setFilters] = useState({
-    location: "",
-    language: "",
-    interest: "",
+    locationId: null,
+    usingLanguage: null,
+    learningLanguage: null,
+    interestId: null,
   });
 
   //ref
