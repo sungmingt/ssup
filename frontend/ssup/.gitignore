@@ -35,3 +35,6 @@ lerna-debug.log*
 *.sw?
 dist-ssr
 *.local
+
+# Backend gitignore
+./../backend/src/main/generated/

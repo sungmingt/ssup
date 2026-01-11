@@ -3,7 +3,6 @@ HELP.md
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
-!**/src/main/**/generated/
 !**/src/test/**/build/
 !**/src/main/resources/application.yml
 !**/src/main/resources/**
@@ -40,3 +39,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Querydsl ###
+src/main/generated/

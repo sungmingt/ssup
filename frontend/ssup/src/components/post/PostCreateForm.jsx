@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchPosts } from "./../postList/PostApi.jsx";
 import { postApi } from "@/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LanguageSelector from "./LanguageSelector";
