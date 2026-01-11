@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.ssup.backend.domain.post.PostValidator.*;
@@ -70,12 +69,13 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostSliceResponse findList(Long userId,
-                                      PostSortType sort,
+                                      PostFilterCondition filterCondition,
+                                      PostSortType sortType,
                                       Long cursorKey,
                                       Long cursorId,
                                       int size) {
 
-        return postSliceFetcher.fetch(userId, sort, cursorKey, cursorId, size);
+        return postSliceFetcher.fetch(userId, filterCondition, sortType, cursorKey, cursorId, size);
     }
 
     public PostResponse find(Long userId, Long id) {
