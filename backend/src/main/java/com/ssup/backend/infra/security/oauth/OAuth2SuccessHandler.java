@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-
-import static com.ssup.backend.infra.security.jwt.JwtCookieProvider.COOKIE_HEADER;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -52,10 +51,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         SecurityContextHolder.getContext().setAuthentication(newAuth);
 
-        String accessToken = jwtProvider.createAccessToken(userId);
-        String refreshToken = jwtProvider.createRefreshToken(userId);
+        String sessionId = UUID.randomUUID().toString();
+        String accessToken = jwtProvider.createAccessToken(userId, sessionId);
+        String refreshToken = jwtProvider.createRefreshToken(userId, sessionId);
 
-        refreshTokenRepository.save(userId, refreshToken);
+        refreshTokenRepository.save(userId, sessionId, refreshToken);
 
         ResponseCookie accessCookie = jwtCookieProvider.createAccessTokenCookie(accessToken);
         ResponseCookie refreshCookie = jwtCookieProvider.createRefreshTokenCookie(refreshToken);

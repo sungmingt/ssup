@@ -20,25 +20,25 @@ public class RefreshTokenRepository {
         this.redisTemplate = refreshTokenRedisTemplate;
     }
 
-    private String getKey(Long userId) {
-        return KEY_PREFIX + userId;
+    private String getKey(Long userId, String sessionId) {
+        return KEY_PREFIX + userId + ":" + sessionId;
     }
 
-    public Optional<String> findByUserId(Long userId) {
+    public Optional<String> findByUserId(Long userId, String sessionId) {
         log.info("### findByUserId called");
         log.info("### finding userId={}", userId);
-        return Optional.ofNullable(redisTemplate.opsForValue().get(getKey(userId)));
+        return Optional.ofNullable(redisTemplate.opsForValue().get(getKey(userId, sessionId)));
     }
 
-    public void save(Long userId, String refreshToken) {
+    public void save(Long userId, String sessionId, String refreshToken) {
         redisTemplate.opsForValue().set(
-                getKey(userId),
+                getKey(userId, sessionId),
                 refreshToken,
                 Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS)
         );
     }
 
-    public void deleteById(Long userId) {
-        redisTemplate.delete(getKey(userId));
+    public void deleteById(Long userId, String sessionId) {
+        redisTemplate.delete(getKey(userId, sessionId));
     }
 }
