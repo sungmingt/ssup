@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class PostCreateRequest {
     private String learningLanguage;
 
     @NotBlank(message = "제목을 입력해주세요.")
+    @Length(max = 100)
     private String title;
 
     @NotBlank(message = "내용을 입력해주세요.")

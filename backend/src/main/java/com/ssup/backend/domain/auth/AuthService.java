@@ -23,6 +23,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static com.ssup.backend.global.exception.ErrorCode.*;
 import static com.ssup.backend.infra.security.jwt.TokenInfo.REFRESH_TOKEN;
 
@@ -85,26 +87,27 @@ public class AuthService {
         }
 
         Long userId = jwtProvider.getUserIdFromToken(refreshToken);
+        String sessionId = jwtProvider.getSessionIdFromToken(refreshToken);
 
         //만료된 토큰
         if (tokenStatus == TokenStatus.EXPIRED) {
-            refreshTokenRepository.deleteById(userId);
+            refreshTokenRepository.deleteById(userId, sessionId);
             cookieProvider.deleteAuthCookies(response);
             throw new SsupException(REFRESH_TOKEN_EXPIRED);
         }
 
-        String savedRefresh = refreshTokenRepository.findByUserId(userId)
+        String savedRefresh = refreshTokenRepository.findByUserId(userId, sessionId)
                 .orElseThrow(() -> new SsupException(REFRESH_TOKEN_NOT_FOUND));
 
         //올바른 토큰이지만, DB 일치 x
         if (!jwtProvider.checkRefreshTokenSameness(refreshToken, savedRefresh)) {
             //탈취 의심 -> 폐기 후 재로그인 유도
-            refreshTokenRepository.deleteById(userId);
+            refreshTokenRepository.deleteById(userId, sessionId);
             cookieProvider.deleteAuthCookies(response);
             throw new SsupException(REFRESH_TOKEN_MISMATCH);
         }
 
-        String newAccessToken = jwtProvider.createAccessToken(userId);
+        String newAccessToken = jwtProvider.createAccessToken(userId, sessionId);
         ResponseCookie accessTokenCookie = cookieProvider.reissueAccessTokenCookie(newAccessToken);
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
     }
@@ -121,10 +124,11 @@ public class AuthService {
             throw new SsupException(PASSWORD_NOT_MATCH);
         }
 
-        String accessToken = jwtProvider.createAccessToken(user.getId());
-        String refreshToken = jwtProvider.createRefreshToken(user.getId());
+        String sessionId = UUID.randomUUID().toString();
+        String accessToken = jwtProvider.createAccessToken(user.getId(), sessionId);
+        String refreshToken = jwtProvider.createRefreshToken(user.getId(), sessionId);
 
-        refreshTokenRepository.save(user.getId(), refreshToken);
+        refreshTokenRepository.save(user.getId(), sessionId, refreshToken);
 
         ResponseCookie accessTokenCookie = cookieProvider.createAccessTokenCookie(accessToken);
         ResponseCookie refreshTokenCookie = cookieProvider.createRefreshTokenCookie(refreshToken);
@@ -137,8 +141,8 @@ public class AuthService {
 
         if (refreshToken != null) {
             Long userId = jwtProvider.getUserIdFromToken(refreshToken);
-
-            refreshTokenRepository.deleteById(userId);
+            String sessionId = jwtProvider.getSessionIdFromToken(refreshToken);
+            refreshTokenRepository.deleteById(userId, sessionId);
         }
 
         cookieProvider.deleteAuthCookies(response);

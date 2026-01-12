@@ -35,20 +35,21 @@ public class JwtProvider {
         secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(Long userId) {
-        return createToken(userId, ACCESS_TOKEN_TTL_MILLISECONDS);
+    public String createAccessToken(Long userId, String sessionId) {
+        return createToken(userId, sessionId, ACCESS_TOKEN_TTL_MILLISECONDS);
     }
 
-    public String createRefreshToken(Long userId) {
-        return createToken(userId, REFRESH_TOKEN_TTL_MILLISECONDS);
+    public String createRefreshToken(Long userId, String sessionId) {
+        return createToken(userId, sessionId, REFRESH_TOKEN_TTL_MILLISECONDS);
     }
 
-    private String createToken(Long userId, long timeToLive) {
+    private String createToken(Long userId, String sessionId, long timeToLive) {
         Date issueDate = new Date();
         Date expireDate = new Date(issueDate.getTime() + timeToLive);
 
         return Jwts.builder()
                 .subject(String.valueOf(userId))
+                .claim("sessionId", sessionId)
                 .issuedAt(issueDate)
                 .expiration(expireDate)
                 .signWith(secretKey, Jwts.SIG.HS512)
@@ -56,15 +57,13 @@ public class JwtProvider {
     }
 
     public Long getUserIdFromToken(String token) {
-        try {
-            return Long.valueOf(Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload().getSubject());
-        } catch (ExpiredJwtException e) {
-            return Long.valueOf(e.getClaims().getSubject());
-        }
+        Claims claims = parseClaims(token);
+        return Long.valueOf(claims.getSubject());
+    }
+
+    public String getSessionIdFromToken(String token) {
+        Claims claims = parseClaims(token);
+        return String.valueOf(claims.get("sessionId"));
     }
 
     public TokenStatus validateToken(String token) {
@@ -78,17 +77,15 @@ public class JwtProvider {
         }
     }
 
-    public Claims parseClaims(String token) {
+    private Claims parseClaims(String token) {
         try {
-            Objects.requireNonNull(token);
-            return Jwts.parser().verifyWith(secretKey).build()
-                    .parseSignedClaims(token).getPayload();
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new SsupException(TOKEN_EXPIRED);
-        } catch (MalformedJwtException e) {
-            throw new SsupException(INVALID_TOKEN);
-        } catch (SecurityException e) {
-            throw new SsupException(TOKEN_SIGNATURE_INVALID);
+            return e.getClaims();
         }
     }
 
@@ -106,4 +103,18 @@ public class JwtProvider {
         return Collections.singletonList(new SimpleGrantedAuthority(
                 claims.get("role").toString()));
     }
+
+//    public Claims parseClaims(String token) {
+//        try {
+//            Objects.requireNonNull(token);
+//            return Jwts.parser().verifyWith(secretKey).build()
+//                    .parseSignedClaims(token).getPayload();
+//        } catch (ExpiredJwtException e) {
+//            throw new SsupException(TOKEN_EXPIRED);
+//        } catch (MalformedJwtException e) {
+//            throw new SsupException(INVALID_TOKEN);
+//        } catch (SecurityException e) {
+//            throw new SsupException(TOKEN_SIGNATURE_INVALID);
+//        }
+//    }
 }

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { languageApi } from "@/api";
 
 const LanguageSelector = ({ label, value, onSelect }) => {
   const [showModal, setShowModal] = useState(false);
@@ -10,7 +8,7 @@ const LanguageSelector = ({ label, value, onSelect }) => {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/languages`);
+        const res = await languageApi.getLanguageList();
         setLanguages(res.data); // [{ code, name }]
       } catch (err) {
         console.error("언어 정보 불러오기 실패", err);
@@ -53,18 +51,18 @@ const LanguageSelector = ({ label, value, onSelect }) => {
               <div className="modal-body">
                 {languages.map((lang) => (
                   <button
-                    key={lang.code} // ✅ 안정적인 key
+                    key={lang.code} //안정적인 key
                     className={`btn w-100 mb-2 ${
                       lang.name === value
                         ? "btn-primary"
                         : "btn-outline-secondary"
                     }`}
                     onClick={() => {
-                      onSelect(lang.name); // ✅ 문자열만 전달
+                      onSelect(lang.name); //문자열만 전달
                       setShowModal(false);
                     }}
                   >
-                    {lang.name} {/* ✅ 렌더링 */}
+                    {lang.name} {/* 렌더링 */}
                   </button>
                 ))}
               </div>

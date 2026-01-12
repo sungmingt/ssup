@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.ssup.backend.infra.security.jwt.TokenInfo.REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.*;
@@ -162,12 +163,16 @@ class AuthServiceTest {
     @DisplayName("reissue 실패 - 만료된 refresh token")
     void reissue_fail_tokenExpired() {
         //given
+        String sessionId = UUID.randomUUID().toString();
         given(cookieProvider.getTokenFromCookie(request, REFRESH_TOKEN))
                 .willReturn(Optional.of("rtk"));
         given(jwtProvider.validateToken("rtk"))
                 .willReturn(TokenStatus.EXPIRED);
         given(jwtProvider.getUserIdFromToken("rtk"))
                 .willReturn(1L);
+        given(jwtProvider.getSessionIdFromToken("rtk"))
+                .willReturn(sessionId);
+
 
         //when
         assertThatThrownBy(() -> authService.reissue(request,response))
@@ -175,7 +180,7 @@ class AuthServiceTest {
                 .hasMessageContaining(ErrorCode.REFRESH_TOKEN_EXPIRED.getMessage());
 
         //then
-        verify(refreshTokenRepository).deleteById(1L);
+        verify(refreshTokenRepository).deleteById(1L, sessionId);
     }
 
     @Test
@@ -188,7 +193,9 @@ class AuthServiceTest {
                 .willReturn(TokenStatus.VALID);
         given(jwtProvider.getUserIdFromToken("rtk"))
                 .willReturn(1L);
-        given(refreshTokenRepository.findByUserId(1L))
+        given(jwtProvider.getSessionIdFromToken("rtk"))
+                .willReturn("sessionId");
+        given(refreshTokenRepository.findByUserId(1L, "sessionId"))
                 .willReturn(Optional.of("other"));
         given(jwtProvider.checkRefreshTokenSameness("rtk","other"))
                 .willReturn(false);
@@ -206,12 +213,13 @@ class AuthServiceTest {
         given(cookieProvider.getTokenFromCookie(request, REFRESH_TOKEN))
                 .willReturn(Optional.of("rtk"));
         given(jwtProvider.getUserIdFromToken("rtk")).willReturn(1L);
+        given(jwtProvider.getSessionIdFromToken("rtk")).willReturn("sessionId");
 
         //when
         authService.logout(request,response);
 
         //then
-        verify(refreshTokenRepository).deleteById(1L);
+        verify(refreshTokenRepository).deleteById(1L, "sessionId");
         verify(cookieProvider).deleteAuthCookies(response);
     }
 
@@ -236,7 +244,4 @@ class AuthServiceTest {
         //then
         verify(imageStorage).deleteByUrl("s3://test.png");
     }
-
-
-
 }
