@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
@@ -33,14 +34,15 @@ class RefreshTokenRepositoryTest {
     @DisplayName("refreshToken 저장 - 성공")
     void save_success() {
         //given
+        String sessionId = UUID.randomUUID().toString();
         given(redisTemplate.opsForValue()).willReturn(valueOperations);
 
         //when
-        refreshTokenRepository.save(1L, "rtk");
+        refreshTokenRepository.save(1L, sessionId, "rtk");
 
         //then
         verify(valueOperations).set(
-                eq("refreshToken:1"),
+                eq(refreshTokenRepository.getKey(1L, sessionId)),
                 eq("rtk"),
                 any(Duration.class)
         );
@@ -50,11 +52,12 @@ class RefreshTokenRepositoryTest {
     @DisplayName("refreshToken 조회 - 성공")
     void find_success() {
         //given
+        String sessionId = "sessionId";
         given(redisTemplate.opsForValue()).willReturn(valueOperations);
-        given(valueOperations.get("refreshToken:1")).willReturn("rtk");
+        given(valueOperations.get("refreshToken:1:sessionId")).willReturn("rtk");
 
         //when
-        Optional<String> result = refreshTokenRepository.findByUserId(1L);
+        Optional<String> result = refreshTokenRepository.findByUserId(1L, sessionId);
 
         //then
         assertThat(result).contains("rtk");
@@ -64,11 +67,12 @@ class RefreshTokenRepositoryTest {
     @DisplayName("refreshToken 조회 실패 - 존재하지 않는 토큰 id")
     void find_fail_notFound() {
         //given
-        given(valueOperations.get("refreshToken:1")).willReturn(null);
+        String sessionId = "sessionId";
+        given(valueOperations.get("refreshToken:1:sessionId")).willReturn(null);
         given(redisTemplate.opsForValue()).willReturn(valueOperations);
 
         //when
-        Optional<String> result = refreshTokenRepository.findByUserId(1L);
+        Optional<String> result = refreshTokenRepository.findByUserId(1L, sessionId);
 
         //then
         assertThat(result).isEmpty();
@@ -78,9 +82,9 @@ class RefreshTokenRepositoryTest {
     @DisplayName("refreshToken 삭제 - 성공")
     void delete_success() {
         //when
-        refreshTokenRepository.deleteById(1L);
+        refreshTokenRepository.deleteById(1L, "sessionId");
 
         //then
-        verify(redisTemplate).delete("refreshToken:1");
+        verify(redisTemplate).delete("refreshToken:1:sessionId");
     }
 }

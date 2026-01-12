@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,7 +48,8 @@ class JwtAuthenticationFilterTest {
     void validAccessTokenCookie_thenAuthenticated() throws Exception {
         //given
         Long userId = 1L;
-        String token = jwtProvider.createAccessToken(userId);
+        String sessionId = UUID.randomUUID().toString();
+        String token = jwtProvider.createAccessToken(userId, sessionId);
         Cookie cookie = new Cookie("accessToken", token);
         MeResponse response = MeResponse.builder()
                 .id(userId)

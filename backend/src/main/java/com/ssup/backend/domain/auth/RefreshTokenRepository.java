@@ -20,7 +20,7 @@ public class RefreshTokenRepository {
         this.redisTemplate = refreshTokenRedisTemplate;
     }
 
-    private String getKey(Long userId, String sessionId) {
+    public String getKey(Long userId, String sessionId) {
         return KEY_PREFIX + userId + ":" + sessionId;
     }
 
