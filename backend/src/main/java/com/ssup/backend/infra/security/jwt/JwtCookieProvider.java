@@ -50,7 +50,7 @@ public class JwtCookieProvider {
                 .sameSite("Lax")
                 .path("/")
                 .domain(cookieDomain)
-                .maxAge(Duration.ofMillis(ACCESS_TOKEN_TTL_MILLISECONDS))
+                .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS))
                 .build();
     }
 
