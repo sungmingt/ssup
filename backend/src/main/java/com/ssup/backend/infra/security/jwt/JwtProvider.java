@@ -1,6 +1,5 @@
 package com.ssup.backend.infra.security.jwt;
 
-import com.ssup.backend.global.exception.SsupException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -15,10 +14,8 @@ import javax.crypto.SecretKey;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import static com.ssup.backend.infra.security.jwt.TokenInfo.*;
-import static com.ssup.backend.global.exception.ErrorCode.*;
 
 @Component
 @RequiredArgsConstructor
