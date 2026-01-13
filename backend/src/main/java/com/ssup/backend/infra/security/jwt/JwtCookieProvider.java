@@ -19,38 +19,41 @@ public class JwtCookieProvider {
     @Value("${app.cookie-domain:#{null}}")
     private String cookieDomain;
 
+    @Value("${cookie.isProd}")
+    private boolean isProd;
+
     public static final String COOKIE_HEADER = "Set-Cookie";
 
     public ResponseCookie createAccessTokenCookie(String token) {
         return ResponseCookie.from(ACCESS_TOKEN, token)
                 .httpOnly(true)
-                .secure(true)
+                .secure(isProd)
                 .sameSite("Lax")
                 .path("/")
                 .domain(cookieDomain)
-                .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS)) //만료시 재발급 처리를 위해 쿠키는 유지해야한다.
+                .maxAge(Duration.ofDays(7)) //만료시 재발급 처리를 위해 쿠키는 유지해야한다.
                 .build();
     }
 
     public ResponseCookie createRefreshTokenCookie(String token) {
         return ResponseCookie.from(REFRESH_TOKEN, token)
                 .httpOnly(true)
-                .secure(true)
+                .secure(isProd)
                 .sameSite("Lax")
                 .path("/")
                 .domain(cookieDomain)
-                .maxAge(Duration.ofMillis(REFRESH_TOKEN_TTL_MILLISECONDS))
+                .maxAge(Duration.ofDays(7))
                 .build();
     }
 
     public ResponseCookie reissueAccessTokenCookie(String token) {
         return ResponseCookie.from(ACCESS_TOKEN, token)
                 .httpOnly(true)
-                .secure(true)
+                .secure(isProd)
                 .sameSite("Lax")
                 .path("/")
                 .domain(cookieDomain)
-                .maxAge(Duration.ofMillis(ACCESS_TOKEN_TTL_MILLISECONDS))
+                .maxAge(Duration.ofDays(7))
                 .build();
     }
 
@@ -65,7 +68,7 @@ public class JwtCookieProvider {
     public void deleteAuthCookies(HttpServletResponse response) {
         ResponseCookie access = ResponseCookie.from(ACCESS_TOKEN, "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(isProd)
                 .sameSite("Lax")
                 .maxAge(0)
                 .path("/")
@@ -74,7 +77,7 @@ public class JwtCookieProvider {
 
         ResponseCookie refresh = ResponseCookie.from(REFRESH_TOKEN, "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(isProd)
                 .sameSite("Lax")
                 .maxAge(0)
                 .path("/")

@@ -27,7 +27,10 @@ public class RefreshTokenRepository {
     public Optional<String> findByUserId(Long userId, String sessionId) {
         log.info("### findByUserId called");
         log.info("### finding userId={}", userId);
-        return Optional.ofNullable(redisTemplate.opsForValue().get(getKey(userId, sessionId)));
+
+        String key = getKey(userId, sessionId);
+        log.info("### created key={}", key);
+        return Optional.ofNullable(redisTemplate.opsForValue().get(key));
     }
 
     public void save(Long userId, String sessionId, String refreshToken) {
