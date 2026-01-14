@@ -1,10 +1,10 @@
 ## 목차
 1. 서비스 소개 및 바로가기
 2. 사용 기술
-3. ERD
-4. API Docs
-5. 서버 아키텍처
-6. 기술적인 고민과 개선 내용
+3. 기술적인 고민과 개선 내용
+4. ERD
+5. API Docs
+6. 서버 아키텍처
 7. 주요 기능 시연 영상
 
 <br>
@@ -42,33 +42,9 @@ ssup은 한국에 거주하는 외국인과, 외국어에 관심있는 한국인
 
 <br>
 
-## 3. [ERD](https://dbdiagram.io/d/ssup-6930e8afd6676488ba811397)
-
-https://dbdiagram.io/d/ssup-6930e8afd6676488ba811397
-<img width="900" height="609" alt="스크린샷 2026-01-05 오전 10 06 25" src="https://github.com/user-attachments/assets/039218c2-e503-4a5a-a2c6-76e93371978a" />
-
-<br>
-
-## 4. [API Docs  ![Swagger](https://img.shields.io/badge/-Swagger-%2385EA2D?style=flat-square&logo=swagger&logoColor=black)](https://api.ssup.site/swagger-ui/index.html)
-https://api.ssup.site/swagger-ui/index.html
-
-<img width="700" height="600" alt="스크린샷 2026-01-05 오전 11 49 03" src="https://github.com/user-attachments/assets/151e05dd-9008-4f85-8dce-ffde4bc25fa2" />
-
-<br>
-
-## 5. 서버 아키텍처(Server Architecture) 및 CI/CD Pipeline
-
-### 서버 아키텍처
-<img width="1222" height="736" alt="ssup_infra_image_2" src="https://github.com/user-attachments/assets/6f28852b-9a72-4ec4-83d6-3f3db2d0f671" />
 
 
-### CI/CD 구조
-<img width="1289" height="554" alt="ssup_ci:cd-image" src="https://github.com/user-attachments/assets/6f7a5acc-ff2a-47bf-938a-1f49f6fda344" />
-
-<br>
-
-
-## 6. 고민한 부분들
+## 3. 고민한 부분들
 
 ### [매칭 시스템 도메인 설계 및 조회]
 
@@ -118,6 +94,57 @@ https://api.ssup.site/swagger-ui/index.html
 **결과**
   - 테스트 커버리지 80% 유지 (Jacoco 기반 테스트)
   - 운영 환경에서의 예측 불가능한 오류 방지
+
+<br>
+
+### [성능과 확장성을 고려한 데이터 필터링 설계]
+
+**계기**
+ - 게시글 다중 조건 필터링 구현 시, 다음과 같은 문제가 존재
+ - frontend   
+   1. 필터링 UI에 필요한 metaData를 불러오기 위해, 필터링 요청마다 3개의 api를 호출해야함(/locations, /languages, /interests)
+   2. 이 api들을 매번 호출하게 되면 성능에 치명적일 수 있다.
+
+ - backend
+   1. 다중 조건 필터링을 구현하려면 where문에 복잡한 조건을 나열해야하는데, 향후 필터 조건이 늘어날수록 쿼리가 길어져 가독성이 저하되고 메서드 수가 증가하게 됨
+   2. 쿼리가 길어질수록 휴먼 에러 발생 가능성이 증가하고, 필터 조건을 선택하지 않았을 경우에 대한 별도의 처리(null 처리)가 필요
+
+**해결**
+ - 필터 metaData를 LocalStorage에 캐싱하고, 필터 조회 시마다 cached 데이터를 사용
+ - Querydsl을 도입하여 각 필터 조건을 메서드화
+ - 조회수 기반 정렬 시 발생하는 중복 스코어 문제를 id 비교 연산(lt)을 통해 기존의 데이터 누락이 없는 무한 스크롤 기능 유지
+
+**결과**
+ - 변경이 거의 없는 metaData 캐싱을 통해 시스템 부하 방지
+ - Querydsl을 통한 쿼리 유지보수 및 가독성 증진, null 처리 간편화
+ - 길이가 긴 다중 조건 쿼리 작성 시 발생할 수 있는 휴먼 에러 방지
+
+<br>
+
+
+
+## 4. [ERD](https://dbdiagram.io/d/ssup-6930e8afd6676488ba811397)
+
+https://dbdiagram.io/d/ssup-6930e8afd6676488ba811397
+<img width="900" height="609" alt="스크린샷 2026-01-05 오전 10 06 25" src="https://github.com/user-attachments/assets/039218c2-e503-4a5a-a2c6-76e93371978a" />
+
+<br>
+
+## 5. [API Docs  ![Swagger](https://img.shields.io/badge/-Swagger-%2385EA2D?style=flat-square&logo=swagger&logoColor=black)](https://api.ssup.site/swagger-ui/index.html)
+https://api.ssup.site/swagger-ui/index.html
+
+<img width="700" height="600" alt="스크린샷 2026-01-05 오전 11 49 03" src="https://github.com/user-attachments/assets/151e05dd-9008-4f85-8dce-ffde4bc25fa2" />
+
+<br>
+
+## 6. 서버 아키텍처(Server Architecture) 및 CI/CD Pipeline
+
+### 서버 아키텍처
+<img width="1222" height="736" alt="ssup_infra_image_2" src="https://github.com/user-attachments/assets/6f28852b-9a72-4ec4-83d6-3f3db2d0f671" />
+
+
+### CI/CD 구조
+<img width="1289" height="554" alt="ssup_ci:cd-image" src="https://github.com/user-attachments/assets/6f7a5acc-ff2a-47bf-938a-1f49f6fda344" />
 
 <br>
 
