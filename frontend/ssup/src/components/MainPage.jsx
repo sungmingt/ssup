@@ -1,8 +1,8 @@
-import mainImage from "./../assets/ssup_main_image.png";
-// import mainImage3 from "./../assets/ssup_main_image_3.png";
+import mainImage1 from "./../assets/main_logo_1.png";
+import mainImage2 from "./../assets/main_logo_2.png";
+import mainImage3 from "./../assets/main_logo_3.png";
 import "./../css/MainPage.css";
 import { useNavigate } from "react-router-dom";
-import InfoLayout from "@/layouts/InfoLayout";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -10,21 +10,32 @@ const MainPage = () => {
   return (
     <>
       <div className="main-container">
-        <h1 className="main-title">
-          지금 ssup! 에서 새로운 친구를 만나보세요 ✈️
-        </h1>
+        <h3 className="main-title">
+          지금 ssup! 에서 새로운 친구를 만나보세요! ✈️
+        </h3>
 
         <button className="community-btn" onClick={() => navigate("/posts")}>
-          커뮤니티 바로가기
+          ➡ 커뮤니티 바로가기
         </button>
 
-        <img src={mainImage} alt="메인 이미지" className="main-image" />
+        <img src={mainImage2} alt="메인 이미지" className="main-image" />
 
-        {/* <h2 className="main-subtitle"> */}
-        {/* 근처에 있는 언어 교류 메이트를 찾아보세요! */}
-        {/* </h2> */}
+        <div className="main-subtitle">
+          <p>👬 근처에 있는 언어 교류 메이트를 찾아보세요!</p>
 
-        {/* <img src={mainImage3} alt="메인 이미지3" className="main-image-3" /> */}
+          <p>
+            ♻️ 사용언어, 학습언어 등 다양한 필터 검색을 통해 내가 원하는 친구를
+            쉽게 찾을 수 있어요.
+          </p>
+        </div>
+
+        <img src={mainImage3} alt="메인 이미지" className="main-image" />
+
+        <div className="main-subtitle">
+          <p>💫 마음에 드는 친구를 찾았다면, 매치 요청을 해보세요!</p>
+        </div>
+
+        <img src={mainImage1} alt="메인 이미지" className="main-image" />
       </div>
     </>
   );
