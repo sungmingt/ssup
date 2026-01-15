@@ -1,12 +1,19 @@
 .main-container {
   width: 100%;
+  max-width: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center; /* 가로 가운데 */
   padding: 90px 20px; /* 높이는 padding으로만 조절 */
+  margin: 30px auto 0; /* 가운데 정렬 */
+  word-break: keep-all;
   box-sizing: border-box;
   text-align: center;
   background-color: #fffffffe;
+}
+
+.main-container .main-subtitle p {
+  margin: 0 0 40px 0;
 }
 
 .main-image,
@@ -23,13 +30,13 @@
 
 .main-title {
   margin-top: 1px;
-  font-size: 2.4rem;
+  font-size: 2rem;
   font-weight: 700;
   margin-bottom: 40px;
 }
 
 .main-subtitle {
-  font-size: 2.3rem;
+  font-size: 1.6rem;
   color: #000000;
 
   margin-top: 30px;
@@ -38,11 +45,12 @@
 .community-btn {
   text-align: center;
   margin-top: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
   background-color: #ffffffd0;
-  height: 60px;
+  height: 50px;
   width: 170px;
   font-weight: 600;
   border-radius: 10px;
-  color: rgb(13, 14, 13);
+  border-color: rgb(58, 121, 58);
+  color: rgb(67, 141, 67);
 }
