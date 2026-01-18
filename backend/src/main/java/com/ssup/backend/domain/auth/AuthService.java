@@ -96,8 +96,12 @@ public class AuthService {
             throw new SsupException(REFRESH_TOKEN_EXPIRED);
         }
 
-        String savedRefresh = refreshTokenRepository.findByUserId(userId, sessionId)
-                .orElseThrow(() -> new SsupException(REFRESH_TOKEN_NOT_FOUND));
+        String savedRefresh = refreshTokenRepository
+                .findByUserId(userId, sessionId)
+                .orElseThrow(() -> {   //refreshToken이 DB에 없다면
+                    cookieProvider.deleteAuthCookies(response);
+                    throw new SsupException(REFRESH_TOKEN_NOT_FOUND);
+                });
 
         //올바른 토큰이지만, DB 일치 x
         if (!jwtProvider.checkRefreshTokenSameness(refreshToken, savedRefresh)) {
