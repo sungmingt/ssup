@@ -67,7 +67,7 @@ const Post = () => {
     } catch {
       setHearted(prevHearted);
       setHeartCount(prevCount);
-      alert("요청이 너무 많아 처리에 실패했습니다.");
+      // alert("요청이 너무 많아 처리에 실패했습니다.");
     }
   };
 

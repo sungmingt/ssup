@@ -57,13 +57,19 @@ public class UserProfileResponse {
                         .map(UserInterestViewResponse::of)
                         .toList();
 
+        String contact = null;
+
+        if (MatchStatus.ACCEPTED.equals(matchInfoResponse.getMatchStatus())) {
+            contact = user.getContact();
+        }
+
         return UserProfileResponse.builder()
                 .id(user.getId())
                 .nickname(user.getNickname())
                 .imageUrl(user.getImageUrl())
                 .intro(user.getIntro())
                 .age(user.getAge())
-                .contact(user.getContact())
+                .contact(contact)
                 .location(location)
                 .interests(interests)
                 .matchInfoResponse(matchInfoResponse)
