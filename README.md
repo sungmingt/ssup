@@ -72,8 +72,7 @@ ssup은 한국에 거주하는 외국인과, 외국어에 관심있는 한국인
 **해결**
   - 조회에 필요한 필드들을 포함한 복합 인덱스를 구성
   - ```sql
-    CREATE INDEX idx_match_requester_status_receiver ON matches (requester_id, status, receiver_id);
-    CREATE INDEX idx_match_receiver_status_requester ON matches (receiver_id, status, requester_id);
+    CREATE INDEX idx_match_requester_status_receiver ON matches (requester_id, receiver_id, status);
     ```
   - index 외에도 `union all` 사용, 두 개의 조회 쿼리로 분리 등 다양한 대안에 대해 학습
 
