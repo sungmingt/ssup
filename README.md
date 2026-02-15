@@ -66,15 +66,15 @@ ssup은 한국에 거주하는 외국인과, 외국어에 관심있는 한국인
 
 **문제**
  - 매치 이력 조회 시, 여러개의 OR 조건이 포함된 쿼리가 존재
- - 이 경우, 복잡한 조건을 처리하기 위해 인덱스를 여러번 갈아타야 하는데, 이때 DB Optimizer가 Full Table Scan의 비용이 더 낮다고 판단할때가 많음. (실제 DB에서 `type: ALL` 확인)
- - 따라서 복합 인덱스가 필요
+ - 이 경우, 다중 조건을 처리하기 위해 각 조건의 인덱스 탐색을 수행한 후 병합하는 과정을 거쳐야 하는데, 이때 DB Optimizer가 이 비용보다 Full Table Scan의 비용이 더 낮다고 판단할때가 많음. (실제 DB에서 `type: ALL` 확인)
+ - 이는 조건 전체를 커버하는 복합 인덱스가 없어서, 각 조건에서 많은 후보 row를 추출한 뒤 추가 필터링이 필요했기 때문
  
 **해결**
   - 조회에 필요한 필드들을 포함한 복합 인덱스를 구성
   - ```sql
     CREATE INDEX idx_match_requester_status_receiver ON matches (requester_id, receiver_id, status);
     ```
-  - index 외에도 `union all` 사용, 두 개의 조회 쿼리로 분리 등 다양한 대안에 대해 학습
+  - 다른 방법: `union all` 사용, 두 개의 조회 쿼리로 분리 등
 
 **결과**
   - dummy data 10만건으로 테스트하여, 조회 성능 5배 개선을 확인
