@@ -32,6 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	//security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -63,6 +64,8 @@ dependencies {
 
 	//S3
 	implementation 'software.amazon.awssdk:s3:2.25.65'
+
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 jacocoTestReport {
