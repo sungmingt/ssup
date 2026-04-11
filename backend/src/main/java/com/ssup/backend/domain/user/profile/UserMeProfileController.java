@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +28,7 @@ public class UserMeProfileController {
     }
 
     @Operation(summary = "추가 정보 입력 요청", description = "프로필 생성 완료에 필요한 추가 정보 입력")
-    @PostMapping("/profile")
+    @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UserMeProfileResponse createMyProfile(
             @RequestPart(value = "image", required = false) MultipartFile image,
             @Valid @RequestPart("dto") UserMeProfileCreateRequest request

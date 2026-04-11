@@ -4,12 +4,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByEmail(String email);
     Boolean existsByNickname(String nickname);
+
+    List<User> findAllByIdIn(List<Long> ids);
 
 //    //PENDING 상태의 유저 검색
 //    @Query("""
@@ -65,6 +68,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
     and u.status = 'ACTIVE'
     """)
     Optional<User> findWithLanguages(@Param("id") Long id);
+
+    @Query("""
+    select distinct u from User u
+    left join fetch u.languages ul
+    left join fetch ul.language
+    left join fetch u.interests ui
+    left join fetch ui.interest
+    where u.id = :id
+    and u.status = 'ACTIVE'
+    """)
+    Optional<User> findWithLanguagesAndInterests(@Param("id") Long id);
 
     Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 

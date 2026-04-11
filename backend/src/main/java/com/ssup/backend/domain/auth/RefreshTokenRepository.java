@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.auth;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,8 @@ import static com.ssup.backend.infra.security.jwt.TokenInfo.REFRESH_TOKEN_TTL_MI
 public class RefreshTokenRepository {
 
     private static final String KEY_PREFIX = "refreshToken:";
+
+    @Qualifier("refreshTokenRedisTemplate")
     private final StringRedisTemplate redisTemplate;
 
     public RefreshTokenRepository(StringRedisTemplate refreshTokenRedisTemplate) {

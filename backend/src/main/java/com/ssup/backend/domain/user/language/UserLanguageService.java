@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.user.language;
 
+import com.ssup.backend.domain.user.recommend.event.UserProfileChangeTrigger;
 import com.ssup.backend.domain.language.Language;
 import com.ssup.backend.domain.language.LanguageRepository;
 import com.ssup.backend.domain.language.LanguageType;
@@ -27,6 +28,7 @@ public class UserLanguageService {
     private final UserRepository userRepository;
     private final UserLanguageRepository userLanguageRepository;
     private final LanguageRepository languageRepository;
+    private final UserProfileChangeTrigger profileChangeTrigger;
 
     @Transactional(readOnly = true)
     public UserLanguageResponse findUserLanguages(Long userId) {
@@ -68,5 +70,7 @@ public class UserLanguageService {
 
             user.addLanguage(language, item.getLevel(), item.getType());
         }
+
+        profileChangeTrigger.trigger(user.getId());
     }
 }
