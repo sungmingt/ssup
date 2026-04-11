@@ -34,5 +34,6 @@ public class SecurityPaths {
     public static final String[] OTHERS = {
             "/actuator/health", "/assets/**", "/actuator/health",
             "/h2-console/**", "/configuration/ui", "/configuration/security", "/webjars/**",
+            "/test/**",
     };
 }
