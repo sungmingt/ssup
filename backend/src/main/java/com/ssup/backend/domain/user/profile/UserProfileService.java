@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.user.profile;
 
+import com.ssup.backend.domain.user.recommend.event.UserProfileChangeTrigger;
 import com.ssup.backend.domain.interest.Interest;
 import com.ssup.backend.domain.interest.InterestRepository;
 import com.ssup.backend.domain.interest.UserInterest;
@@ -42,6 +43,7 @@ public class UserProfileService {
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
     private final MatchRepository matchRepository;
+    private final UserProfileChangeTrigger profileChangeTrigger;
 
     @Transactional(readOnly = true)
     public UserProfileResponse findUserProfile(Long currentUserId, Long userId) {
@@ -98,6 +100,8 @@ public class UserProfileService {
         );
         user.activate();
 
+        profileChangeTrigger.trigger(userId);
+
         return UserMeProfileResponse.of(user);
     }
 
@@ -112,6 +116,7 @@ public class UserProfileService {
         user.updateProfile(request.getNickname(), request.getIntro(),
                 request.getAge(), request.getGender(), request.getContact());
 
+        profileChangeTrigger.trigger(user.getId());
         return UserMeProfileResponse.of(user);
     }
 
