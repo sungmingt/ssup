@@ -1,3 +1,4 @@
+
 ## 목차
 1. 서비스 소개 및 바로가기
 2. 사용 기술
@@ -9,12 +10,14 @@
 
 <br>
 
-## 1.  [<img width="40" height="40" align="absmiddle" src="https://github.com/user-attachments/assets/b96af13e-bf85-481b-bad7-946c55480740" /> ssup 바로가기](https://ssup.site/posts)
+## 1.  <img width="40" height="40" align="absmiddle" src="https://github.com/user-attachments/assets/b96af13e-bf85-481b-bad7-946c55480740" /> ssup!
 
 ssup은 한국에 거주하는 외국인과, 외국어에 관심있는 한국인을 온라인/오프라인으로 연결시켜주는 언어교류 소셜 앱입니다.
 
 - 기존에 존재하는 유료 화상영어/오프라인 모임과 달리, 무료로 가까이 있는 언어 교류 친구를 만들 수 있는 서비스를 제공합니다.
 - 온라인 공간에서의 신뢰 문제를 해결하기 위해 매칭 시에만 개인 sns 또는 연락처를 공개하도록 설계했습니다.
+
+### 🚫 AWS 프리티어 제한으로 인해 현재 서버 신규 개설 진행 중입니다.
 
 <br>
 
