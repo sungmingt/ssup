@@ -29,13 +29,13 @@ public class UserProfileEmbeddingService {
         log.info("### profileText:{}", profileText);
 
         log.info("### OpenAI embedding 요청 호출");
-//        List<Double> embedding = openAiClient.embed(profileText);
+        List<Double> embedding = openAiClient.embed(profileText);
 
-        List<Double> embedding = List.of(
-                (double) profileText.length() % 10,
-                (double) profileText.hashCode() % 100 / 100.0,
-                Math.random()
-        );
+//        List<Double> embedding = List.of(
+//                (double) profileText.length() % 10,
+//                (double) profileText.hashCode() % 100 / 100.0,
+//                Math.random()
+//        );
 
         log.info("### created embedding:{}", embedding);
         repository.save(
