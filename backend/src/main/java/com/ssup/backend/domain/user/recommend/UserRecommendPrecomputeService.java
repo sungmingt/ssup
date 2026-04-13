@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 public class UserRecommendPrecomputeService {
 
-    //저장된 embedding을 기반으로 추천 친구를 미리 계산해서 저장해놓는다.
+    //저장된 embedding을 기반으로 추천 친구를 미리 계산해서 저장한다.
 
     private final UserProfileEmbeddingRepository embeddingRepository;
     private final UserRecommendRepository recommendationRepository;
