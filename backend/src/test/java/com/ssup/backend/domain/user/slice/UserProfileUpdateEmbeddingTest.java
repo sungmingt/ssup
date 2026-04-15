@@ -1,6 +1,7 @@
 package com.ssup.backend.domain.user.slice;
 
 import com.ssup.backend.domain.user.Gender;
+import com.ssup.backend.domain.user.recommend.event.UserProfileChangeTrigger;
 import com.ssup.backend.fixture.user.UserJpaFixture;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ class UserProfileUpdateEmbeddingTest {
 
     @MockBean
     private OpenAiClient openAiClient;
+
+    @MockBean
+    private UserProfileChangeTrigger profileChangeTrigger;
 
     @Autowired
     private EntityManager em;

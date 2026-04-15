@@ -6,9 +6,12 @@ import com.ssup.backend.domain.user.recommend.UserProfileEmbeddingRepository;
 import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.domain.user.profile.UserProfileService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,12 @@ class UserProfileEmbeddingRepositoryTest {
 
     @MockBean
     OpenAiClient openAiClient;
+
+    @Mock
+    RedisTemplate<String, UserProfileEmbedding> userProfileEmbeddingRedisTemplate;
+
+    @Mock
+    StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     UserProfileService userProfileService;
