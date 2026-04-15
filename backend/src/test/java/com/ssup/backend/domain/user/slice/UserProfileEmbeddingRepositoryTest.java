@@ -32,10 +32,10 @@ class UserProfileEmbeddingRepositoryTest {
     @MockBean
     OpenAiClient openAiClient;
 
-    @Mock
+    @MockBean
     RedisTemplate<String, UserProfileEmbedding> userProfileEmbeddingRedisTemplate;
 
-    @Mock
+    @MockBean
     StringRedisTemplate stringRedisTemplate;
 
     @Autowired
