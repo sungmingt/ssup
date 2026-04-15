@@ -67,7 +67,7 @@ class UserProfileUpdateEmbeddingTest {
                 request
         );
 
-        //then (async 대기)
+        //then(async 대기)
         Awaitility.await()
                 .atMost(Duration.ofSeconds(5))
                 .untilAsserted(() -> {

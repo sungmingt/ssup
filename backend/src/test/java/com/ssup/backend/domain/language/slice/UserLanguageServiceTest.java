@@ -12,6 +12,7 @@ import com.ssup.backend.domain.user.language.UserLanguageService;
 import com.ssup.backend.domain.user.language.dto.UserLanguageRequestItem;
 import com.ssup.backend.domain.user.language.dto.UserLanguageResponse;
 import com.ssup.backend.domain.user.language.dto.UserLanguageUpdateRequest;
+import com.ssup.backend.domain.user.recommend.event.UserProfileChangeTrigger;
 import com.ssup.backend.fixture.user.UserFixture;
 import com.ssup.backend.global.exception.SsupException;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +43,9 @@ class UserLanguageServiceTest {
 
     @Mock
     private UserLanguageRepository userLanguageRepository;
+
+    @Mock
+    private UserProfileChangeTrigger userProfileChangeTrigger;
 
     @DisplayName("유저 언어 조회 - 성공 (USING/LEARNING 분리)")
     @Test

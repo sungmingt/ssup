@@ -11,6 +11,7 @@ import com.ssup.backend.domain.match.MatchStatus;
 import com.ssup.backend.domain.user.interest.UserInterestRepository;
 import com.ssup.backend.domain.user.profile.UserProfileService;
 import com.ssup.backend.domain.user.profile.dto.*;
+import com.ssup.backend.domain.user.recommend.event.UserProfileChangeTrigger;
 import com.ssup.backend.global.exception.ErrorCode;
 import com.ssup.backend.global.exception.SsupException;
 import com.ssup.backend.infra.s3.ImageStorage;
@@ -52,6 +53,9 @@ class UserProfileServiceTest {
 
     @Mock
     private MatchRepository matchRepository;
+
+    @Mock
+    private UserProfileChangeTrigger userProfileChangeTrigger;
 
     @DisplayName("나의 프로필 조회 - 성공")
     @Test
