@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.*;
@@ -55,7 +56,7 @@ class UserProfileServiceTest {
     private MatchRepository matchRepository;
 
     @Mock
-    private UserProfileChangeTrigger userProfileChangeTrigger;
+    private UserProfileChangeTrigger profileChangeTrigger;
 
     @DisplayName("나의 프로필 조회 - 성공")
     @Test

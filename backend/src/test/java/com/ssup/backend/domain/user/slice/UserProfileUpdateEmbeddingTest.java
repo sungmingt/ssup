@@ -17,6 +17,8 @@ import com.ssup.backend.domain.user.profile.dto.UserProfileUpdateRequest;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +50,12 @@ class UserProfileUpdateEmbeddingTest {
 
     @MockBean
     private UserProfileChangeTrigger profileChangeTrigger;
+
+    @MockBean
+    RedisTemplate<String, UserProfileEmbedding> userProfileEmbeddingRedisTemplate;
+
+    @MockBean
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private EntityManager em;
