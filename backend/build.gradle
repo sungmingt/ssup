@@ -119,6 +119,15 @@ jacocoTestCoverageVerification {
 	}
 }
 
+test {
+	testLogging {
+		events "FAILED"
+		exceptionFormat "FULL"
+		showCauses true
+		showStackTraces true
+	}
+}
+
 //QClass 생성 위치 설정
 def querydslDir = "src/main/generated"
 
