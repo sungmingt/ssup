@@ -1,17 +1,11 @@
 package com.ssup.backend.domain.user.slice;
 
-import com.ssup.backend.domain.user.recommend.OpenAiClient;
 import com.ssup.backend.domain.user.recommend.UserProfileEmbedding;
 import com.ssup.backend.domain.user.recommend.UserProfileEmbeddingRepository;
-import com.ssup.backend.domain.user.UserRepository;
-import com.ssup.backend.domain.user.profile.UserProfileService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,21 +23,7 @@ class UserProfileEmbeddingRepositoryTest {
     @Autowired
     UserProfileEmbeddingRepository repository;
 
-    @MockBean
-    OpenAiClient openAiClient;
-
-    @MockBean
-    RedisTemplate<String, UserProfileEmbedding> userProfileEmbeddingRedisTemplate;
-
-    @MockBean
-    StringRedisTemplate stringRedisTemplate;
-
-    @Autowired
-    UserProfileService userProfileService;
-
-    @Autowired
-    UserRepository userRepository;
-
+    @DisplayName("유저 프로필 embedding 저장 및 조회가 성공적으로 수행된다.")
     @Test
     void saveAndFindUserEmbedding() {
         UserProfileEmbedding embedding =
@@ -55,9 +35,7 @@ class UserProfileEmbeddingRepositoryTest {
 
         repository.save(embedding);
 
-        Optional<UserProfileEmbedding> result =
-                repository.findByUserId(1L);
-
+        Optional<UserProfileEmbedding> result = repository.findByUserId(1L);
         assertThat(result).isPresent();
         assertThat(result.get().getVector()).hasSize(3);
     }

@@ -1,9 +1,9 @@
 package com.ssup.backend.domain.user.slice;
 
 import com.ssup.backend.domain.user.Gender;
-import com.ssup.backend.domain.user.recommend.event.UserProfileChangeTrigger;
 import com.ssup.backend.fixture.user.UserJpaFixture;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,8 +17,6 @@ import com.ssup.backend.domain.user.profile.dto.UserProfileUpdateRequest;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,20 +46,12 @@ class UserProfileUpdateEmbeddingTest {
     @MockBean
     private OpenAiClient openAiClient;
 
-    @MockBean
-    private UserProfileChangeTrigger profileChangeTrigger;
-
-    @MockBean
-    RedisTemplate<String, UserProfileEmbedding> userProfileEmbeddingRedisTemplate;
-
-    @MockBean
-    private StringRedisTemplate stringRedisTemplate;
-
     @Autowired
     private EntityManager em;
 
+    @DisplayName("프로필 수정 시 embedding 생성 후 redis에 저장된다.")
     @Test
-    void 프로필_수정시_embedding이_생성되어_redis에_저장된다() {
+    void createAndSaveEmbedding_whenProfileChange_succes() {
         //given
         User user = UserJpaFixture.createUser(em);
         given(openAiClient.embed(anyString()))
