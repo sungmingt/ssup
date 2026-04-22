@@ -2,7 +2,6 @@ package com.ssup.backend.fixture.language;
 
 import com.ssup.backend.domain.language.Language;
 import jakarta.persistence.EntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 public class LanguageJpaFixture {
 
