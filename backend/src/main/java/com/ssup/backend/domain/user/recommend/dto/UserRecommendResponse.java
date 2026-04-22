@@ -21,21 +21,4 @@ public class UserRecommendResponse {
     private UserLocationResponse location;
     private List<String> usingLanguages;
     private List<String> learningLanguages;
-
-    public static UserRecommendResponse of(QUserRecommendResponse r) {
-        return UserRecommendResponse.builder()
-                .id(r.getId())
-                .nickname(r.getNickname())
-                .imageUrl(r.getImageUrl())
-                .age(r.getAge())
-                .location(UserLocationResponse.builder()
-                        .siDoId(r.getSiDoId())
-                        .siDoName(r.getSiDoName())
-                        .siGunGuId(r.getSiGunGuId())
-                        .siGunGuName(r.getSiGunGuName())
-                        .build())
-                .usingLanguages(r.getUsingLanguages())
-                .learningLanguages(r.getLearningLanguages())
-                .build();
-    }
 }
