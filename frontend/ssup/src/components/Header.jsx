@@ -21,7 +21,7 @@ function Header() {
       CONFIRM_MESSAGE.LOGOUT(async () => {
         logout();
         navigate("/");
-      })
+      }),
     );
   };
 
@@ -78,7 +78,7 @@ function Header() {
               </li>
 
               <li className="nav-item">
-                <Link className="nav-link fw-semibold" to="/friends">
+                <Link className="nav-link fw-semibold" to="/recommend">
                   친구 찾기
                 </Link>
               </li>
