@@ -1,0 +1,21 @@
+.profile-card {
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.language-badge {
+  font-size: 12px;
+  background: #f5f6f7;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.lang-arrow {
+  margin: 0 4px;
+  font-weight: bold;
+}

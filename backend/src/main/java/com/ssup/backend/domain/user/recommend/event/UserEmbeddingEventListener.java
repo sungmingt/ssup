@@ -4,6 +4,7 @@ import com.ssup.backend.domain.user.recommend.UserProfileEmbeddingService;
 import com.ssup.backend.domain.user.recommend.UserRecommendPrecomputeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 public class UserEmbeddingEventListener {
 
     private final UserProfileEmbeddingService embeddingService;
+    private final ApplicationEventPublisher publisher;
+
     private final UserRecommendPrecomputeService userRecommendPrecomputeService;
 
 //    @TransactionalEventListener(
@@ -26,7 +29,7 @@ public class UserEmbeddingEventListener {
 
         //embedding 생성
         embeddingService.rebuild(event.userId());
-        //추천 친구 리스트 미리 계산
-        userRecommendPrecomputeService.precompute(event.userId(), 10);
+        //precompute 이벤트 발행 (순서 보장)
+        publisher.publishEvent(new EmbeddingCreateEvent(event.userId()));
     }
 }

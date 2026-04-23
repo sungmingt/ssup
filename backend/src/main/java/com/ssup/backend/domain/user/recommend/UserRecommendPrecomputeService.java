@@ -19,14 +19,18 @@ public class UserRecommendPrecomputeService {
     private final UserProfileEmbeddingRepository embeddingRepository;
     private final UserRecommendRepository recommendationRepository;
 
+    //가입/수정한 회원 말고, 다른 모든 회원의 추천 친구도 갱신되어야한다.
     public void precompute(Long userId, int topK) {
+        precomputeUserRecommend(userId, topK);
+        precomputeOtherUsersRecommend(userId, topK);
+    }
 
+    private void precomputeUserRecommend(Long userId, int topK) {
         UserProfileEmbedding me = embeddingRepository
                 .findByUserId(userId)
                 .orElseThrow();
 
-        List<UserProfileEmbedding> allEmbeddings =
-                embeddingRepository.findAllEmbeddings();
+        List<UserProfileEmbedding> allEmbeddings = embeddingRepository.findAllEmbeddings();
 
         //todo: 가중치 적용(언어->관심사->지역->자기소개), 언어 적용, 테스트, flow
         List<Long> recommended = allEmbeddings.stream()
@@ -43,7 +47,24 @@ public class UserRecommendPrecomputeService {
 
         log.info("allEmbeddings size={}", allEmbeddings.size());
 
+        //fallback -> 관련 유저 없을 시 보완
+        if (recommended.isEmpty()) {
+            recommended = allEmbeddings.stream()
+                    .map(UserProfileEmbedding::getUserId)
+                    .filter(id -> !id.equals(userId))
+                    .limit(topK)
+                    .toList();
+        }
+
         recommendationRepository.save(userId, recommended);
+    }
+
+    private void precomputeOtherUsersRecommend(Long userId, int topK) {
+        List<Long> allUserIds = embeddingRepository.findAllUserIds();
+
+        for (Long id : allUserIds) {
+            precomputeUserRecommend(id, topK);
+        }
     }
 
     private record RecommendResult(Long userId, double score) {}

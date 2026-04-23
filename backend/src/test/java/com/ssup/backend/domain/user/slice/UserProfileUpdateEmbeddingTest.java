@@ -51,7 +51,7 @@ class UserProfileUpdateEmbeddingTest {
 
     @DisplayName("프로필 수정 시 embedding 생성 후 redis에 저장된다.")
     @Test
-    void createAndSaveEmbedding_whenProfileChange_succes() {
+    void createAndSaveEmbedding_whenProfileChange_success() {
         //given
         User user = UserJpaFixture.createUser(em);
         given(openAiClient.embed(anyString()))
@@ -72,15 +72,14 @@ class UserProfileUpdateEmbeddingTest {
         //then(async 대기)
         Awaitility.await()
                 .atMost(Duration.ofSeconds(5))
-                .untilAsserted(() -> {
+                .until(() ->
+                        embeddingRepository.findByUserId(user.getId()).isPresent()
+                );
 
-                    UserProfileEmbedding embedding =
-                            embeddingRepository
-                                    .findByUserId(user.getId())
-                                    .orElseThrow();
+        UserProfileEmbedding embedding =
+                embeddingRepository.findByUserId(user.getId()).orElseThrow();
 
-                    assertThat(embedding.getVector())
-                            .containsExactly(0.1, 0.2, 0.3);
-                });
+        assertThat(embedding.getVector())
+                .containsExactly(0.1, 0.2, 0.3);
     }
 }

@@ -7,3 +7,4 @@ export * from "./auth.api";
 export * from "./location.api";
 export * from "./interest.api";
 export * from "./match.api";
+export * from "./recommend.api";
