@@ -63,6 +63,18 @@ public class UserProfileEmbeddingRepository {
                 .toList();
     }
 
+    public List<Long> findAllUserIds() {
+        Set<String> userIds = keysRedisTemplate.opsForSet().members(INDEX_KEY);
+
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+
+        return userIds.stream()
+                .map(Long::valueOf)
+                .toList();
+    }
+
     public void deleteByUserId(Long userId) {
         embeddingRedisTemplate.delete(generateKey(userId));
         keysRedisTemplate.opsForSet().remove(INDEX_KEY, userId.toString());
