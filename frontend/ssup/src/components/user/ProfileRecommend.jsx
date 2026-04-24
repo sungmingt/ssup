@@ -10,28 +10,41 @@ const ProfileRecommend = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!user?.id) return;
-
-    loadRecommend(user.id);
+    loadRecommend();
   }, [user]);
 
-  const loadRecommend = async (userId) => {
+  const loadRecommend = async () => {
     setLoading(true);
 
     try {
-      const res = await recommendApi.getRecommend(userId);
-      setUsers(res.data);
+      let res;
+
+      if (user?.id) {
+        //로그인: 추천 유저
+        res = await recommendApi.getRecommend(user.id);
+      } else {
+        //비로그인: 랜덤 유저
+        res = await recommendApi.getRandomUsers();
+      }
+
+      setUsers(res.data || []);
     } catch (e) {
-      console.error("추천 유저 불러오기 실패", e);
+      console.error("유저 불러오기 실패", e);
+      setUsers([]);
     } finally {
       setLoading(false);
     }
   };
 
+  //설명 문구 분기
+  const description = user?.id
+    ? "회원님의 언어, 관심사, 지역 등의 정보를 기반으로 AI가 추천해준 친구 목록이에요!"
+    : "서비스를 이용 중인 랜덤 유저 목록입니다. 로그인 후에는 AI가 나와 잘 맞는 친구를 추천해드려요!";
+
   return (
     <div className="container py-5">
-      <h4 className="fw-bold mb-4">🔥 추천 친구</h4>
-
+      <h4 className="fw-bold mb-3">🙋‍♀️ 추천 친구</h4>
+      <p className="mb-5 text-muted small">{description}</p>
       <div className="row">
         {users.map((user) => (
           <ProfileCard key={user.id} user={user} />

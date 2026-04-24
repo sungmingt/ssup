@@ -75,14 +75,7 @@ function App() {
           />
 
           <Route path="/me/matches" element={<MatchHistory />} />
-          <Route
-            path="/recommend"
-            element={
-              <ProtectedRoute>
-                <ProfileRecommend />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/recommend" element={<ProfileRecommend />} />
 
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup/additional" element={<SignUpAdditional />} />
