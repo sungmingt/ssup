@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center; /* 가로 가운데 */
-  padding: 90px 20px; /* 높이는 padding으로만 조절 */
+  padding: 65px 20px; /* 높이는 padding으로만 조절 */
   margin: 30px auto 0; /* 가운데 정렬 */
   word-break: keep-all;
   box-sizing: border-box;
@@ -13,14 +13,14 @@
 }
 
 .main-container .main-subtitle p {
-  margin: 0 0 40px 0;
+  margin: 0 0 23px 0;
 }
 
 .main-image,
 .main-image-2,
 .main-image-3 {
   width: 600px;
-  height: 600px;
+  height: 550px;
   image-rendering: crisp-edges;
   max-width: 600px;
   margin-bottom: 32px;
@@ -36,16 +36,21 @@
 }
 
 .main-subtitle {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: #000000;
 
   margin-top: 30px;
 }
 
+.main-subtitle-children p {
+  font-size: 1.3rem;
+  color: #000000;
+}
+
 .community-btn {
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 40px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   background-color: #ffffffd0;
   height: 50px;
   width: 170px;
