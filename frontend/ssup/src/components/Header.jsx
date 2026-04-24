@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { CONFIRM_MESSAGE } from "@/components/common/confirmMessage";
 import { useConfirmStore } from "@/store/confirmStore";
 import { useNavigate } from "react-router-dom";
 import "./../css/Header.css";
 import defaultProfileImage from "@/assets/ssup_user_default_image.png";
-import { authApi } from "@/api";
 import ssupLogo from "@/assets/ssup_logo.png";
 
 function Header() {

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import defaultProfile from "@/assets/ssup_user_default_image.png";
+import "./../../css/user/ProfileCard.css";
 
 const ProfileCard = ({ user }) => {
   const navigate = useNavigate();
@@ -16,13 +17,13 @@ const ProfileCard = ({ user }) => {
           <div className="d-flex align-items-center mb-3">
             <img
               src={user.imageUrl || defaultProfile}
-              className="rounded-circle me-3"
+              className="rounded-circle me-3 profile-image"
               width="56"
               height="56"
             />
 
             <div>
-              <h6 className="mb-0 fw-bold">{user.nickname}</h6>
+              <h6 className="mb-0 fw-bold profile-name">{user.nickname}</h6>
               <small className="text-muted">{user.age}세</small>
             </div>
           </div>
@@ -37,7 +38,7 @@ const ProfileCard = ({ user }) => {
           </div>
 
           {/* 위치 */}
-          <div className="text-muted small">
+          <div className="text-muted small profile-location">
             📍 {user.location?.siDoName} · {user.location?.siGunGuName}
           </div>
         </div>

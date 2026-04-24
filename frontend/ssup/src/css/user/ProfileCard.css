@@ -1,21 +1,64 @@
+/* 카드 기본 */
 .profile-card {
-  border-radius: 16px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* 카드 hover */
+.profile-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* 프로필 이미지 */
+.profile-image {
+  transition: transform 0.3s ease;
+}
+
+/* 이미지 hover 효과 */
+.profile-card:hover .profile-image {
+  transform: scale(1.08);
+}
+
+/* 닉네임 */
+.profile-name {
+  transition: color 0.2s ease;
+}
+
+/* 닉네임 hover */
+.profile-card:hover .profile-name {
+  color: #5cb85c;
+}
+
+/* 언어 뱃지 (post-card 스타일 맞춤) */
+.language-badge {
+  font-size: 0.83rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background-color: #e4f3ea;
+  color: #495057;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid #7aebad;
   transition: all 0.2s ease;
 }
 
-.profile-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+/* 뱃지 hover */
+.profile-card:hover .language-badge {
+  background-color: #d8eadd;
+  border-color: #b9e3b7a5;
 }
 
-.language-badge {
-  font-size: 12px;
-  background: #f5f6f7;
-  padding: 4px 8px;
-  border-radius: 8px;
+/* 위치 텍스트 */
+.profile-location {
+  font-size: 0.85rem;
+  color: #6c757d;
 }
 
-.lang-arrow {
-  margin: 0 4px;
-  font-weight: bold;
+.profile-card:active {
+  transform: scale(0.98);
 }
