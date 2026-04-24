@@ -23,7 +23,7 @@ public class UserRecommendRepository {
         recommendRedisTemplate.opsForValue().set(
                 KEY_PREFIX + userId,
                 recommendedUserIds,
-                Duration.ofMinutes(10)
+                Duration.ofDays(7)
         );
     }
 
