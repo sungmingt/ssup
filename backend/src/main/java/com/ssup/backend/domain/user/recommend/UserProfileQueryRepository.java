@@ -13,10 +13,7 @@ import com.ssup.backend.domain.user.recommend.dto.UserRecommendResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,6 +27,7 @@ public class UserProfileQueryRepository {
     private static final QUserLanguage ul = QUserLanguage.userLanguage;
     private static final QLanguage language = QLanguage.language;
 
+    //===== authenticated =====
     public List<UserRecommendResponse> findRecommendUsers(List<Long> ids) {
         List<Tuple> result = queryFactory
                 .select(selectFields())
@@ -102,5 +100,26 @@ public class UserProfileQueryRepository {
         } else {
             dto.getLearningLanguages().add(languageName);
         }
+    }
+
+    //===== anonymous =====
+    public List<Long> findRandomUserIds(int limit) {
+        Long countResult = queryFactory
+                .select(user.count())
+                .from(user)
+                .fetchOne();
+
+        long count = countResult != null ? countResult : 0L;
+
+        if (count == 0) return List.of();
+
+        int offset = (int) Math.max(0, Math.random() * (count - limit));
+
+        return queryFactory
+                .select(user.id)
+                .from(user)
+                .offset(offset)
+                .limit(limit)
+                .fetch();
     }
 }
