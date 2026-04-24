@@ -1,6 +1,11 @@
 name: Deploy Frontend to S3 & CloudFront
 
 on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "frontend/**"
+
   push:
     branches: [ "main" ]
     paths:
