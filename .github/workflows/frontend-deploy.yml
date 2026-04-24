@@ -45,6 +45,9 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SOURCE_DIR: "./frontend/ssup/dist"
 
+      - name: Debug Distribution ID
+        run: echo "DIST_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+      
       - name: Invalidate CloudFront Cache
         uses: chetan/invalidate-cloudfront-action@v2
         env:
