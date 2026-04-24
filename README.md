@@ -1,4 +1,7 @@
 
+<img width="120" height="120" alt="favicon-32x32" src="https://github.com/user-attachments/assets/4a9d7194-22d0-4743-bfa0-f91b35397970" />
+
+
 ## 목차
 1. 서비스 소개 및 바로가기
 2. 사용 기술
@@ -10,7 +13,7 @@
 
 <br>
 
-## 1.  <img width="40" height="40" align="absmiddle" src="https://github.com/user-attachments/assets/b96af13e-bf85-481b-bad7-946c55480740" /> ssup!
+## 1. ssup! 소개
 
 ssup은 한국에 거주하는 외국인과, 외국어에 관심있는 한국인을 온라인/오프라인으로 연결시켜주는 언어교류 소셜 앱입니다.
 
