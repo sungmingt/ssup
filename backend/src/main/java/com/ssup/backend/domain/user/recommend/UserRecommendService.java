@@ -1,5 +1,6 @@
 package com.ssup.backend.domain.user.recommend;
 
+import com.ssup.backend.domain.user.UserRepository;
 import com.ssup.backend.domain.user.recommend.dto.UserRecommendResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class UserRecommendService {
 
     private final UserRecommendRepository recommendationRepository;
     private final UserProfileQueryRepository userProfileQueryRepository;
+    private final UserRepository userRepository;
 
     public List<UserRecommendResponse> recommend(Long userId) {
         List<Long> ids = recommendationRepository.find(userId);
@@ -34,5 +36,11 @@ public class UserRecommendService {
                 .map(userMap::get)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    public List<UserRecommendResponse> recommendAnonymous() {
+        List<Long> randomIds = userProfileQueryRepository.findRandomUserIds(10);
+        if (randomIds.isEmpty()) return List.of();
+        return userProfileQueryRepository.findRecommendUsers(randomIds);
     }
 }

@@ -17,4 +17,9 @@ public class UserRecommendController {
     public List<UserRecommendResponse> recommend(@PathVariable("userId") Long userId) {
         return recommendService.recommend(userId);
     }
+
+    @GetMapping("/anonymous")
+    public List<UserRecommendResponse> recommendAnonymous() {
+        return recommendService.recommendAnonymous();
+    }
 }

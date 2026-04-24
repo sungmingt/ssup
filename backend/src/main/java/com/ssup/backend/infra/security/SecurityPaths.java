@@ -28,7 +28,10 @@ public class SecurityPaths {
             "/api/users/*/languages", "/api/users/*/profile",
 
             //language, location, interest
-            "/api/languages/**", "/api/locations/**", "/api/interests/**"
+            "/api/languages/**", "/api/locations/**", "/api/interests/**",
+
+            //recommend
+            "/api/recommend/anonymous/**"
     };
 
     public static final String[] OTHERS = {
