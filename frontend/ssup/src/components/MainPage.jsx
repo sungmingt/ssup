@@ -22,10 +22,15 @@ const MainPage = () => {
 
         <div className="main-subtitle">
           <p>👬 근처에 있는 언어 교류 메이트를 찾아보세요!</p>
-
+        </div>
+        <div className="main-subtitle-children">
           <p>
-            ♻️ 사용언어, 학습언어 등 다양한 필터 검색을 통해 내가 원하는 친구를
+            🔍 언어, 지역, 관심사 등 다양한 필터 검색을 통해 내가 원하는 친구를
             쉽게 찾을 수 있어요.
+          </p>
+          <p>
+            🤖 친구 찾기 탭에서 내 프로필을 기반으로 AI가 추천해주는 친구를
+            만나볼수도 있어요.
           </p>
         </div>
 
