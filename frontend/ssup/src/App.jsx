@@ -21,6 +21,8 @@ import Post from "@/components/post/Post";
 import Header from "@/components/Header";
 
 import MainPage from "@/components/MainPage";
+import IntroPage from "@/components/IntroPage";
+
 import { useAuthStore } from "@/store/authStore";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import GlobalErrorLayer from "@/components/common/GlobalErrorLayer";
@@ -44,6 +46,8 @@ function App() {
         <GlobalErrorLayer />
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/intro" element={<IntroPage />} />
+
           <Route path="/posts/:id" element={<Post />} />
           <Route path="/posts" element={<PostList />} />
           <Route
