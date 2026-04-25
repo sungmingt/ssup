@@ -1,0 +1,9 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  flex: 1; /* 컨텐츠가 남은 공간 채움 */
+}
