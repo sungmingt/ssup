@@ -22,6 +22,7 @@ import Header from "@/components/Header";
 
 import MainPage from "@/components/MainPage";
 import IntroPage from "@/components/IntroPage";
+import Footer from "@/components/Footer";
 
 import { useAuthStore } from "@/store/authStore";
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -31,6 +32,8 @@ import GlobalConfirmLayer from "@/components/common/GlobalConfirmLayer";
 function App() {
   const initAuth = useAuthStore((s) => s.initAuth);
   const loading = useAuthStore((s) => s.loading);
+
+  const hideFooterRoutes = ["/posts"];
 
   useEffect(() => {
     initAuth();
@@ -86,6 +89,7 @@ function App() {
 
           <Route path="/login" element={<Login />} />
         </Routes>
+        {!hideFooterRoutes.includes(location.pathname) && <Footer />}
       </div>
     </Router>
   );

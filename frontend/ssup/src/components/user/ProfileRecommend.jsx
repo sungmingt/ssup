@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { recommendApi } from "@/api";
 import ProfileCard from "./ProfileCard";
+import "@/css/user/ProfileRecommend.css";
 import { useAuthStore } from "@/store/authStore";
 
 const ProfileRecommend = () => {
@@ -42,23 +43,27 @@ const ProfileRecommend = () => {
     : "서비스를 이용 중인 랜덤 유저 목록입니다. 로그인 후에는 AI가 나와 잘 맞는 친구를 추천해드려요!";
 
   return (
-    <div className="container py-5">
-      <div className="text-center">
-        <h4 className="fw-bold mb-3">🙋‍♀️ 추천 친구</h4>
-        <p className="mb-5 text-muted small">{description}</p>
+    <div className="page-wrapper">
+      <div className="container py-5">
+        <div className="text-center">
+          <h4 className="fw-bold mb-3">🙋‍♀️ 추천 친구</h4>
+          <p className="mb-5 text-muted small">{description}</p>
+        </div>
+
+        <div className="row">
+          {users.map((user) => (
+            <ProfileCard key={user.id} user={user} />
+          ))}
+        </div>
+
+        {loading && (
+          <p className="text-center mt-3 text-muted">불러오는 중...</p>
+        )}
+
+        {!loading && users.length === 0 && (
+          <p className="text-center mt-3">추천 결과가 없습니다.</p>
+        )}
       </div>
-
-      <div className="row">
-        {users.map((user) => (
-          <ProfileCard key={user.id} user={user} />
-        ))}
-      </div>
-
-      {loading && <p className="text-center mt-3 text-muted">불러오는 중...</p>}
-
-      {!loading && users.length === 0 && (
-        <p className="text-center mt-3">추천 결과가 없습니다.</p>
-      )}
     </div>
   );
 };
