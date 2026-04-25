@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: column;
   align-items: center; /* 가로 가운데 */
-  padding: 65px 20px; /* 높이는 padding으로만 조절 */
-  margin: 30px auto 0; /* 가운데 정렬 */
+  padding: 65px 20px 5px; /* 높이는 padding으로만 조절 */
+  margin: 20px auto 0; /* 가운데 정렬 */
   word-break: keep-all;
   box-sizing: border-box;
   text-align: center;
@@ -54,17 +54,18 @@
 
 .community-btn {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 5px;
   margin-bottom: 20px;
-  background-color: #ffffffd0;
+  background: #e8f5e9;
+  color: #2e7d32;
   height: 50px;
-  width: 170px;
-  font-weight: 600;
-  border-radius: 10px;
-  border-color: rgb(58, 121, 58);
-  color: rgb(67, 141, 67);
+  width: 200px;
+  font-weight: 700;
+  border-radius: 12px;
+  border: none;
   position: relative;
   overflow: hidden;
+  transition: all 0.2s ease;
 }
 
 /* 텍스트 */
@@ -93,22 +94,4 @@
 /* 텍스트 가리기 효과 */
 .community-btn:hover .btn-text {
   opacity: 0.2;
-}
-
-/*button group */
-
-.btn-group-row {
-  display: flex;
-  gap: 12px; /* 버튼 사이 간격 */
-  justify-content: center; /* 가운데 정렬 */
-  flex-wrap: nowrap; /* 줄바꿈 방지 */
-}
-
-.btn-group-row button {
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px; /* 아이콘-텍스트 간격 */
-  height: 48px; /* 높이 고정 (핵심) */
 }

@@ -1,13 +1,13 @@
-.main-container {
+.intro-main-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 70px 20px;
+  padding: 0px 20px;
   text-align: center;
 }
 
 /* 타이틀 */
-.main-title {
-  font-size: 2.2rem;
+.intro-main-title {
+  font-size: 2rem;
   font-weight: 800;
   margin-bottom: 40px;
 }
@@ -18,7 +18,7 @@
 
 /* 소개 카드 */
 .intro-card {
-  background: #f8faf8;
+  background: #f2f8f2;
   padding: 30px;
   border-radius: 16px;
   margin-bottom: 50px;
@@ -79,7 +79,7 @@
 }
 
 /* 버튼 */
-.community-btn {
+.intro-community-btn {
   margin-top: 15px;
   background: #e8f5e9;
   color: #2e7d32;
@@ -91,12 +91,12 @@
   transition: all 0.2s ease;
 }
 
-.community-btn:hover {
+.intro-community-btn:hover {
   transform: translateY(-2px);
   background: #d0f0d4;
 }
 
-.login-btn {
+.intro-login-btn {
   margin-top: 15px;
   background: #e8f5e9;
   color: #2e7d32;
@@ -108,7 +108,7 @@
   transition: all 0.2s ease;
 }
 
-.login-btn:hover {
+.intro-login-btn:hover {
   transform: translateY(-2px);
   background: #d0f0d4;
 }

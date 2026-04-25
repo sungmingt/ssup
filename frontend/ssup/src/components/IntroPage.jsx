@@ -5,9 +5,9 @@ const IntroPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="main-container">
+    <div className="intro-main-container">
       {/* 타이틀 */}
-      <h2 className="main-title">서비스 소개</h2>
+      <h2 className="intro-main-title">서비스 소개</h2>
 
       {/* 소개 */}
       <div className="intro-card">
@@ -56,10 +56,16 @@ const IntroPage = () => {
         <p>지금 바로 매치 요청을 보내보세요!</p>
 
         <div className="btn-group-row">
-          <button className="community-btn" onClick={() => navigate("/posts")}>
+          <button
+            className="intro-community-btn"
+            onClick={() => navigate("/posts")}
+          >
             ✈️ 커뮤니티 바로가기
           </button>
-          <button className="login-btn" onClick={() => navigate("/login")}>
+          <button
+            className="intro-login-btn"
+            onClick={() => navigate("/login")}
+          >
             🔐 로그인 하러가기
           </button>
         </div>
