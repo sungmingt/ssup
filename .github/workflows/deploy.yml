@@ -15,6 +15,7 @@ jobs:
   # CI (테스트 전용)
   # =========================
   ci:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     services:
@@ -58,7 +59,6 @@ jobs:
   # CD (main push 시 실행)
   # =========================
   deploy:
-    needs: ci
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
