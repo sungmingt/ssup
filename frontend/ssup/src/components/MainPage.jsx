@@ -3,7 +3,7 @@ import mainImage2 from "./../assets/main_logo_2.png";
 import mainImage3 from "./../assets/main_logo_3.png";
 import "@/css/MainPage.css";
 import { useNavigate } from "react-router-dom";
-import IntroPage from "@/components/introPage";
+import IntroPage from "@/components/IntroPage";
 
 const MainPage = () => {
   const navigate = useNavigate();
