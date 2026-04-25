@@ -1,0 +1,9 @@
+.top-control {
+  height: 44px;
+  width: 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}

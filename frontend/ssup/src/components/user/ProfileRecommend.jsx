@@ -43,8 +43,11 @@ const ProfileRecommend = () => {
 
   return (
     <div className="container py-5">
-      <h4 className="fw-bold mb-3">🙋‍♀️ 추천 친구</h4>
-      <p className="mb-5 text-muted small">{description}</p>
+      <div className="text-center">
+        <h4 className="fw-bold mb-3">🙋‍♀️ 추천 친구</h4>
+        <p className="mb-5 text-muted small">{description}</p>
+      </div>
+
       <div className="row">
         {users.map((user) => (
           <ProfileCard key={user.id} user={user} />

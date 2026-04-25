@@ -16,6 +16,11 @@
   margin: 0 0 23px 0;
 }
 
+.app-name {
+  color: #67ae6a;
+  font-weight: 700;
+}
+
 .main-image,
 .main-image-2,
 .main-image-3 {
@@ -58,4 +63,52 @@
   border-radius: 10px;
   border-color: rgb(58, 121, 58);
   color: rgb(67, 141, 67);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 텍스트 */
+.btn-text {
+  position: relative;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* 날아가는 로고 */
+.fly-logo {
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  z-index: 2;
+  transition: transform 0.7s ease;
+}
+
+/* hover */
+.community-btn:hover .fly-logo {
+  transform: translate(220px, -50%) rotate(-10deg);
+}
+
+/* 텍스트 가리기 효과 */
+.community-btn:hover .btn-text {
+  opacity: 0.2;
+}
+
+/*button group */
+
+.btn-group-row {
+  display: flex;
+  gap: 12px; /* 버튼 사이 간격 */
+  justify-content: center; /* 가운데 정렬 */
+  flex-wrap: nowrap; /* 줄바꿈 방지 */
+}
+
+.btn-group-row button {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px; /* 아이콘-텍스트 간격 */
+  height: 48px; /* 높이 고정 (핵심) */
 }
