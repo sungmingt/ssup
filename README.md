@@ -49,8 +49,22 @@ ssup은 한국에 거주하는 외국인과, 외국어에 관심있는 한국인
 <br>
 
 
-
 ## 3. 기술적 고민과 해결
+
+### [OpenAI Embedding 기반 친구 추천 시스템 설계]
+
+**아키텍처 다이어그램**
+<img width="600" height="500" alt="(png) AI 친구추천 architecture diagram" src="https://github.com/user-attachments/assets/3a6d2d8f-521c-434c-b76e-8a8275134cae" />
+
+**계기**
+- 단순 조건 기반 필터링이 아닌, 사용자의 관심사/언어/프로필을 종합적으로 반영한 추천 시스템 필요
+
+**결과**
+- 프로필 변경 시 embedding 생성 및 top-K 유저 추출 단계를 비동기 이벤트로 처리하도록 설계
+  - 기존 API의 응답 시간에 영향 X
+  - 추천 목록 조회 API 호출 시 이미 연산된 결과를 단순 Redis 조회 (O(N) → O(1)) 
+- 프로필 정보를 자연어로 생성하고, OpenAI를 통해 embedding을 생성/비교함으로써 의미 있는 추천 시스템 구현
+
 
 ### [매칭 시스템 도메인 설계 및 조회]
 
