@@ -21,9 +21,7 @@ public class UserRecommendRepository {
 
     public void save(Long userId, List<Long> recommendedUserIds) {
         recommendRedisTemplate.opsForValue().set(
-                KEY_PREFIX + userId,
-                recommendedUserIds,
-                Duration.ofDays(7)
+                KEY_PREFIX + userId, recommendedUserIds
         );
     }
 
