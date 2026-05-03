@@ -15,6 +15,6 @@ public class PrecomputeEventListener {
     @Async
     @EventListener
     public void handle(EmbeddingCreateEvent event) {
-        precomputeService.precompute(event.userId(), 10);
+        precomputeService.precompute();
     }
 }
