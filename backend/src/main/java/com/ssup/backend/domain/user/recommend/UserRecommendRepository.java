@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.time.Duration;
 import java.util.List;
 
 @Repository
@@ -21,9 +20,7 @@ public class UserRecommendRepository {
 
     public void save(Long userId, List<Long> recommendedUserIds) {
         recommendRedisTemplate.opsForValue().set(
-                KEY_PREFIX + userId,
-                recommendedUserIds,
-                Duration.ofDays(7)
+                KEY_PREFIX + userId, recommendedUserIds
         );
     }
 
@@ -33,5 +30,10 @@ public class UserRecommendRepository {
         return result.stream()
                 .map(v -> ((Number) v).longValue())
                 .toList();
+    }
+
+
+    public void delete(Long userId) {
+        recommendRedisTemplate.delete(KEY_PREFIX + userId);
     }
 }

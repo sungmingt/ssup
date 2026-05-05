@@ -18,14 +18,14 @@ public class UserRecommendPrecomputeService {
 
     private final UserProfileEmbeddingRepository embeddingRepository;
     private final UserRecommendRepository recommendationRepository;
+    private static final int topK = 10;
 
     //가입/수정한 회원 말고, 다른 모든 회원의 추천 친구도 갱신되어야한다.
-    public void precompute(Long userId, int topK) {
-        precomputeUserRecommend(userId, topK);
-        precomputeOtherUsersRecommend(userId, topK);
+    public void precompute() {
+        precomputeAllUsersRecommend();
     }
 
-    private void precomputeUserRecommend(Long userId, int topK) {
+    private void precomputeUserRecommend(Long userId) {
         UserProfileEmbedding me = embeddingRepository
                 .findByUserId(userId)
                 .orElseThrow();
@@ -59,11 +59,11 @@ public class UserRecommendPrecomputeService {
         recommendationRepository.save(userId, recommended);
     }
 
-    private void precomputeOtherUsersRecommend(Long userId, int topK) {
+    private void precomputeAllUsersRecommend() {
         List<Long> allUserIds = embeddingRepository.findAllUserIds();
 
         for (Long id : allUserIds) {
-            precomputeUserRecommend(id, topK);
+            precomputeUserRecommend(id);
         }
     }
 

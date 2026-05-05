@@ -55,8 +55,11 @@ public class UserProfileEmbeddingRepository {
                 .toList();
 
         //multiGet -> 한 번에 조회
-        List<UserProfileEmbedding> embeddings =
-                embeddingRedisTemplate.opsForValue().multiGet(keys);
+        List<UserProfileEmbedding> embeddings = embeddingRedisTemplate.opsForValue().multiGet(keys);
+
+        if (embeddings == null) {
+            return List.of();
+        }
 
         return embeddings.stream()
                 .filter(Objects::nonNull)
